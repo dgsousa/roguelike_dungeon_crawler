@@ -1,0 +1,44 @@
+* {
+	box-sizing: border-box;
+}
+
+
+.container {
+	border: 1px solid green;
+	overflow-y: hidden;
+	margin: 0 auto;
+	padding: 0;
+	width: 50%;
+	height: 500px;
+	position: relative;
+	
+}
+
+
+
+.main {
+	width: 100%;
+	border: 1px solid blue;
+	position: absolute;
+	border: 1px solid red;
+}
+
+table {	
+	width: 100%;
+	border-collapse: collapse;
+}
+
+td {
+	border: 1px solid black;
+	width: 20px;
+	height: 20px;
+}
+
+
+.red { 
+	background: red;
+}
+
+.white {
+	background: white;
+}
