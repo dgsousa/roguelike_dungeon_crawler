@@ -6,19 +6,22 @@ import './scss/application.scss';
 
 class Square extends React.Component {
 	constructor(props) {
-		super(props)
+		super(props);
+		this.state = {
+			style: {
+				top: this.props.row * 10,
+				left: this.props.column * 10,
+				background: 'white'
+			}
+		}
 
 	}
 
 	render() {
-		let style = {
-			top: this.props.row * 10,
-			left: this.props.column * 10
-		}
 		
 		return (
 			<div
-				style={style}
+				style={this.state.style}
 				className={"square"}>
 			</div>
 		)
@@ -81,8 +84,26 @@ class App extends React.Component {
 	
 	componentWillMount() {
 		this.createBoard();
-		window.addEventListener('keydown', changeCoords)
+		//window.addEventListener('keydown', this.changeCoords.bind(this))
 	}
+
+	// changeCoords(e) {
+	// 	if(e.keyCode === 37 && this.state.coords.x >= 1) {
+	// 		this.state.coords.x -= 1;
+	// 	} else if(e.keyCode === 38 && this.state.coords.y >= 1) {
+	// 		this.state.coords.y -= 1;
+	// 		this.state.style.top += 20;
+	// 	} else if(e.keyCode === 39 && this.state.coords.x <= (this.props.width - 2)) {
+	// 		this.state.coords.x += 1;
+	// 	} else if(e.keyCode === 40 && this.state.coords.y <= (this.props.height - 2)) {
+	// 		this.state.coords.y += 1;
+	// 		this.state.style.top -= 20;
+	// 	}
+	// 	this.setState({
+	// 		coords: this.state.coords,
+	// 		style: this.state.style
+	// 	})
+	// }
 
 	createBoard() {
 		let board = [];
