@@ -4,19 +4,20 @@
 
 #app {
 	width: 1000px;
-	height: 1000px;
+	height: 500px;
 	margin: auto;
 	position: relative;
 }
 
 .board {
-	border: 1px solid blue;
+	border: 1px solid black;
+	width: 1000px;
+	height: 500px;
+	background: grey;
 }
 
-.square {
-	position: absolute;
-	width: 10px;
-	height: 10px;
+.room {
 	border: 1px solid black;
-	margin: 0;
+	background: white;
+	position: absolute;
 }
