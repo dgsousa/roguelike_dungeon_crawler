@@ -80,6 +80,11 @@ class App extends React.Component {
 
 	
 	componentWillMount() {
+		this.createBoard();
+		window.addEventListener('keydown', changeCoords)
+	}
+
+	createBoard() {
 		let board = [];
 		let area = this.props.height * this.props.width;
 		for(let i = 0; i < area; i++) {
