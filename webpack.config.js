@@ -15,6 +15,10 @@ module.exports = {
 					{
 						test: /\.scss$/,
 						loaders: ["style", "css", "sass"]
+					},
+					{
+						test: /rot\.js$/,
+						loaders: ["exports?ROT"]
 					}
 
 		]
