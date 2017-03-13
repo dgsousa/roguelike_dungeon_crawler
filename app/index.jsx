@@ -1,69 +1,61 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as ROT from '../bower_components/rot.js/rot.js'
 import './scss/application.scss';
 
 
 
-
-
-
-
-
-class Room extends React.Component {
+class Tile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			style: {}
+			style: {
+				top: this.props.row * 15,
+				left: this.props.column * 10
+			}
 		}
 	}
-
-	componentWillMount() {
-		this.generateDimensions();
-	}
-
-	generateDimensions() {
-		let style = {
-			top: Math.floor(Math.random() * 500),
-			left: Math.floor(Math.random() * 1000),
-			width: Math.floor(Math.random() * 100 + 50),
-			height: Math.floor(Math.random() * 100 + 50)
-		}
-		this.state.style = style;
-		this.setState(this.state);	
-	}
-
+	
 	render() {
 		return(
-			<div className="room"
-				 style={this.state.style}>
+			<div 
+				className="tile"
+				style={this.state.style}>
 			</div>
 		)
 	}
 }
-
-
 
 
 class Board extends React.Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			style: {
+				width: this.props.width * 10,
+				height: this.props.height * 15,
+			}
+		}
 	}
 
 	render() {
-		let rooms = [];
-		for(let i = 0; i < 5; i++) {
-			rooms.push(<Room key={i}></Room>)
+		let tiles = [];
+		let area = this.props.width * this.props.height;
+		for(let i = 0; i < area; i++) {
+			let column = i % this.props.width;
+			let row = Math.floor(i / this.props.width)
+			tiles.push(<Tile key={i} column={column} row={row}/>)
 		}
 		
 		return (
-			<div className="board">	
-				{rooms}
+			<div 
+				className="board"
+				style={this.state.style}>	
+				{tiles}
 			</div>
 		)
 	}
 }
-
-
 
 
 
@@ -72,16 +64,30 @@ class App extends React.Component {
 	constructor(props) {
 		super(props)
 	}
-	
+
+	componentWillMount() {
+		let map = [];
+		let generator = new ROT.Map.Cellular(this.props.width, this.props.height);
+		generator.randomize(.5);
+		for(let i = 0; i < 3; i++) {
+			generator.create();
+		}
+		generator.create((x,y,v)=>{
+			v === 1 ? map[x][y] = true : map[x][y] = false;
+		})
+		console.log(map);
+	}
 	
 	render() {
 		return (
-			<Board>
+			<Board
+				width={this.props.width}
+				height={this.props.height}>
 			</Board>
 		)
 	}
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App width={100} height={40}/>, document.getElementById('app'));
 
 
