@@ -92,12 +92,18 @@ class App extends React.Component {
 
 	componentWillMount() {
 		this.createMap();
+		window.addEventListener('keydown', this.changeCoords.bind(this))
 		this.initializePlayer(50, 30)
 	}
 
 	initializePlayer(x, y) {
 		this.state.player.coords = [x, y],
 		this.setState(this.state);
+	}
+
+	changeCoords(e) {
+		console.log(e.keycode);
+
 	}
 
 	createMap() {
