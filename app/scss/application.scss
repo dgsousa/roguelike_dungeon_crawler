@@ -1,23 +1,36 @@
-* {
-	box-sizing: border-box;
-}
+
 
 #app {
-	width: 1000px;
-	height: 500px;
 	margin: auto;
-	position: relative;
+}
+
+.view {
+	width: 1000px;
+	height: 600px;
+	margin: 150px auto;
+	overflow: hidden;	
 }
 
 .board {
-	border: 1px solid black;
+	position: relative;
+	margin: auto;
+	top: -150px;
 	width: 1000px;
-	height: 500px;
-	background: grey;
+	height: 1500px;
 }
 
 .tile {
 	position: absolute;
+	z-index: 10;
 	width: 10px;
 	height: 15px;
+	background: black;
+}
+
+.player {
+	position: absolute;
+	z-index: 20;
+	width: 10px;
+	height: 15px;
+	color: red;
 }

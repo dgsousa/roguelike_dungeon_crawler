@@ -9,10 +9,33 @@ const Tile = props => {
 	return(
 		<div 
 			className="tile"
-			style={props.style}>
+			style={props.style}>{props.text}
 		</div>
 	)	
 }
+
+
+
+class Player extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		let style = {
+			top: this.props.player.coords[1] * 15,
+			left: this.props.player.coords[0] * 10
+		}
+		return (
+			<div
+				className={'player'}
+				style={style}>@		
+			</div>
+		)
+	}
+}
+
+
 
 
 class Board extends React.Component {
@@ -20,24 +43,32 @@ class Board extends React.Component {
 		super(props)
 	}
 
-	render() {
+	getTiles() {
 		let width = this.props.width;
-		let tiles = this.props.map.map(function(tile, i) {
-			let background = tile ? 'white' : 'grey';
+		let tiles = this.props.map.map((tile, i)=> {
+			let color = tile ? 'black' : 'goldenrod';
+			let text = tile ? '.' : '#';
 			let style = {
 				top: Math.floor(i/width) * 15,
 				left: (i % width) * 10,
-				background: background
+				color: color,
+				content: '!'
 			}
-			return (<Tile key={i} style={style}/>) 
-			
+			return (<Tile key={i} style={style} text={text}/>) 	
 		})
+		return tiles;
+	}
+
+
+
+	render() {
+		let tiles = this.getTiles();
 				
 		return (
 			<div 
-				className="board"
-				style={{width: this.props.width * 10, 
-						height: this.props.height * 15}}>	
+				className="board">
+				<Player 
+					player={this.props.player}/>
 				{tiles}
 			</div>
 		)
@@ -45,15 +76,31 @@ class Board extends React.Component {
 }
 
 
+
+
+
 class App extends React.Component {	
 	constructor(props) {
 		super(props)
 		this.state = {
-			map: []
+			map: [],
+			player: {
+				coords: []
+			}
 		}
 	}
 
 	componentWillMount() {
+		this.createMap();
+		this.initializePlayer(50, 30)
+	}
+
+	initializePlayer(x, y) {
+		this.state.player.coords = [x, y],
+		this.setState(this.state);
+	}
+
+	createMap() {
 		let map = [];
 		let area = this.props.width * this.props.height
 		for(let i = 0; i < area; i++) {
@@ -61,7 +108,7 @@ class App extends React.Component {
 		}
 
 		let generator = new ROT.Map.Cellular(this.props.width, this.props.height);
-		generator.randomize(.5);
+		generator.randomize(.52);
 		for(let i = 0; i < 10 ; i++) {
 			generator.create();
 		}
@@ -76,15 +123,22 @@ class App extends React.Component {
 	
 	render() {
 		return (
-			<Board
-				map={this.state.map}
-				width={this.props.width}
-				height={this.props.height}>
-			</Board>
+			<div>
+				<div className={'view'}>
+				
+					<Board
+						map={this.state.map}
+						player={this.state.player}
+						width={this.props.width}
+						height={this.props.height}>
+					</Board>
+				</div>
+			</div>
+			
 		)
 	}
 }
 
-ReactDOM.render(<App width={100} height={50}/>, document.getElementById('app'));
+ReactDOM.render(<App width={100} height={100}/>, document.getElementById('app'));
 
 
