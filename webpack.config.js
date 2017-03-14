@@ -19,6 +19,10 @@ module.exports = {
 					{
 						test: /rot\.js$/,
 						loaders: ["exports?ROT"]
+					},
+					{
+						test: /\.png$/,
+						loader: 'url-loader'
 					}
 
 		]

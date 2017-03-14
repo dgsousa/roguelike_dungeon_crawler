@@ -5,13 +5,30 @@ import './scss/application.scss';
 
 
 
-const Tile = props => {		
-	return(
-		<div 
-			className="tile"
-			style={props.style}>{props.text}
-		</div>
-	)	
+class Tile extends React.Component {	
+	constructor(props) {
+		super(props);
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if(this.props.style.top === nextProps.style.top && this.props.style.left === nextProps.style.left && this.props.style.color === nextProps.style.color) {
+			return false;
+		}
+		return true;
+	}
+
+	componentWillUpdate() {
+		console.log('test');
+	}
+	
+	render() {
+		return (
+			<div 
+				className={"tile " + this.props.char}
+				style={this.props.style}>
+			</div>
+		)	
+	}
 }
 
 
@@ -19,17 +36,30 @@ const Tile = props => {
 class Player extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			player: {
+				coords: []
+			}
+		}
+	}
+
+	componentWillMount() {
+		this.setState(this.props);
+	}
+
+	componentWillReceiveProps(nextProps, nextState) {
+		this.setState(nextProps);
 	}
 
 	render() {
 		let style = {
-			top: this.props.player.coords[1] * 15,
-			left: this.props.player.coords[0] * 10
+			top: this.state.player.coords[1] * 30,
+			left: this.state.player.coords[0] * 30
 		}
 		return (
 			<div
-				className={'player'}
-				style={style}>@		
+				className={'player yoda'}
+				style={style}>
 			</div>
 		)
 	}
@@ -40,35 +70,84 @@ class Player extends React.Component {
 
 class Board extends React.Component {
 	constructor(props) {
-		super(props)
+		super(props);
+		this.state = {
+			style: {
+				top: null,
+				left: null
+			},
+			player: {
+				coords: []
+			}
+		}
 	}
 
 	getTiles() {
 		let width = this.props.width;
 		let tiles = this.props.map.map((tile, i)=> {
 			let color = tile ? 'black' : 'goldenrod';
-			let text = tile ? '.' : '#';
+			let char = tile ? '' : 'chewy'
 			let style = {
-				top: Math.floor(i/width) * 15,
-				left: (i % width) * 10,
-				color: color,
-				content: '!'
+				top: Math.floor(i/width) * 30,
+				left: (i % width) * 30,
+				color: color
 			}
-			return (<Tile key={i} style={style} text={text}/>) 	
+			return (<Tile key={i} style={style} char={char}/>) 	
 		})
 		return tiles;
 	}
 
+	componentWillMount() {
+		this.state.style = {top: -300, left: 0}
+		this.state.player = {coords: [16, 17]}
+		this.setState(this.state);
+	}
 
+	scroll(e) {
+		e.preventDefault();
+		if(e.keyCode === 38 && this.state.player.coords[1] > 0) {
+			if(this.state.style.top < 0 && this.state.player.coords[1] < 43) this.scrollScreen(0,30);
+			this.movePlayer(0, -1)
+		} else if(e.keyCode === 40 && this.state.player.coords[1] < this.props.height - 1) {
+			if(this.state.style.top > -1050 && this.state.player.coords[1] > 6) this.scrollScreen(0,-30)
+			this.movePlayer(0, 1)
+		} else if(e.keyCode === 37 && this.state.player.coords[0] > 0) {
+			if(this.state.style.left < 0 && this.state.player.coords[0] < 33) this.scrollScreen(30, 0)
+			this.movePlayer(-1, 0)
+		} else if(e.keyCode === 39 && this.state.player.coords[0] < this.props.width - 1) {
+			if(this.state.style.left > -450 && this.state.player.coords[0] > 16) this.scrollScreen(-30, 0)
+			this.movePlayer(1, 0)
+		}
+	}
+
+	scrollScreen(x, y) {
+		this.setState({
+			style: {
+				top: this.state.style.top + y,
+				left: this.state.style.left + x
+			}
+		})	
+	}
+
+	movePlayer(x, y) {
+		let coords = this.state.player.coords;
+		this.setState({
+			player: {
+				coords: [coords[0] + x, coords[1] + y]
+			}
+		})
+	}
 
 	render() {
-		let tiles = this.getTiles();
-				
+		let tiles = this.getTiles();			
 		return (
 			<div 
-				className="board">
+				className={"board"}
+				style={this.state.style}
+				tabIndex="0"
+				onKeyDown={this.scroll.bind(this)}>
 				<Player 
-					player={this.props.player}/>
+					player={this.state.player}/>
 				{tiles}
 			</div>
 		)
@@ -79,31 +158,17 @@ class Board extends React.Component {
 
 
 
+
 class App extends React.Component {	
 	constructor(props) {
 		super(props)
 		this.state = {
-			map: [],
-			player: {
-				coords: []
-			}
+			map: []
 		}
 	}
 
 	componentWillMount() {
 		this.createMap();
-		window.addEventListener('keydown', this.changeCoords.bind(this))
-		this.initializePlayer(50, 30)
-	}
-
-	initializePlayer(x, y) {
-		this.state.player.coords = [x, y],
-		this.setState(this.state);
-	}
-
-	changeCoords(e) {
-		console.log(e.keycode);
-
 	}
 
 	createMap() {
@@ -123,18 +188,16 @@ class App extends React.Component {
 			let i = y * this.props.width + x;
 			v === 1 ? map[i] = true : map[i] = false;
 		})
-		this.state.map = map;
-		this.setState(this.state);
+
+		this.setState({map: map});
 	}
 	
 	render() {
 		return (
 			<div>
-				<div className={'view'}>
-				
+				<div className={'view'}>				
 					<Board
 						map={this.state.map}
-						player={this.state.player}
 						width={this.props.width}
 						height={this.props.height}>
 					</Board>
@@ -145,6 +208,6 @@ class App extends React.Component {
 	}
 }
 
-ReactDOM.render(<App width={100} height={100}/>, document.getElementById('app'));
+ReactDOM.render(<App width={50} height={50}/>, document.getElementById('app'));
 
 

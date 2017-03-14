@@ -72,41 +72,176 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Tile = function Tile(props) {
-		return _react2.default.createElement('div', {
-			className: 'tile',
-			style: props.style });
-	};
+	var Tile = function (_React$Component) {
+		_inherits(Tile, _React$Component);
 
-	var Board = function (_React$Component) {
-		_inherits(Board, _React$Component);
+		function Tile(props) {
+			_classCallCheck(this, Tile);
+
+			return _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
+		}
+
+		_createClass(Tile, [{
+			key: 'shouldComponentUpdate',
+			value: function shouldComponentUpdate(nextProps, nextState) {
+				if (this.props.style.top === nextProps.style.top && this.props.style.left === nextProps.style.left && this.props.style.color === nextProps.style.color) {
+					return false;
+				}
+				return true;
+			}
+		}, {
+			key: 'componentWillUpdate',
+			value: function componentWillUpdate() {
+				console.log('test');
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement('div', {
+					className: "tile " + this.props.char,
+					style: this.props.style });
+			}
+		}]);
+
+		return Tile;
+	}(_react2.default.Component);
+
+	var Player = function (_React$Component2) {
+		_inherits(Player, _React$Component2);
+
+		function Player(props) {
+			_classCallCheck(this, Player);
+
+			var _this2 = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
+
+			_this2.state = {
+				player: {
+					coords: []
+				}
+			};
+			return _this2;
+		}
+
+		_createClass(Player, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.setState(this.props);
+			}
+		}, {
+			key: 'componentWillReceiveProps',
+			value: function componentWillReceiveProps(nextProps, nextState) {
+				this.setState(nextProps);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var style = {
+					top: this.state.player.coords[1] * 30,
+					left: this.state.player.coords[0] * 30
+				};
+				return _react2.default.createElement('div', {
+					className: 'player yoda',
+					style: style });
+			}
+		}]);
+
+		return Player;
+	}(_react2.default.Component);
+
+	var Board = function (_React$Component3) {
+		_inherits(Board, _React$Component3);
 
 		function Board(props) {
 			_classCallCheck(this, Board);
 
-			return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
+			var _this3 = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
+
+			_this3.state = {
+				style: {
+					top: null,
+					left: null
+				},
+				player: {
+					coords: []
+				}
+			};
+			return _this3;
 		}
 
 		_createClass(Board, [{
-			key: 'render',
-			value: function render() {
+			key: 'getTiles',
+			value: function getTiles() {
 				var width = this.props.width;
 				var tiles = this.props.map.map(function (tile, i) {
-					var background = tile ? 'white' : 'grey';
+					var color = tile ? 'black' : 'goldenrod';
+					var char = tile ? '' : 'chewy';
 					var style = {
-						top: Math.floor(i / width) * 15,
-						left: i % width * 10,
-						background: background
+						top: Math.floor(i / width) * 30,
+						left: i % width * 30,
+						color: color
 					};
-					return _react2.default.createElement(Tile, { key: i, style: style });
+					return _react2.default.createElement(Tile, { key: i, style: style, char: char });
 				});
-
+				return tiles;
+			}
+		}, {
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.state.style = { top: -300, left: 0 };
+				this.state.player = { coords: [16, 17] };
+				this.setState(this.state);
+			}
+		}, {
+			key: 'scroll',
+			value: function scroll(e) {
+				e.preventDefault();
+				if (e.keyCode === 38 && this.state.player.coords[1] > 0) {
+					if (this.state.style.top < 0 && this.state.player.coords[1] < 43) this.scrollScreen(0, 30);
+					this.movePlayer(0, -1);
+				} else if (e.keyCode === 40 && this.state.player.coords[1] < this.props.height - 1) {
+					if (this.state.style.top > -1050 && this.state.player.coords[1] > 6) this.scrollScreen(0, -30);
+					this.movePlayer(0, 1);
+				} else if (e.keyCode === 37 && this.state.player.coords[0] > 0) {
+					if (this.state.style.left < 0 && this.state.player.coords[0] < 33) this.scrollScreen(30, 0);
+					this.movePlayer(-1, 0);
+				} else if (e.keyCode === 39 && this.state.player.coords[0] < this.props.width - 1) {
+					if (this.state.style.left > -450 && this.state.player.coords[0] > 16) this.scrollScreen(-30, 0);
+					this.movePlayer(1, 0);
+				}
+			}
+		}, {
+			key: 'scrollScreen',
+			value: function scrollScreen(x, y) {
+				this.setState({
+					style: {
+						top: this.state.style.top + y,
+						left: this.state.style.left + x
+					}
+				});
+			}
+		}, {
+			key: 'movePlayer',
+			value: function movePlayer(x, y) {
+				var coords = this.state.player.coords;
+				this.setState({
+					player: {
+						coords: [coords[0] + x, coords[1] + y]
+					}
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var tiles = this.getTiles();
 				return _react2.default.createElement(
 					'div',
 					{
-						className: 'board',
-						style: { width: this.props.width * 10,
-							height: this.props.height * 15 } },
+						className: "board",
+						style: this.state.style,
+						tabIndex: '0',
+						onKeyDown: this.scroll.bind(this) },
+					_react2.default.createElement(Player, {
+						player: this.state.player }),
 					tiles
 				);
 			}
@@ -115,24 +250,29 @@
 		return Board;
 	}(_react2.default.Component);
 
-	var App = function (_React$Component2) {
-		_inherits(App, _React$Component2);
+	var App = function (_React$Component4) {
+		_inherits(App, _React$Component4);
 
 		function App(props) {
 			_classCallCheck(this, App);
 
-			var _this2 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+			var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-			_this2.state = {
+			_this4.state = {
 				map: []
 			};
-			return _this2;
+			return _this4;
 		}
 
 		_createClass(App, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				var _this3 = this;
+				this.createMap();
+			}
+		}, {
+			key: 'createMap',
+			value: function createMap() {
+				var _this5 = this;
 
 				var map = [];
 				var area = this.props.width * this.props.height;
@@ -141,32 +281,40 @@
 				}
 
 				var generator = new ROT.Map.Cellular(this.props.width, this.props.height);
-				generator.randomize(.5);
+				generator.randomize(.52);
 				for (var _i = 0; _i < 10; _i++) {
 					generator.create();
 				}
 
 				generator.create(function (x, y, v) {
-					var i = y * _this3.props.width + x;
+					var i = y * _this5.props.width + x;
 					v === 1 ? map[i] = true : map[i] = false;
 				});
-				this.state.map = map;
-				this.setState(this.state);
+
+				this.setState({ map: map });
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				return _react2.default.createElement(Board, {
-					map: this.state.map,
-					width: this.props.width,
-					height: this.props.height });
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'view' },
+						_react2.default.createElement(Board, {
+							map: this.state.map,
+							width: this.props.width,
+							height: this.props.height })
+					)
+				);
 			}
 		}]);
 
 		return App;
 	}(_react2.default.Component);
 
-	_reactDom2.default.render(_react2.default.createElement(App, { width: 100, height: 50 }), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(App, { width: 50, height: 50 }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -26943,7 +27091,7 @@
 	var content = __webpack_require__(180);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(182)(content, {});
+	var update = __webpack_require__(184)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -26968,7 +27116,7 @@
 
 
 	// module
-	exports.push([module.id, "* {\n  box-sizing: border-box; }\n\n#app {\n  width: 1000px;\n  height: 500px;\n  margin: auto;\n  position: relative; }\n\n.board {\n  border: 1px solid black;\n  width: 1000px;\n  height: 500px;\n  background: grey; }\n\n.tile {\n  position: absolute;\n  width: 10px;\n  height: 15px; }\n", ""]);
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 1050px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
 
 	// exports
 
@@ -27031,6 +27179,18 @@
 
 /***/ },
 /* 182 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 183 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
