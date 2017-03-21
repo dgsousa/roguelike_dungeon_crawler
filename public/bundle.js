@@ -112,32 +112,15 @@
 		function Player(props) {
 			_classCallCheck(this, Player);
 
-			var _this2 = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
-
-			_this2.state = {
-				player: {
-					coords: []
-				}
-			};
-			return _this2;
+			return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
 		}
 
 		_createClass(Player, [{
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-				this.setState(this.props);
-			}
-		}, {
-			key: 'componentWillReceiveProps',
-			value: function componentWillReceiveProps(nextProps, nextState) {
-				this.setState(nextProps);
-			}
-		}, {
 			key: 'render',
 			value: function render() {
 				var style = {
-					top: this.state.player.coords[1] * 30,
-					left: this.state.player.coords[0] * 30
+					top: this.props.player.coords[1] * 30,
+					left: this.props.player.coords[0] * 30
 				};
 				return _react2.default.createElement('div', {
 					className: 'player yoda',
@@ -157,13 +140,10 @@
 			var _this3 = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
 
 			_this3.state = {
-				style: {
-					top: null,
-					left: null
-				},
 				player: {
 					coords: []
-				}
+				},
+				coords: []
 			};
 			return _this3;
 		}
@@ -187,45 +167,36 @@
 		}, {
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				this.state.style = { top: -300, left: 0 };
-				this.state.player = { coords: [16, 17] };
+				this.state.coords = [0, 0];
+				this.state.player.coords = [12, 7];
 				this.setState(this.state);
 			}
 		}, {
 			key: 'scroll',
 			value: function scroll(e) {
 				e.preventDefault();
-				if (e.keyCode === 38 && this.state.player.coords[1] > 0) {
-					if (this.state.style.top < 0 && this.state.player.coords[1] < 43) this.scrollScreen(0, 30);
-					this.movePlayer(0, -1);
-				} else if (e.keyCode === 40 && this.state.player.coords[1] < this.props.height - 1) {
-					if (this.state.style.top > -1050 && this.state.player.coords[1] > 6) this.scrollScreen(0, -30);
-					this.movePlayer(0, 1);
-				} else if (e.keyCode === 37 && this.state.player.coords[0] > 0) {
-					if (this.state.style.left < 0 && this.state.player.coords[0] < 33) this.scrollScreen(30, 0);
-					this.movePlayer(-1, 0);
-				} else if (e.keyCode === 39 && this.state.player.coords[0] < this.props.width - 1) {
-					if (this.state.style.left > -450 && this.state.player.coords[0] > 16) this.scrollScreen(-30, 0);
-					this.movePlayer(1, 0);
+				if (e.keyCode === ROT.VK_UP) {
+					this.scrollScreen(0, -1);
+				} else if (e.keyCode === ROT.VK_DOWN) {
+					this.scrollScreen(0, 1);
+				} else if (e.keyCode === ROT.VK_LEFT) {
+					this.scrollScreen(-1, 0);
+				} else if (e.keyCode === ROT.VK_RIGHT) {
+					this.scrollScreen(1, 0);
 				}
 			}
 		}, {
 			key: 'scrollScreen',
 			value: function scrollScreen(x, y) {
+				var playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
+				var playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
+				var screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
+				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
+				var coords = [screenX, screenY];
 				this.setState({
-					style: {
-						top: this.state.style.top + y,
-						left: this.state.style.left + x
-					}
-				});
-			}
-		}, {
-			key: 'movePlayer',
-			value: function movePlayer(x, y) {
-				var coords = this.state.player.coords;
-				this.setState({
+					coords: coords,
 					player: {
-						coords: [coords[0] + x, coords[1] + y]
+						coords: [playerX, playerY]
 					}
 				});
 			}
@@ -233,12 +204,17 @@
 			key: 'render',
 			value: function render() {
 				var tiles = this.getTiles();
+				var style = {
+					top: -this.state.coords[1] * 30,
+					left: -this.state.coords[0] * 30
+				};
+
 				return _react2.default.createElement(
 					'div',
 					{
 						className: "board",
-						style: this.state.style,
-						tabIndex: '0',
+						style: style,
+						tabIndex: "0",
 						onKeyDown: this.scroll.bind(this) },
 					_react2.default.createElement(Player, {
 						player: this.state.player }),
@@ -279,18 +255,15 @@
 				for (var i = 0; i < area; i++) {
 					map.push([]);
 				}
-
 				var generator = new ROT.Map.Cellular(this.props.width, this.props.height);
 				generator.randomize(.52);
 				for (var _i = 0; _i < 10; _i++) {
 					generator.create();
 				}
-
 				generator.create(function (x, y, v) {
 					var i = y * _this5.props.width + x;
 					v === 1 ? map[i] = true : map[i] = false;
 				});
-
 				this.setState({ map: map });
 			}
 		}, {
@@ -27116,7 +27089,7 @@
 
 
 	// module
-	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 1050px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
 
 	// exports
 
