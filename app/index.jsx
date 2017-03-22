@@ -16,10 +16,6 @@ class Tile extends Component {
 		}
 		return true;
 	}
-
-	componentWillUpdate() {
-		console.log('test');
-	}
 	
 	render() {
 		return (
@@ -102,13 +98,17 @@ class Board extends Component {
 	 	let playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
 		let screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
 		let screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
-		let coords = [screenX, screenY];
-		this.setState({
-			coords: coords,
-			player: {
-				coords: [playerX, playerY]
-			}
-		})	
+		if(this.props.map[(playerY * this.props.width) + playerX]) {
+			let coords = [screenX, screenY];
+			this.setState({
+				coords: coords,
+				player: {
+					coords: [playerX, playerY]
+				}
+			})
+		} else {
+			this.props.dig(playerX, playerY);
+		}
 	}
 	
 
@@ -150,6 +150,15 @@ class App extends Component {
 	};
 
 	
+	dig(x, y) {
+		var map = this.state.map;
+		var i = this.props.width * y + x;
+		map[i] = true;
+		this.setState({
+			map: map
+		})
+	}
+	
 
 	createMap() {
 		let map = [];
@@ -178,7 +187,8 @@ class App extends Component {
 					<Board
 						map={this.state.map}
 						width={this.props.width}
-						height={this.props.height}>
+						height={this.props.height}
+						dig={this.dig.bind(this)}>
 					</Board>
 				</div>
 			</div>
