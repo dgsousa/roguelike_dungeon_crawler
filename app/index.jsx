@@ -51,12 +51,6 @@ class Player extends Component {
 class Board extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			player: {
-				coords: [12, 7]
-			},
-			coords: [0, 0]
-		}
 	}
 
 	getTiles() {
@@ -74,59 +68,20 @@ class Board extends Component {
 		return tiles;
 	}
 
-	
-
-	scroll(e) {
-		e.preventDefault();
-		if(e.keyCode === ROT.VK_UP) {
-			this.scrollScreen(0, -1);
-					
-		} else if(e.keyCode === ROT.VK_DOWN) {
-			this.scrollScreen(0, 1);	
-			
-		} else if(e.keyCode === ROT.VK_LEFT) {
-			this.scrollScreen(-1, 0);
-			
-		} else if(e.keyCode === ROT.VK_RIGHT) {
-			this.scrollScreen(1, 0);
-			
-		}
-	}
-
-	scrollScreen(x, y) {	
-		let playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
-	 	let playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
-		let screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
-		let screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
-		if(this.props.map[(playerY * this.props.width) + playerX]) {
-			let coords = [screenX, screenY];
-			this.setState({
-				coords: coords,
-				player: {
-					coords: [playerX, playerY]
-				}
-			})
-		} else {
-			this.props.dig(playerX, playerY);
-		}
-	}
-	
 
 	render() {
 		let tiles = this.getTiles();
 		let style = {
-			top: -this.state.coords[1] * 30,
-			left: -this.state.coords[0] * 30
+			top: -this.props.coords[1] * 30,
+			left: -this.props.coords[0] * 30
 		}
 			
 		return (
 			<div 
 				className={"board"}
-				style={style}
-				tabIndex={"0"}
-				onKeyDown={this.scroll.bind(this)}>
+				style={style}>
 				<Player 
-					player={this.state.player}/>
+					player={this.props.player}/>
 				{tiles}
 			</div>
 		)
@@ -140,7 +95,11 @@ class App extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			map: []
+			map: [],
+			player: {
+				coords: [12, 7]
+			},
+			coords: [0, 0]
 		}
 	};
 	
@@ -179,16 +138,59 @@ class App extends Component {
 	};
 
 
+	scroll(e) {
+		e.preventDefault();
+		if(e.keyCode === ROT.VK_UP) {
+			this.scrollScreen(0, -1);
+					
+		} else if(e.keyCode === ROT.VK_DOWN) {
+			this.scrollScreen(0, 1);	
+			
+		} else if(e.keyCode === ROT.VK_LEFT) {
+			this.scrollScreen(-1, 0);
+			
+		} else if(e.keyCode === ROT.VK_RIGHT) {
+			this.scrollScreen(1, 0);
+			
+		}
+	};
+
+
+	scrollScreen(x, y) {	
+		let playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
+	 	let playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
+		let screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
+		let screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
+		if(this.state.map[(playerY * this.props.width) + playerX]) {
+			let coords = [screenX, screenY];
+			this.setState({
+				coords: coords,
+				player: {
+					coords: [playerX, playerY]
+				}
+			})
+		} else {
+			this.dig(playerX, playerY);
+		}
+	}
+
+
 	
 	render() {
 		return (
 			<div>
-				<div className={'view'}>				
+				<div 
+					className={'view'}
+					tabIndex={"0"}
+					onKeyDown={this.scroll.bind(this)}>				
+					
 					<Board
 						map={this.state.map}
 						width={this.props.width}
 						height={this.props.height}
-						dig={this.dig.bind(this)}>
+						dig={this.dig.bind(this)}
+						player={this.state.player}
+						coords={this.state.coords}>
 					</Board>
 				</div>
 			</div>
