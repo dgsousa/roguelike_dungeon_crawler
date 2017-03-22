@@ -46,8 +46,6 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -56,238 +54,15 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _rot = __webpack_require__(178);
+	__webpack_require__(178);
 
-	var ROT = _interopRequireWildcard(_rot);
+	var _app = __webpack_require__(184);
 
-	__webpack_require__(179);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _app2 = _interopRequireDefault(_app);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Tile = function (_React$Component) {
-		_inherits(Tile, _React$Component);
-
-		function Tile(props) {
-			_classCallCheck(this, Tile);
-
-			return _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
-		}
-
-		_createClass(Tile, [{
-			key: 'shouldComponentUpdate',
-			value: function shouldComponentUpdate(nextProps, nextState) {
-				if (this.props.style.top === nextProps.style.top && this.props.style.left === nextProps.style.left && this.props.style.color === nextProps.style.color) {
-					return false;
-				}
-				return true;
-			}
-		}, {
-			key: 'componentWillUpdate',
-			value: function componentWillUpdate() {
-				console.log('test');
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement('div', {
-					className: "tile " + this.props.char,
-					style: this.props.style });
-			}
-		}]);
-
-		return Tile;
-	}(_react2.default.Component);
-
-	var Player = function (_React$Component2) {
-		_inherits(Player, _React$Component2);
-
-		function Player(props) {
-			_classCallCheck(this, Player);
-
-			return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
-		}
-
-		_createClass(Player, [{
-			key: 'render',
-			value: function render() {
-				var style = {
-					top: this.props.player.coords[1] * 30,
-					left: this.props.player.coords[0] * 30
-				};
-				return _react2.default.createElement('div', {
-					className: 'player yoda',
-					style: style });
-			}
-		}]);
-
-		return Player;
-	}(_react2.default.Component);
-
-	var Board = function (_React$Component3) {
-		_inherits(Board, _React$Component3);
-
-		function Board(props) {
-			_classCallCheck(this, Board);
-
-			var _this3 = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
-
-			_this3.state = {
-				player: {
-					coords: []
-				},
-				coords: []
-			};
-			return _this3;
-		}
-
-		_createClass(Board, [{
-			key: 'getTiles',
-			value: function getTiles() {
-				var width = this.props.width;
-				var tiles = this.props.map.map(function (tile, i) {
-					var color = tile ? 'black' : 'goldenrod';
-					var char = tile ? '' : 'chewy';
-					var style = {
-						top: Math.floor(i / width) * 30,
-						left: i % width * 30,
-						color: color
-					};
-					return _react2.default.createElement(Tile, { key: i, style: style, char: char });
-				});
-				return tiles;
-			}
-		}, {
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-				this.state.coords = [0, 0];
-				this.state.player.coords = [12, 7];
-				this.setState(this.state);
-			}
-		}, {
-			key: 'scroll',
-			value: function scroll(e) {
-				e.preventDefault();
-				if (e.keyCode === ROT.VK_UP) {
-					this.scrollScreen(0, -1);
-				} else if (e.keyCode === ROT.VK_DOWN) {
-					this.scrollScreen(0, 1);
-				} else if (e.keyCode === ROT.VK_LEFT) {
-					this.scrollScreen(-1, 0);
-				} else if (e.keyCode === ROT.VK_RIGHT) {
-					this.scrollScreen(1, 0);
-				}
-			}
-		}, {
-			key: 'scrollScreen',
-			value: function scrollScreen(x, y) {
-				var playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
-				var playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
-				var screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
-				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
-				var coords = [screenX, screenY];
-				this.setState({
-					coords: coords,
-					player: {
-						coords: [playerX, playerY]
-					}
-				});
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				var tiles = this.getTiles();
-				var style = {
-					top: -this.state.coords[1] * 30,
-					left: -this.state.coords[0] * 30
-				};
-
-				return _react2.default.createElement(
-					'div',
-					{
-						className: "board",
-						style: style,
-						tabIndex: "0",
-						onKeyDown: this.scroll.bind(this) },
-					_react2.default.createElement(Player, {
-						player: this.state.player }),
-					tiles
-				);
-			}
-		}]);
-
-		return Board;
-	}(_react2.default.Component);
-
-	var App = function (_React$Component4) {
-		_inherits(App, _React$Component4);
-
-		function App(props) {
-			_classCallCheck(this, App);
-
-			var _this4 = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-
-			_this4.state = {
-				map: []
-			};
-			return _this4;
-		}
-
-		_createClass(App, [{
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-				this.createMap();
-			}
-		}, {
-			key: 'createMap',
-			value: function createMap() {
-				var _this5 = this;
-
-				var map = [];
-				var area = this.props.width * this.props.height;
-				for (var i = 0; i < area; i++) {
-					map.push([]);
-				}
-				var generator = new ROT.Map.Cellular(this.props.width, this.props.height);
-				generator.randomize(.52);
-				for (var _i = 0; _i < 10; _i++) {
-					generator.create();
-				}
-				generator.create(function (x, y, v) {
-					var i = y * _this5.props.width + x;
-					v === 1 ? map[i] = true : map[i] = false;
-				});
-				this.setState({ map: map });
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(
-						'div',
-						{ className: 'view' },
-						_react2.default.createElement(Board, {
-							map: this.state.map,
-							width: this.props.width,
-							height: this.props.height })
-					)
-				);
-			}
-		}]);
-
-		return App;
-	}(_react2.default.Component);
-
-	_reactDom2.default.render(_react2.default.createElement(App, { width: 50, height: 50 }), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(_app2.default, { width: 50, height: 50 }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21725,6 +21500,516 @@
 
 /***/ },
 /* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(179);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(183)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./application.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./application.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(180)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 180 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 181 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 182 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAABpNJREFUSA2NVXtsW1cZ/8459+VH7Nix86ySpulaMnfJqqUrA6E5gICCoGIo2oTWCQQrQ1vRSqGaAAnDHyAFZQJNgChThzTlD7oNtKIpQhPFiG3agyKtbdLHRpo0sRsnsV0/ru/19T338B23Ni10EseyzrnnfN/vfI/f9x0CHzxIKpUireP5+XmSSCQE7nmtvf9rFgDk4MGD6gcJp1JJBc/aF91GTkhLqDxozS2hxw4c6D782CMDRw99fcvRw09MHDmSirXO/lu2td++SQrg38O/n1frd1WvZR8trpx7CAUdSinRdH+nEh2a64x2P+4UCpvTx49XWjotMDm3AOUsTpwQ7O1TX3u6tr78rXqtAjWzhLsCiCDgcgeMYAQ0zQAIdn3/2RN/+skNfYzSfwaTy1QyqaSXlry+4MX7KrmlY4W1y+A4DqeMCZ+hgqIpCMtEw7aEY5tE8fgn9t4z8dbphYvvJ1F3CXVbkDLAMB+PN28p5nLcqeQh0BEQVdOjgz0aWs7A4x6oUQaXrwjhN7yGAK5yIzjYArl5biYjkdhouh7uHeYjg2EYiFGypU+F7qgGKhOgKB7EwgwG+3XSHSNkeDAE4UifTwLt2FFpha2Jy64H9nd8enp6pNsoHw+R/IBhgNcTNYimMULAA0NnEPRrEA1r4NcpBAxKgqHoUHLfl+amp5/PS4x0Ot30El1OSys9auW26/byvRXbFLWGQcyiTSJBBXRdRZc5OA0G+ZKDOSK0w1flYe3SqMW9u1F3MZvNylw049h0WdpqNUjdNB0MmUJeO5OH37+8gpIVMFQF/IYG2Xwd5l5fhz/+9YpwhcLMWh1y+cK61O3vv9TOdBsQQKGUUeCuC6ZlA2A+dJWBWfegXJPyAoqVGvgDqqCSbR63a6WrTcD5+etJleDNLMuFoYOnqxSoxuDeRBg698TRTQGvvrkIju3A3vFBeOTzQ3CtYqMsRT5SGAj7mwZNof4LEgRHG9DHs1kBnucJQXcOhkQdY7Dp9sBn938UKBq0ubYKfm8Z+rsipFozBVGCRrRnqAcxLixIltxAVFKpdDOYjm/s4xfOZSjUqmJiNEhs1wbPKYDu6NfrCdcOx6oJcFi66oiya5P4NtqkDrrcDp3MjpiZnnl88cKZXy2/f0lUagSjJUh3RAPLzEMm8x7k11eQ3nXoioThyjUfeS/b8MyqScubG73nl7PPLyws8BZ1yOGpKV+RW5drG4s9VHIOs+q6HHriKgQCFGmCVuEPMwaZ5dPwwMO/gNXMsvvS7NNKuG/8si+2/dNdW7cWZ2ZmNlGW0PlSiZZXz9f9mBCf7lsT6FZnSAUXE1squXgBRTJrkC87EBn6FPDFd2B9/h0W6B0tBVWH1Strf3ArlRGZkMnJSUZ3MuZGOsNhIty3uhN7plR/CEyzAfm8iz0GoIgNZymzAWLtLEze/zmRNXrh1F/+DiMfuu+LTPUXIoa3KxRQqxIwjj2hmWUhkHyUMKhZo8Q10UEhfApDigBatgHbdn0YxrdPwD9PzsJFm8Dw+J3ErKxPEMq0huMC57xdz9RUVWxOXkMRfKJ89V/HWHTYrgqNVFxOOjUV7lZWIbl7HNi2MfH6P94mqms1Gnr4XL2Ym3atwp0qxpyBi1QASGxsEHr85Emzo3v4bDS+Bcrcm7ljR+LRe6J+2N7BIR7kYufwbu/sn2f5Ky89xwd3jUPFary6+8BTn/SFYjPBQBQUI/w3ZvhyEhCSSU/yx+sfS34XArFfzs69+Z1RdjX7sQE/3NVpiBWXeC+v2nTJYSyg+72qw8DfO7L25Jf35x745tEf6LGtPyXhnQ+mpp9ZbT0HCiaTkKeOvIvAT8hLag0S6cPysy3CV3KOEg9orxCquLZt7RcUaWUYZ6XcjyYn3TTA9+S6iXHjeZVVhUwD8psbT6fq73jtfJXNZjhT+gOKbBYvWg3+XACbRUBD4XLRkiDY+uHE1FSzn0oMuSdHOzvy49C+ffozc3N1+MwXxh60l9+NqB5gfziEBLIMyp91hAqxO/b88Ge//u2Pk9gH0gAuqt0y2jUoYyDBnvzKQ1u/QXM/9wlspk3zhYU8YLJSGk7NtYvZI9/+6sMfSSNYCh+oW9Dwow2ILby5Rvf2AmGTgspCVABfvqpudPVyqgNRNFHLZ0LZjcKYBMpWbn1P5F77BgTkckPTgqcyDeV+6jFRskCLBOmZmkfeKFjwBgXdJiSoMl/gvJQ9dvr0/7gs928et8T05oPbrG8r+2+ymOso5NALHAAAAABJRU5ErkJggg=="
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _rot = __webpack_require__(185);
+
+	var ROT = _interopRequireWildcard(_rot);
+
+	var _board = __webpack_require__(186);
+
+	var _board2 = _interopRequireDefault(_board);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var App = function (_Component) {
+		_inherits(App, _Component);
+
+		function App(props) {
+			_classCallCheck(this, App);
+
+			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+			_this.state = {
+				map: [],
+				player: {
+					coords: [12, 7]
+				},
+				coords: [0, 0]
+			};
+			return _this;
+		}
+
+		_createClass(App, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.createMap();
+			}
+		}, {
+			key: 'dig',
+			value: function dig(x, y) {
+				var map = this.state.map;
+				var i = this.props.width * y + x;
+				map[i] = true;
+				this.setState({
+					map: map
+				});
+			}
+		}, {
+			key: 'createMap',
+			value: function createMap() {
+				var _this2 = this;
+
+				var map = [];
+				var area = this.props.width * this.props.height;
+				for (var i = 0; i < area; i++) {
+					map.push([]);
+				}
+				var generator = new ROT.Map.Cellular(this.props.width, this.props.height);
+				generator.randomize(.52);
+				for (var _i = 0; _i < 10; _i++) {
+					generator.create();
+				}
+				generator.create(function (x, y, v) {
+					var i = y * _this2.props.width + x;
+					v === 1 ? map[i] = true : map[i] = false;
+				});
+				this.setState({ map: map });
+			}
+		}, {
+			key: 'scroll',
+			value: function scroll(e) {
+				e.preventDefault();
+				if (e.keyCode === ROT.VK_UP) {
+					this.scrollScreen(0, -1);
+				} else if (e.keyCode === ROT.VK_DOWN) {
+					this.scrollScreen(0, 1);
+				} else if (e.keyCode === ROT.VK_LEFT) {
+					this.scrollScreen(-1, 0);
+				} else if (e.keyCode === ROT.VK_RIGHT) {
+					this.scrollScreen(1, 0);
+				}
+			}
+		}, {
+			key: 'scrollScreen',
+			value: function scrollScreen(x, y) {
+				var playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
+				var playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
+				var screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
+				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
+				if (this.state.map[playerY * this.props.width + playerX]) {
+					var coords = [screenX, screenY];
+					this.setState({
+						coords: coords,
+						player: {
+							coords: [playerX, playerY]
+						}
+					});
+				} else {
+					this.dig(playerX, playerY);
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'div',
+						{
+							className: 'view',
+							tabIndex: "0",
+							onKeyDown: this.scroll.bind(this) },
+						_react2.default.createElement(_board2.default, {
+							map: this.state.map,
+							width: this.props.width,
+							height: this.props.height,
+							dig: this.dig.bind(this),
+							player: this.state.player,
+							coords: this.state.coords })
+					)
+				);
+			}
+		}]);
+
+		return App;
+	}(_react.Component);
+
+	exports.default = App;
+
+/***/ },
+/* 185 */
 /***/ function(module, exports) {
 
 	/*
@@ -27055,364 +27340,193 @@
 	module.exports = ROT;
 
 /***/ },
-/* 179 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
+	"use strict";
 
-	// load the styles
-	var content = __webpack_require__(180);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(184)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./application.scss", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./application.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _player = __webpack_require__(187);
+
+	var _player2 = _interopRequireDefault(_player);
+
+	var _tile = __webpack_require__(188);
+
+	var _tile2 = _interopRequireDefault(_tile);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Board = function (_Component) {
+		_inherits(Board, _Component);
+
+		function Board(props) {
+			_classCallCheck(this, Board);
+
+			return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
 		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
+
+		_createClass(Board, [{
+			key: "getTiles",
+			value: function getTiles() {
+				var width = this.props.width;
+				var tiles = this.props.map.map(function (tile, i) {
+					var color = tile ? 'black' : 'goldenrod';
+					var char = tile ? '' : 'chewy';
+					var style = {
+						top: Math.floor(i / width) * 30,
+						left: i % width * 30,
+						color: color
+					};
+					return _react2.default.createElement(_tile2.default, { key: i, style: style, char: char });
+				});
+				return tiles;
+			}
+		}, {
+			key: "render",
+			value: function render() {
+				var tiles = this.getTiles();
+				var style = {
+					top: -this.props.coords[1] * 30,
+					left: -this.props.coords[0] * 30
+				};
+
+				return _react2.default.createElement(
+					"div",
+					{
+						className: "board",
+						style: style },
+					_react2.default.createElement(_player2.default, {
+						player: this.props.player }),
+					tiles
+				);
+			}
+		}]);
+
+		return Board;
+	}(_react.Component);
+
+	exports.default = Board;
 
 /***/ },
-/* 180 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(181)();
-	// imports
+	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
 
-	// module
-	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	// exports
+	var _react = __webpack_require__(1);
 
+	var _react2 = _interopRequireDefault(_react);
 
-/***/ },
-/* 181 */
-/***/ function(module, exports) {
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Player = function (_Component) {
+		_inherits(Player, _Component);
+
+		function Player(props) {
+			_classCallCheck(this, Player);
+
+			return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
+		}
+
+		_createClass(Player, [{
+			key: 'render',
+			value: function render() {
+				var style = {
+					top: this.props.player.coords[1] * 30,
+					left: this.props.player.coords[0] * 30
+				};
+				return _react2.default.createElement('div', {
+					className: 'player yoda',
+					style: style });
 			}
-			return result.join("");
-		};
+		}]);
 
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
+		return Player;
+	}(_react.Component);
 
+	exports.default = Player;
 
 /***/ },
-/* 182 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,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"
-
-/***/ },
-/* 183 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,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"
-
-/***/ },
-/* 184 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
+	"use strict";
 
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Tile = function (_Component) {
+		_inherits(Tile, _Component);
+
+		function Tile(props) {
+			_classCallCheck(this, Tile);
+
+			return _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
 		}
 
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
+		_createClass(Tile, [{
+			key: "shouldComponentUpdate",
+			value: function shouldComponentUpdate(nextProps, nextState) {
+				if (this.props.style.top === nextProps.style.top && this.props.style.left === nextProps.style.left && this.props.style.color === nextProps.style.color) {
+					return false;
 				}
+				return true;
 			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}, {
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement("div", {
+					className: "tile " + this.props.char,
+					style: this.props.style });
 			}
-		}
-	}
+		}]);
 
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
+		return Tile;
+	}(_react.Component);
 
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
+	exports.default = Tile;
 
 /***/ }
 /******/ ]);
