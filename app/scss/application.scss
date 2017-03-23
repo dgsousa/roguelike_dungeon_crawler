@@ -28,6 +28,14 @@
 	padding-left: 10px;
 }
 
+.entity {
+	position: absolute;
+	z-index: 15;
+	width: 30px;
+	height: 30px;
+	background: red;
+}
+
 .player {
 	position: absolute;
 	z-index: 20;

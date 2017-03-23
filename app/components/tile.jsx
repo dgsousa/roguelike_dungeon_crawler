@@ -8,7 +8,7 @@ export default class Tile extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		if(this.props.style.top === nextProps.style.top && this.props.style.left === nextProps.style.left && this.props.style.color === nextProps.style.color) {
+		if(this.props.char === nextProps.char) {
 			return false;
 		}
 		return true;
