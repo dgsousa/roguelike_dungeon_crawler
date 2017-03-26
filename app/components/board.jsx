@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Player from "./player.jsx";
 import Tile from "./tile.jsx";
-import Entity from "./entity.jsx";
+import EntityComponent from "./entity.jsx";
 
 
 export default class Board extends Component {
@@ -22,21 +22,21 @@ export default class Board extends Component {
 	}
 
 
-	getEntities() {
-		let entities = this.props.entities.map((entity, i) => {
+	getEntityComponents() {
+		let entityComponents = this.props.entities.map((entity, i) => {
 			let style = {
 				top: entity.coords[1] * 30,
 				left: entity.coords[0] * 30
 			}
-			return (<Entity key={i} style={style}/>)
+			return (<EntityComponent key={i} style={style}/>)
 		})
-		return entities;
+		return entityComponents;
 	}
 
 
 	render() {
 		let tiles = this.getTiles();
-		let entities = this.getEntities();
+		let entityComponents = this.getEntityComponents();
 		let style = {
 			top: -this.props.coords[1] * 30,
 			left: -this.props.coords[0] * 30
@@ -48,7 +48,7 @@ export default class Board extends Component {
 				style={style}>
 				<Player 
 					player={this.props.player}/>
-				{entities}
+				{entityComponents}
 				{tiles}
 				
 			</div>

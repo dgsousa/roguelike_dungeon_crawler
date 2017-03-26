@@ -1,6 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import * as ROT from '../../bower_components/rot.js/rot.js';
 import Board from './board.jsx';
+import Entity from "./scripts/entity.js";
+import { playerTemplate, trooperTemplate } from "./scripts/entities.js";
+import * as Sprint from "sprintf-js";
 
 
 
@@ -11,14 +14,15 @@ export default class App extends Component {
 			map: [],
 			player: {},
 			entities: [],
-			coords: []
+			coords: [],
+			message: ''
 		}
 	};
 	
 	componentWillMount() {
 		this.scheduler = new ROT.Scheduler.Simple();
 		this.engine = new ROT.Engine(this.scheduler);
-		this.createMap();
+		this.setState(this.createGame());
 	};
 
 	
@@ -26,16 +30,14 @@ export default class App extends Component {
 		const map = this.state.map;
 		const i = this.props.width * y + x;
 		map[i] = true;
-		this.setState({
-			map: map
-		})
+		return map;
 	}
 	
 
-	createMap() {
+	createGame() {
 		const map = [];
 		let player;
-		let entities;
+		let stormTroopers;
 		const area = this.props.width * this.props.height;
 		for(let i = 0; i < area; i++) {
 			map.push([]);
@@ -50,18 +52,18 @@ export default class App extends Component {
 			v === 1 ? map[i] = true : map[i] = false;
 		});
 
-		player = this.generatePlayer(map);
-		entities = this.generateEntities(map);
+		player = this.generateEntity(map, playerTemplate);
+		stormTroopers = this.generateEntities(map, trooperTemplate, 10, [player]);
 
-		this.setState({
+		return {
 			map: map,
 			player: player,
-			entities: entities,
+			entities: [...stormTroopers],
 			coords: [
 				Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), 
 				Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))
 			]
-		})
+		}
 	};
 
 
@@ -80,68 +82,83 @@ export default class App extends Component {
 		} else if(e.keyCode === ROT.VK_RIGHT) {
 			this.scrollScreen(1, 0);
 		}
-		this.engine.unlock();
 	};
 
 
-	scrollScreen(x, y) {	
+	scrollScreen(x, y) {
 		const playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
 	 	const playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
 		const screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
+		const entity = this.entityAt(this.state.entities, [playerX, playerY]);
+		let state;
 		if(this.squareIsEmpty(playerX, playerY)) {
-			const coords = [screenX, screenY];
-			this.setState({
-				coords: coords,
-				player: {
-					...this.state.player,
-					coords: [playerX, playerY]
-				}
-			})
-		} else if(this.entityAt(this.state.entities, [playerX, playerY])) {
-			this.attack(this.entityAt(this.state.entities, [playerX, playerY]))
+			// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
+			const player = this.state.player;
+			player.coords = [playerX, playerY]
+			state = {
+				player: player,
+				coords: [screenX, screenY],
+				message: ''
+			}
+		} else if(entity) {
+			const message = this.state.player.attack(entity);
+			state = {
+				entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
+				message: message
+			}
 		} else {
-			this.dig(playerX, playerY);
+			state = {
+				map: this.dig(playerX, playerY),
+				message: ''
+			}
 		}
+		this.engine.unlock();
+		state = {...state, entities: state.entities || this.addMoreTroopers()}
+		this.setState(state);
 	}
 
-	squareIsEmpty(x, y) {
-		if(this.state.map[(y * this.props.width) + x] && !this.entityAt(this.state.entities, [x, y])) {
+	
+	squareIsEmpty(x, y, entities = this.state.entities, map = this.state.map) {
+		if  (map[(y * this.props.width) + x] && !this.entityAt(entities, [x, y])) {
 			return true;
 		}
 		return false;
 	}
 
 
-	initializeEntity(map) {
+	initializeEntity(entities, map) {
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * this.props.width);
 			y = Math.floor(Math.random() * this.props.height);
-		} while (!map[y * this.props.width + x]);
+		} while (!this.squareIsEmpty(x, y, entities, map));
 		return [x: x, y: y];
 	}
 
-	generateEntities(map) {
-		let entities = [];
-		do {
-			let entity = {}
-			entity["coords"] = this.initializeEntity(map);
-			entity["act"] = function() {};
-			if(!this.entityAt(entities, entity.coords)) {
-				entities.push(entity);
-				this.scheduler.add(entity, true);
-			}	
-		} while (entities.length < 20)
-		return entities;
+	generateEntities(map, template, num, existingEntities) {
+		let entities = [...existingEntities] || [];
+		for(let i = 0; i < num; i++) {
+			let entity = new Entity(template);
+			entity.coords = this.initializeEntity(entities, map);
+			entities.push(entity);
+			this.scheduler.add(entity, true);
+		}
+		return existingEntities ? entities.splice(existingEntities.length) : entities;
 	}
 
-	addEntity(entity) {
-		const entities = this.state.entities;
-		this.scheduler.add(entity);
-		entities.push(entity);
-		this.setState({entities: entities});
-
+	addMoreTroopers() {
+		let newTroopers = [];
+		for(let i = 0; i < this.state.entities.length; i++) {
+			let newTrooperCoords = this.state.entities[i]._newTrooperCoords;
+			if(newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
+				let newTrooper = new Entity(trooperTemplate)
+				newTrooper.coords = newTrooperCoords;
+				this.scheduler.add(newTrooper);
+				newTroopers.push(newTrooper);
+			}
+		}
+		return [...this.state.entities, ...newTroopers]
 	}
 
 	removeEntity(entity) {
@@ -153,23 +170,21 @@ export default class App extends Component {
 				break;
 			}
 		}
-		this.setState({entities: entities});
+		return entities;
 	}
 
 
-	generatePlayer(map) {
-		let player = {
-			coords: this.initializeEntity(map),
-			act: () => {
-				this.engine.lock();
-			}
-		}
-		this.scheduler.add(player, true);
-		return player;
+	generateEntity(map, template) {
+		let entity = new Entity(template);
+		entity.coords = this.initializeEntity([], map);
+		entity.engine = this.engine;
+		this.scheduler.add(entity, true);
+		return entity;
 	}
 
 
 	entityAt(entities, coords) {
+		if(!entities) return false;
 		for(let i = 0; i < entities.length; i++) {
 			if(entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
 				return entities[i];
@@ -177,15 +192,14 @@ export default class App extends Component {
 		}
 		return false;
 	}
-
-	attack(entity) {
-		return Math.random() >= .5 ? this.removeEntity(entity) : false;
-	}
-
 	
 	render() {
 		return (
 			<div>
+				<div 
+					className={'message'}>
+					{this.state.message}
+				</div>
 				<div 
 					className={'view'}
 					tabIndex={"0"}
@@ -200,6 +214,7 @@ export default class App extends Component {
 						coords={this.state.coords}>
 					</Board>
 				</div>
+
 			</div>
 			
 		)

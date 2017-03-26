@@ -4,11 +4,26 @@
 	margin: auto;
 }
 
+.message {
+	box-sizing: border-box;
+	height: 100px;
+	width: 750px;
+	margin: auto;
+	background: #B3B6BF;
+	color: red;
+	text-align: center;
+	padding-top: 32px;
+	font-size: 32px;
+}
+
 .view {
 	width: 750px;
 	height: 450px;
-	margin: 300px auto;
+	margin: auto;
 	overflow: hidden;	
+	&:focus {
+		outline: none;
+	}
 }
 
 .board {
@@ -33,7 +48,6 @@
 	z-index: 15;
 	width: 30px;
 	height: 30px;
-	background: red;
 }
 
 .player {
@@ -46,21 +60,23 @@
 
 .yoda {
 	display:inline-block;
-	width: 30px;
-	height: 30px;
 	background:url('yoda.png') no-repeat;
 	background-position: 0 0px;
 }
 
 .chewy {
 	display:inline-block;
-	width: 30px;
-	height: 30px;
 	background: url('chewy.png') no-repeat;
 	background-color: black;
 	background-position: 5px 0px;
 }
 
+.trooper {
+	display:inline-block;
+	background: url('trooper.png') no-repeat;
+	background-color: black;
+	background-position: 0px -3px;
+}
 
 
 

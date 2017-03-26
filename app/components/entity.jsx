@@ -1,16 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 
 
-export default class Entity extends Component {
+export default class EntityComponent extends Component {
 	constructor(props) {
 		super(props)
 	}
 
 	render() {
-		//console.log('test');
 		return (
 			<div
-				className={"entity"}
+				className={"entity trooper"}
 				style={this.props.style}>
 				
 			</div>
