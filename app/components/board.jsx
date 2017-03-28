@@ -10,13 +10,25 @@ export default class Board extends Component {
 	}
 
 	getTiles() {
-		let tiles = this.props.map.map((tile, i)=> {
-			let char = tile ? '' : 'chewy'
-			let style = {
-				top: Math.floor(i/this.props.width) * 30,
-				left: (i % this.props.width) * 30
-			}
-			return (<Tile key={i} style={style} char={char}/>) 	
+		let chars = {
+			'0': 'chewy',
+			'1': '',
+			'2': 'red'
+		};
+		let tiles = this.props.map.map((col, x) => {
+			return col.map((tile, y) => {
+				let char = chars[tile];
+				let style = {
+					top: y * 30,
+					left: x * 30
+				}
+				return (
+					<Tile 
+						key = {y * this.props.width + x}
+						style = {style}
+						char = {char} />
+				)
+			})
 		})
 		return tiles;
 	}

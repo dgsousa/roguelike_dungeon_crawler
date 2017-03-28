@@ -59,20 +59,25 @@
 }
 
 .yoda {
-	display:inline-block;
 	background:url('yoda.png') no-repeat;
 	background-position: 0 0px;
 }
 
 .chewy {
-	display:inline-block;
 	background: url('chewy.png') no-repeat;
 	background-color: black;
 	background-position: 5px 0px;
 }
 
+.red {
+	background: red;
+}
+
+.blue {
+	background: blue;
+}
+
 .trooper {
-	display:inline-block;
 	background: url('trooper.png') no-repeat;
 	background-color: black;
 	background-position: 0px -3px;

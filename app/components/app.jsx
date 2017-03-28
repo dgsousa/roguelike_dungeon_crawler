@@ -3,6 +3,7 @@ import * as ROT from '../../bower_components/rot.js/rot.js';
 import Board from './board.jsx';
 import Entity from "./scripts/entity.js";
 import { playerTemplate, trooperTemplate } from "./scripts/entities.js";
+import World from "./scripts/world.js";
 import * as Sprint from "sprintf-js";
 
 
@@ -15,7 +16,8 @@ export default class App extends Component {
 			player: {},
 			entities: [],
 			coords: [],
-			message: ''
+			message: '',
+			floor: 0
 		}
 	};
 	
@@ -28,34 +30,21 @@ export default class App extends Component {
 	
 	dig(x, y) {
 		const map = this.state.map;
-		const i = this.props.width * y + x;
-		map[i] = true;
+		map[x][y] = true;
 		return map;
 	}
 	
 
 	createGame() {
-		const map = [];
+		const world = new World(this.props.width, this.props.height, this.props.depth);
+		const map = world.tiles[this.state.floor];
 		let player;
 		let stormTroopers;
-		const area = this.props.width * this.props.height;
-		for(let i = 0; i < area; i++) {
-			map.push([]);
-		}
-		const generator = new ROT.Map.Cellular(this.props.width, this.props.height);
-		generator.randomize(.52);
-		for(let i = 0; i < 10 ; i++) {
-			generator.create();
-		}		
-		generator.create((x,y,v) => {
-			const i = y * this.props.width + x;
-			v === 1 ? map[i] = true : map[i] = false;
-		});
-
 		player = this.generateEntity(map, playerTemplate);
-		stormTroopers = this.generateEntities(map, trooperTemplate, 10, [player]);
+		stormTroopers = this.generateEntities(map, trooperTemplate, 15, [player]);
 
 		return {
+			world: world,
 			map: map,
 			player: player,
 			entities: [...stormTroopers],
@@ -95,12 +84,18 @@ export default class App extends Component {
 		if(this.squareIsEmpty(playerX, playerY)) {
 			// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
 			const player = this.state.player;
-			player.coords = [playerX, playerY]
+			player.coords = [playerX, playerY];
 			state = {
 				player: player,
 				coords: [screenX, screenY],
 				message: ''
 			}
+			if(this.state.map[playerX][playerY] == 2) {
+				state.floor = this.state.floor + 1;
+				state.map = this.state.world.tiles[state.floor];
+				state.entities = this.generateEntities(state.map, trooperTemplate, 5, [player]);
+				state.message = 'You entered the next level!';
+			}	
 		} else if(entity) {
 			const message = this.state.player.attack(entity);
 			state = {
@@ -120,7 +115,7 @@ export default class App extends Component {
 
 	
 	squareIsEmpty(x, y, entities = this.state.entities, map = this.state.map) {
-		if  (map[(y * this.props.width) + x] && !this.entityAt(entities, [x, y])) {
+		if  (map[x][y] && !this.entityAt(entities, [x, y])) {
 			return true;
 		}
 		return false;
@@ -136,6 +131,7 @@ export default class App extends Component {
 		return [x: x, y: y];
 	}
 
+
 	generateEntities(map, template, num, existingEntities) {
 		let entities = [...existingEntities] || [];
 		for(let i = 0; i < num; i++) {
@@ -146,6 +142,7 @@ export default class App extends Component {
 		}
 		return existingEntities ? entities.splice(existingEntities.length) : entities;
 	}
+
 
 	addMoreTroopers() {
 		let newTroopers = [];
@@ -160,6 +157,7 @@ export default class App extends Component {
 		}
 		return [...this.state.entities, ...newTroopers]
 	}
+
 
 	removeEntity(entity) {
 		const entities = this.state.entities;

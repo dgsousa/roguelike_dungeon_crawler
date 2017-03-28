@@ -4,6 +4,6 @@ import './scss/application.scss';
 import App from './components/app.jsx';
 
 
-ReactDOM.render(<App width={50} height={50}/>, document.getElementById('app'));
+ReactDOM.render(<App width={50} height={50} depth={4}/>, document.getElementById('app'));
 
 
