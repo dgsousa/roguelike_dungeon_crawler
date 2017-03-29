@@ -8,6 +8,10 @@ export default class World {
 		this._depth = depth;
 		this._tiles = new Array(depth);
 		this._regions = new Array(depth);
+		//this._exporedTiles = new Array(depth);
+		this._fov = [];
+		this.setupFov();
+		
 		for(let z = 0; z < this._depth; z++) {
 			this._tiles[z] = this.generateLevel(this._width, this._height);
 			this._regions[z] = new Array(this._width);
@@ -15,6 +19,7 @@ export default class World {
 				this._regions[z][x] = new Array(this._height);
 			}
 		}
+
 		for(let z = 0; z < this._depth; z++) {
 			this.setUpRegions(z);
 		}
@@ -102,7 +107,7 @@ export default class World {
 			for(let y = 0; y < this._height; y++) {
 				if(this._regions[z][x][y] == region) {
 					this._regions[z][x][y] == 0;
-					this._tiles[z][x][y] == false;
+					this._tiles[z][x][y] == 0;
 				}
 			}
 		}
@@ -143,6 +148,20 @@ export default class World {
 				}
 			}
 		}
+	}
+
+	setupFov() {
+		for(let z = 0; z < this._depth; z++) {
+			this._fov.push(new ROT.FOV.PreciseShadowcasting((x, y) => {
+				if(x >= 0 && x < this._width && y >= 0 && y <= this._height) {
+					return this._tiles[z][x][y];
+				}
+			}, {topology: 4}))
+		}
+	}
+
+	get fov() {
+		return this._fov;
 	}
 
 	get tiles() {

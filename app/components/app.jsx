@@ -17,7 +17,10 @@ export default class App extends Component {
 			entities: [],
 			coords: [],
 			message: '',
-			floor: 0
+			floor: 0,
+			fov: null,
+			visibleCells: {},
+			exploredCells: {}
 		}
 	};
 	
@@ -38,10 +41,13 @@ export default class App extends Component {
 	createGame() {
 		const world = new World(this.props.width, this.props.height, this.props.depth);
 		const map = world.tiles[this.state.floor];
-		let player;
-		let stormTroopers;
-		player = this.generateEntity(map, playerTemplate);
-		stormTroopers = this.generateEntities(map, trooperTemplate, 15, [player]);
+		const fov = world.fov[this.state.floor];
+		const exploredCells = {};
+		const player = this.generateEntity(map, playerTemplate);
+		const stormTroopers = this.generateEntities(map, trooperTemplate, 15, [player]);
+		fov.compute(player.coords[0], player.coords[1], 3, (fovX, fovY, radius, visibility) => {
+			exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
+		})
 
 		return {
 			world: world,
@@ -51,7 +57,9 @@ export default class App extends Component {
 			coords: [
 				Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), 
 				Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))
-			]
+			],
+			fov: fov,
+			exploredCells: exploredCells
 		}
 	};
 
@@ -59,16 +67,18 @@ export default class App extends Component {
 
 	scroll(e) {
 		e.preventDefault();
-		if(e.keyCode === ROT.VK_UP) {
+		console.log(e.keyCode);
+		if(e.keyCode === ROT.VK_I) {
 			this.scrollScreen(0, -1);
 					
-		} else if(e.keyCode === ROT.VK_DOWN) {
+		} else if(e.keyCode === ROT.VK_M) {
+			console.log('test');
 			this.scrollScreen(0, 1);	
 			
-		} else if(e.keyCode === ROT.VK_LEFT) {
+		} else if(e.keyCode === ROT.VK_J) {
 			this.scrollScreen(-1, 0);
 			
-		} else if(e.keyCode === ROT.VK_RIGHT) {
+		} else if(e.keyCode === ROT.VK_K) {
 			this.scrollScreen(1, 0);
 		}
 	};
@@ -81,31 +91,42 @@ export default class App extends Component {
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
 		const entity = this.entityAt(this.state.entities, [playerX, playerY]);
 		let state;
+		const exploredCells = this.state.exploredCells;
+		let fov = this.state.fov;
 		if(this.squareIsEmpty(playerX, playerY)) {
 			// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
 			const player = this.state.player;
 			player.coords = [playerX, playerY];
+			fov.compute(playerX, playerY, 3, (fovX, fovY, radius, visibility) => {
+				exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
+			})	
 			state = {
 				player: player,
 				coords: [screenX, screenY],
-				message: ''
+				message: '',
+				exploredCells: exploredCells
 			}
 			if(this.state.map[playerX][playerY] == 2) {
 				state.floor = this.state.floor + 1;
+				fov.compute(playerX, playerY, 3, (fovX, fovY, radius, visiblitiy) => {
+					exploredCells[fovX + ',' + fovY + ',' + state.floor] = true;
+				})
 				state.map = this.state.world.tiles[state.floor];
-				state.entities = this.generateEntities(state.map, trooperTemplate, 5, [player]);
-				state.message = 'You entered the next level!';
+				state.message = 'Enter the next level, you have.';
+				state.fov = this.state.world.fov[state.floor];
+				state.entities = this.generateEntities(this.state.map, trooperTemplate, 5, [player]);
+				state.exploredCells = exploredCells;
 			}	
 		} else if(entity) {
-			const message = this.state.player.attack(entity);
 			state = {
+				message: this.state.player.attack(entity),
 				entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
-				message: message
+				
 			}
 		} else {
 			state = {
 				map: this.dig(playerX, playerY),
-				message: ''
+				message: 'Do or do not. There is no try'
 			}
 		}
 		this.engine.unlock();
@@ -209,7 +230,9 @@ export default class App extends Component {
 						height={this.props.height}
 						player={this.state.player}
 						entities={this.state.entities}
-						coords={this.state.coords}>
+						coords={this.state.coords}
+						exploredCells={this.state.exploredCells}
+						floor={this.state.floor}>
 					</Board>
 				</div>
 

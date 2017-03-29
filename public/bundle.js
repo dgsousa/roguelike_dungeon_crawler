@@ -56,13 +56,13 @@
 
 	__webpack_require__(178);
 
-	var _app = __webpack_require__(184);
+	var _app = __webpack_require__(185);
 
 	var _app2 = _interopRequireDefault(_app);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	_reactDom2.default.render(_react2.default.createElement(_app2.default, { width: 50, height: 50 }), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(_app2.default, { width: 50, height: 50, depth: 4 }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21550,7 +21550,7 @@
 	var content = __webpack_require__(179);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(183)(content, {});
+	var update = __webpack_require__(184)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21575,7 +21575,7 @@
 
 
 	// module
-	exports.push([module.id, "#app {\n  margin: auto; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: 300px auto;\n  overflow: hidden; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px;\n  background: red; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  display: inline-block;\n  width: 30px;\n  height: 30px;\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n", ""]);
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.message {\n  box-sizing: border-box;\n  height: 100px;\n  width: 750px;\n  margin: auto;\n  background: #B3B6BF;\n  color: red;\n  text-align: center;\n  padding-top: 32px;\n  font-size: 32px; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: auto;\n  overflow: hidden; }\n  .view:focus {\n    outline: none; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n\n.red {\n  background: red; }\n\n.blue {\n  background: blue; }\n\n.trooper {\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 0px -3px; }\n", ""]);
 
 	// exports
 
@@ -21649,6 +21649,12 @@
 
 /***/ },
 /* 183 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -21900,7 +21906,7 @@
 
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21917,25 +21923,33 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _rot = __webpack_require__(185);
+	var _rot = __webpack_require__(186);
 
 	var ROT = _interopRequireWildcard(_rot);
 
-	var _board = __webpack_require__(186);
+	var _board = __webpack_require__(187);
 
 	var _board2 = _interopRequireDefault(_board);
 
-	var _entity = __webpack_require__(190);
+	var _entity = __webpack_require__(191);
 
 	var _entity2 = _interopRequireDefault(_entity);
 
-	var _entities = __webpack_require__(191);
+	var _entities = __webpack_require__(192);
 
-	var _entities2 = _interopRequireDefault(_entities);
+	var _world = __webpack_require__(193);
+
+	var _world2 = _interopRequireDefault(_world);
+
+	var _sprintfJs = __webpack_require__(194);
+
+	var Sprint = _interopRequireWildcard(_sprintfJs);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -21955,7 +21969,11 @@
 				map: [],
 				player: {},
 				entities: [],
-				coords: []
+				coords: [],
+				message: '',
+				floor: 0,
+				fov: null,
+				visibleCells: {}
 			};
 			return _this;
 		}
@@ -21965,49 +21983,34 @@
 			value: function componentWillMount() {
 				this.scheduler = new ROT.Scheduler.Simple();
 				this.engine = new ROT.Engine(this.scheduler);
-				this.createMap();
+				this.setState(this.createGame());
 			}
 		}, {
 			key: 'dig',
 			value: function dig(x, y) {
 				var map = this.state.map;
-				var i = this.props.width * y + x;
-				map[i] = true;
-				this.setState({
-					map: map
-				});
+				map[x][y] = true;
+				return map;
 			}
 		}, {
-			key: 'createMap',
-			value: function createMap() {
-				var _this2 = this;
-
-				var map = [];
+			key: 'createGame',
+			value: function createGame() {
+				var world = new _world2.default(this.props.width, this.props.height, this.props.depth);
+				var map = world.tiles[this.state.floor];
+				var fov = world._fov[this.state.floor];
 				var player = void 0;
-				var entities = void 0;
-				var area = this.props.width * this.props.height;
-				for (var i = 0; i < area; i++) {
-					map.push([]);
-				}
-				var generator = new ROT.Map.Cellular(this.props.width, this.props.height);
-				generator.randomize(.52);
-				for (var _i = 0; _i < 10; _i++) {
-					generator.create();
-				}
-				generator.create(function (x, y, v) {
-					var i = y * _this2.props.width + x;
-					v === 1 ? map[i] = true : map[i] = false;
-				});
+				var stormTroopers = void 0;
+				player = this.generateEntity(map, _entities.playerTemplate);
+				stormTroopers = this.generateEntities(map, _entities.trooperTemplate, 15, [player]);
 
-				player = this.generatePlayer(map);
-				entities = this.generateEntities(map);
-
-				this.setState({
+				return {
+					world: world,
 					map: map,
 					player: player,
-					entities: entities,
-					coords: [Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))]
-				});
+					entities: [].concat(_toConsumableArray(stormTroopers)),
+					coords: [Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))],
+					fov: fov
+				};
 			}
 		}, {
 			key: 'scroll',
@@ -22022,7 +22025,6 @@
 				} else if (e.keyCode === ROT.VK_RIGHT) {
 					this.scrollScreen(1, 0);
 				}
-				this.engine.unlock();
 			}
 		}, {
 			key: 'scrollScreen',
@@ -22031,61 +22033,92 @@
 				var playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
 				var screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
 				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
+				var entity = this.entityAt(this.state.entities, [playerX, playerY]);
+				var state = void 0;
+				var visibleCells = {};
+				var fov = this.state.fov;
 				if (this.squareIsEmpty(playerX, playerY)) {
-					var coords = [screenX, screenY];
-					this.setState({
-						coords: coords,
-						player: _extends({}, this.state.player, {
-							coords: [playerX, playerY]
-						})
-					});
-				} else if (this.entityAt(this.state.entities, [playerX, playerY])) {
-					this.attack(this.entityAt(this.state.entities, [playerX, playerY]));
+					// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
+					var player = this.state.player;
+					player.coords = [playerX, playerY];
+					state = {
+						player: player,
+						coords: [screenX, screenY],
+						message: ''
+					};
+					if (this.state.map[playerX][playerY] == 2) {
+						state.floor = this.state.floor + 1;
+						state.map = this.state.world.tiles[state.floor];
+						state.entities = this.generateEntities(state.map, _entities.trooperTemplate, 5, [player]);
+						state.message = 'You entered the next level!';
+					}
+				} else if (entity) {
+					var message = this.state.player.attack(entity);
+					state = {
+						entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
+						message: message
+					};
 				} else {
-					this.dig(playerX, playerY);
+					state = {
+						map: this.dig(playerX, playerY),
+						message: ''
+					};
 				}
+				fov.compute(1, 2, 3, function (x, y, radius, visibility) {
+					console.log(radius);
+				});
+				this.engine.unlock();
+				state = _extends({}, state, { entities: state.entities || this.addMoreTroopers() });
+				this.setState(state);
 			}
 		}, {
 			key: 'squareIsEmpty',
 			value: function squareIsEmpty(x, y) {
-				if (this.state.map[y * this.props.width + x] && !this.entityAt(this.state.entities, [x, y])) {
+				var entities = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.state.entities;
+				var map = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state.map;
+
+				if (map[x][y] && !this.entityAt(entities, [x, y])) {
 					return true;
 				}
 				return false;
 			}
 		}, {
 			key: 'initializeEntity',
-			value: function initializeEntity(map) {
+			value: function initializeEntity(entities, map) {
 				var x = void 0,
 				    y = void 0;
 				do {
 					x = Math.floor(Math.random() * this.props.width);
 					y = Math.floor(Math.random() * this.props.height);
-				} while (!map[y * this.props.width + x]);
+				} while (!this.squareIsEmpty(x, y, entities, map));
 				return [x, y];
 			}
 		}, {
 			key: 'generateEntities',
-			value: function generateEntities(map) {
-				var entities = [];
-				do {
-					var entity = {};
-					entity["coords"] = this.initializeEntity(map);
-					entity["act"] = function () {};
-					if (!this.entityAt(entities, entity.coords)) {
-						entities.push(entity);
-						this.scheduler.add(entity, true);
-					}
-				} while (entities.length < 20);
-				return entities;
+			value: function generateEntities(map, template, num, existingEntities) {
+				var entities = [].concat(_toConsumableArray(existingEntities)) || [];
+				for (var i = 0; i < num; i++) {
+					var entity = new _entity2.default(template);
+					entity.coords = this.initializeEntity(entities, map);
+					entities.push(entity);
+					this.scheduler.add(entity, true);
+				}
+				return existingEntities ? entities.splice(existingEntities.length) : entities;
 			}
 		}, {
-			key: 'addEntity',
-			value: function addEntity(entity) {
-				var entities = this.state.entities;
-				this.scheduler.add(entity);
-				entities.push(entity);
-				this.setState({ entities: entities });
+			key: 'addMoreTroopers',
+			value: function addMoreTroopers() {
+				var newTroopers = [];
+				for (var i = 0; i < this.state.entities.length; i++) {
+					var newTrooperCoords = this.state.entities[i]._newTrooperCoords;
+					if (newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
+						var newTrooper = new _entity2.default(_entities.trooperTemplate);
+						newTrooper.coords = newTrooperCoords;
+						this.scheduler.add(newTrooper);
+						newTroopers.push(newTrooper);
+					}
+				}
+				return [].concat(_toConsumableArray(this.state.entities), newTroopers);
 			}
 		}, {
 			key: 'removeEntity',
@@ -22098,19 +22131,21 @@
 						break;
 					}
 				}
-				this.setState({ entities: entities });
+				return entities;
 			}
 		}, {
-			key: 'generatePlayer',
-			value: function generatePlayer(map) {
-				var player = new _entity2.default(playerTemplate);
-				player.coords = this.initializeEntity(map);
-				this.scheduler.add(player, true);
-				return player;
+			key: 'generateEntity',
+			value: function generateEntity(map, template) {
+				var entity = new _entity2.default(template);
+				entity.coords = this.initializeEntity([], map);
+				entity.engine = this.engine;
+				this.scheduler.add(entity, true);
+				return entity;
 			}
 		}, {
 			key: 'entityAt',
 			value: function entityAt(entities, coords) {
+				if (!entities) return false;
 				for (var i = 0; i < entities.length; i++) {
 					if (entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
 						return entities[i];
@@ -22119,16 +22154,17 @@
 				return false;
 			}
 		}, {
-			key: 'attack',
-			value: function attack(entity) {
-				return Math.random() >= .5 ? this.removeEntity(entity) : false;
-			}
-		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
 					null,
+					_react2.default.createElement(
+						'div',
+						{
+							className: 'message' },
+						this.state.message
+					),
 					_react2.default.createElement(
 						'div',
 						{
@@ -22153,7 +22189,7 @@
 	exports.default = App;
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -27756,7 +27792,7 @@
 	module.exports = ROT;
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27771,15 +27807,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _player = __webpack_require__(187);
+	var _player = __webpack_require__(188);
 
 	var _player2 = _interopRequireDefault(_player);
 
-	var _tile = __webpack_require__(188);
+	var _tile = __webpack_require__(189);
 
 	var _tile2 = _interopRequireDefault(_tile);
 
-	var _entity = __webpack_require__(189);
+	var _entity = __webpack_require__(190);
 
 	var _entity2 = _interopRequireDefault(_entity);
 
@@ -27805,13 +27841,23 @@
 			value: function getTiles() {
 				var _this2 = this;
 
-				var tiles = this.props.map.map(function (tile, i) {
-					var char = tile ? '' : 'chewy';
-					var style = {
-						top: Math.floor(i / _this2.props.width) * 30,
-						left: i % _this2.props.width * 30
-					};
-					return _react2.default.createElement(_tile2.default, { key: i, style: style, char: char });
+				var chars = {
+					'0': 'chewy',
+					'1': '',
+					'2': 'red'
+				};
+				var tiles = this.props.map.map(function (col, x) {
+					return col.map(function (tile, y) {
+						var char = chars[tile];
+						var style = {
+							top: y * 30,
+							left: x * 30
+						};
+						return _react2.default.createElement(_tile2.default, {
+							key: y * _this2.props.width + x,
+							style: style,
+							char: char });
+					});
 				});
 				return tiles;
 			}
@@ -27856,7 +27902,7 @@
 	exports.default = Board;
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27907,7 +27953,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27962,7 +28008,7 @@
 	exports.default = Tile;
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27997,9 +28043,8 @@
 		_createClass(EntityComponent, [{
 			key: "render",
 			value: function render() {
-				//console.log('test');
 				return _react2.default.createElement("div", {
-					className: "entity",
+					className: "entity trooper",
 					style: this.props.style });
 			}
 		}]);
@@ -28010,7 +28055,7 @@
 	exports.default = EntityComponent;
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -28027,13 +28072,15 @@
 		function Entity(properties) {
 			_classCallCheck(this, Entity);
 
-			this.properties = properties;
+			this.x;
+			this.y;
+			this.coords = [];
 			this.attachedMixins = {};
 			this.attachedMixinGroups = {};
 			var mixins = properties["mixins"] || [];
 			for (var i = 0; i < mixins.length; i++) {
 				for (var key in mixins[i]) {
-					if (key != "name" && key != "groupName" && !this.hasOwnProperty(key)) {
+					if (key != "name" && key != "init" && !this.hasOwnProperty(key)) {
 						this[key] = mixins[i][key];
 					}
 				}
@@ -28041,16 +28088,38 @@
 				if (mixins[i]["groupName"]) {
 					this.attachedMixinGroups[mixins[i]["groupName"]] = true;
 				}
+				if (mixins[i]["init"]) {
+					mixins[i].init.call(this, properties);
+				}
 			}
 		}
 
 		_createClass(Entity, [{
+			key: "hasMixin",
+			value: function hasMixin(mixin) {
+				for (var key in this.attachedMixins) {
+					if (key === mixin) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}, {
 			key: "coords",
 			get: function get() {
-				return this.coords;
+				return [this.x, this.y];
 			},
-			set: function set(coords) {
-				this.coords = coords;
+			set: function set(coordinates) {
+				this.x = coordinates[0];
+				this.y = coordinates[1];
+			}
+		}, {
+			key: "engine",
+			get: function get() {
+				return this._engine;
+			},
+			set: function set(engine) {
+				this._engine = engine;
 			}
 		}]);
 
@@ -28060,7 +28129,7 @@
 	exports.default = Entity;
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -28069,18 +28138,516 @@
 		value: true
 	});
 
-
 	var playerActor = {
 		name: "PlayerActor",
 		groupName: "Actor",
 		act: function act() {
-			undefined.engine.lock();
+			this._engine.lock();
+		}
+	};
+
+	var trooperActor = {
+		name: "TrooperActor",
+		groupName: "Actor",
+		init: function init(template) {
+			this._newTrooperCoords = false;
+			this._name = 'storm trooper';
+		},
+		act: function act() {
+			if (Math.random() < .01) {
+				var xOffset = Math.floor(Math.random() * 3) - 1;
+				var yOffset = Math.floor(Math.random() * 3) - 1;
+				this._newTrooperCoords = [this.x + xOffset, this.y + yOffset];
+			} else {
+				this._newTrooperCoords = false;
+			}
+		}
+	};
+
+	var destructible = {
+		name: "Destructible",
+		init: function init(template) {
+			this._maxHp = template._maxHp || 10;
+			this._hp = template._hp || this._maxHp;
+			this._defenseValue = template._defenseValue || 0;
+		},
+		takeDamage: function takeDamage(attacker, damage) {
+			this._hp -= damage;
+		},
+		getMaxHp: function getMaxHp() {
+			return this._maxHp;
+		},
+		getHp: function getHp() {
+			return this._hp;
+		},
+		getDefenseValue: function getDefenseValue() {
+			return this._defenseValue;
+		}
+	};
+
+	var attacker = {
+		name: "Attacker",
+		init: function init(template) {
+			this._attackValue = template._attackValue || 10;
+		},
+		attack: function attack(entity) {
+			if (entity.hasMixin('Destructible')) {
+				var attack = this.getAttackValue();
+				var defense = entity.getDefenseValue();
+				var damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
+				entity.takeDamage(this, damage);
+				return entity._hp > 0 ? "You attacked the " + entity._name + " for " + damage + " damage" : "You defeated the " + entity._name;
+			}
+		},
+		getAttackValue: function getAttackValue() {
+			return this._attackValue;
 		}
 	};
 
 	var playerTemplate = exports.playerTemplate = {
-		mixins: [playerActor]
+		_attackValue: 15,
+		_defenseValue: 20,
+		_maxHp: 20,
+		mixins: [playerActor, attacker]
 	};
+
+	var trooperTemplate = exports.trooperTemplate = {
+		_attackValue: 5,
+		_defenseValue: 10,
+		_maxHp: 5,
+		mixins: [trooperActor, destructible]
+	};
+
+/***/ },
+/* 193 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _rot = __webpack_require__(186);
+
+	var ROT = _interopRequireWildcard(_rot);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var World = function () {
+		function World(width, height, depth) {
+			_classCallCheck(this, World);
+
+			this._width = width;
+			this._height = height;
+			this._depth = depth;
+			this._tiles = new Array(depth);
+			this._regions = new Array(depth);
+			this._fov = [];
+			this.setupFov();
+
+			for (var z = 0; z < this._depth; z++) {
+				this._tiles[z] = this.generateLevel(this._width, this._height);
+				this._regions[z] = new Array(this._width);
+				for (var x = 0; x < this._width; x++) {
+					this._regions[z][x] = new Array(this._height);
+				}
+			}
+			for (var _z = 0; _z < this._depth; _z++) {
+				this.setUpRegions(_z);
+			}
+			this.connectAllRegions();
+		}
+
+		_createClass(World, [{
+			key: 'generateLevel',
+			value: function generateLevel(width, height) {
+				var level = new Array(width);
+				for (var x = 0; x < width; x++) {
+					level[x] = new Array(height);
+				}
+				var generator = new ROT.Map.Cellular(this._width, this._height);
+				generator.randomize(.5);
+				for (var i = 0; i < 5; i++) {
+					generator.create();
+				}
+				generator.create(function (x, y, v) {
+					v === 1 ? level[x][y] = 1 : level[x][y] = 0;
+				});
+				return level;
+			}
+		}, {
+			key: 'canFillRegion',
+			value: function canFillRegion(x, y, z) {
+				if (x < 0 || x > this._width || y < 0 || y > this._height || z < 0 || z > this._depth) {
+					return false;
+				} else if (this._regions[z][x][y] != 0) {
+					return false;
+				} else {
+					return this._tiles[z][x][y];
+				}
+			}
+		}, {
+			key: 'fillRegion',
+			value: function fillRegion(region, x, y, z) {
+				var tilesFilled = 1;
+				var tiles = [{ x: x, y: y }];
+				var tile = void 0;
+				var neighbors = void 0;
+				this._regions[z][x][y] = region;
+
+				while (tiles.length > 0) {
+					tile = tiles.pop();
+					neighbors = this.getNeighbors(tile.x, tile.y);
+					while (neighbors.length > 0) {
+						if (this.canFillRegion(tile.x, tile.y, z)) {
+							this._regions[z][tile.x][tile.y] = region;
+							tiles.push(tile);
+							tilesFilled++;
+						}
+					}
+				}
+				return tilesFilled;
+			}
+		}, {
+			key: 'getNeighbors',
+			value: function getNeighbors(x, y) {
+				var tiles = [];
+				for (var dX = -1; dX < 2; dX++) {
+					for (var dY = -1; dY < 2; dY++) {
+						if (dX === 0 && dY === 0) continue;
+						tiles.push({ x: x + dX, y: y + dY });
+					}
+				}
+				return tiles.randomize();
+			}
+		}, {
+			key: 'setUpRegions',
+			value: function setUpRegions(z) {
+				var region = 1;
+				var tilesFilled = void 0;
+				for (var x = 0; x < this._width; x++) {
+					for (var y = 0; y < this._height; y++) {
+						if (this.canFillRegion(x, y, z)) {
+							tilesFilled = this.fillRegion(region, x, y, z);
+							if (tilesFilled < 20) {
+								this.removeRegion(region, z);
+							} else {
+								region++;
+							}
+						}
+					}
+				}
+			}
+		}, {
+			key: 'removeRegion',
+			value: function removeRegion(region, z) {
+				for (var x = 0; x < this._width; x++) {
+					for (var y = 0; y < this._height; y++) {
+						if (this._regions[z][x][y] == region) {
+							this._regions[z][x][y] == 0;
+							this._tiles[z][x][y] == false;
+						}
+					}
+				}
+			}
+		}, {
+			key: 'findRegionOverlaps',
+			value: function findRegionOverlaps(z, r1, r2) {
+				var matches = [];
+				for (var x = 0; x < this._width; x++) {
+					for (var y = 0; y < this._height; y++) {
+						if (this._tiles[z][x][y] && this._tiles[z + 1][x][y] && this._regions[z][x][y] == r1 && this._regions[z][x][y] == r2) {
+							matches.push({ x: x, y: y });
+						}
+					}
+				}
+				return matches;
+			}
+		}, {
+			key: 'connectRegions',
+			value: function connectRegions(z, r1, r2) {
+				var overlaps = this.findRegionOverlaps(z, r1, r2);
+				if (overlaps.length == 0) return false;
+				var point = overlaps[0];
+				this._tiles[z][point.x][point.y] = 2;
+				//this._tiles[z + 1][point.x][point.y] = 3;
+				return true;
+			}
+		}, {
+			key: 'connectAllRegions',
+			value: function connectAllRegions() {
+				for (var z = 0; z < this._depth - 1; z++) {
+					var connected = {};
+					var key = void 0;
+					for (var x = 0; x < this._width; x++) {
+						for (var y = 0; y < this._height; y++) {
+							key = this._regions[z][x][y] + ',' + this._regions[z + 1][x][y];
+							if (this._tiles[z][x][y] && this._tiles[z + 1][x][y] && !connected[key]) {
+								connected[key] = this.connectRegions(z, this._regions[z][x][y], this._regions[z + 1][x][y]);
+							}
+						}
+					}
+				}
+			}
+		}, {
+			key: 'setupFov',
+			value: function setupFov() {
+				var _this = this;
+
+				var _loop = function _loop(z) {
+					_this._fov.push(new ROT.FOV.DiscreteShadowcasting(function (x, y) {
+						return _this._tiles[z][x][y];
+					}, { topology: 4 }));
+				};
+
+				for (var z = 0; z < this._depth; z++) {
+					_loop(z);
+				}
+			}
+		}, {
+			key: 'fov',
+			get: function get() {
+				return this._fov;
+			}
+		}, {
+			key: 'tiles',
+			get: function get() {
+				return this._tiles;
+			}
+		}]);
+
+		return World;
+	}();
+
+	exports.default = World;
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	(function (window) {
+	    var re = {
+	        not_string: /[^s]/,
+	        number: /[diefg]/,
+	        json: /[j]/,
+	        not_json: /[^j]/,
+	        text: /^[^\x25]+/,
+	        modulo: /^\x25{2}/,
+	        placeholder: /^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijosuxX])/,
+	        key: /^([a-z_][a-z_\d]*)/i,
+	        key_access: /^\.([a-z_][a-z_\d]*)/i,
+	        index_access: /^\[(\d+)\]/,
+	        sign: /^[\+\-]/
+	    };
+
+	    function sprintf() {
+	        var key = arguments[0],
+	            cache = sprintf.cache;
+	        if (!(cache[key] && cache.hasOwnProperty(key))) {
+	            cache[key] = sprintf.parse(key);
+	        }
+	        return sprintf.format.call(null, cache[key], arguments);
+	    }
+
+	    sprintf.format = function (parse_tree, argv) {
+	        var cursor = 1,
+	            tree_length = parse_tree.length,
+	            node_type = "",
+	            arg,
+	            output = [],
+	            i,
+	            k,
+	            match,
+	            pad,
+	            pad_character,
+	            pad_length,
+	            is_positive = true,
+	            sign = "";
+	        for (i = 0; i < tree_length; i++) {
+	            node_type = get_type(parse_tree[i]);
+	            if (node_type === "string") {
+	                output[output.length] = parse_tree[i];
+	            } else if (node_type === "array") {
+	                match = parse_tree[i]; // convenience purposes only
+	                if (match[2]) {
+	                    // keyword argument
+	                    arg = argv[cursor];
+	                    for (k = 0; k < match[2].length; k++) {
+	                        if (!arg.hasOwnProperty(match[2][k])) {
+	                            throw new Error(sprintf("[sprintf] property '%s' does not exist", match[2][k]));
+	                        }
+	                        arg = arg[match[2][k]];
+	                    }
+	                } else if (match[1]) {
+	                    // positional argument (explicit)
+	                    arg = argv[match[1]];
+	                } else {
+	                    // positional argument (implicit)
+	                    arg = argv[cursor++];
+	                }
+
+	                if (get_type(arg) == "function") {
+	                    arg = arg();
+	                }
+
+	                if (re.not_string.test(match[8]) && re.not_json.test(match[8]) && get_type(arg) != "number" && isNaN(arg)) {
+	                    throw new TypeError(sprintf("[sprintf] expecting number but found %s", get_type(arg)));
+	                }
+
+	                if (re.number.test(match[8])) {
+	                    is_positive = arg >= 0;
+	                }
+
+	                switch (match[8]) {
+	                    case "b":
+	                        arg = arg.toString(2);
+	                        break;
+	                    case "c":
+	                        arg = String.fromCharCode(arg);
+	                        break;
+	                    case "d":
+	                    case "i":
+	                        arg = parseInt(arg, 10);
+	                        break;
+	                    case "j":
+	                        arg = JSON.stringify(arg, null, match[6] ? parseInt(match[6]) : 0);
+	                        break;
+	                    case "e":
+	                        arg = match[7] ? arg.toExponential(match[7]) : arg.toExponential();
+	                        break;
+	                    case "f":
+	                        arg = match[7] ? parseFloat(arg).toFixed(match[7]) : parseFloat(arg);
+	                        break;
+	                    case "g":
+	                        arg = match[7] ? parseFloat(arg).toPrecision(match[7]) : parseFloat(arg);
+	                        break;
+	                    case "o":
+	                        arg = arg.toString(8);
+	                        break;
+	                    case "s":
+	                        arg = (arg = String(arg)) && match[7] ? arg.substring(0, match[7]) : arg;
+	                        break;
+	                    case "u":
+	                        arg = arg >>> 0;
+	                        break;
+	                    case "x":
+	                        arg = arg.toString(16);
+	                        break;
+	                    case "X":
+	                        arg = arg.toString(16).toUpperCase();
+	                        break;
+	                }
+	                if (re.json.test(match[8])) {
+	                    output[output.length] = arg;
+	                } else {
+	                    if (re.number.test(match[8]) && (!is_positive || match[3])) {
+	                        sign = is_positive ? "+" : "-";
+	                        arg = arg.toString().replace(re.sign, "");
+	                    } else {
+	                        sign = "";
+	                    }
+	                    pad_character = match[4] ? match[4] === "0" ? "0" : match[4].charAt(1) : " ";
+	                    pad_length = match[6] - (sign + arg).length;
+	                    pad = match[6] ? pad_length > 0 ? str_repeat(pad_character, pad_length) : "" : "";
+	                    output[output.length] = match[5] ? sign + arg + pad : pad_character === "0" ? sign + pad + arg : pad + sign + arg;
+	                }
+	            }
+	        }
+	        return output.join("");
+	    };
+
+	    sprintf.cache = {};
+
+	    sprintf.parse = function (fmt) {
+	        var _fmt = fmt,
+	            match = [],
+	            parse_tree = [],
+	            arg_names = 0;
+	        while (_fmt) {
+	            if ((match = re.text.exec(_fmt)) !== null) {
+	                parse_tree[parse_tree.length] = match[0];
+	            } else if ((match = re.modulo.exec(_fmt)) !== null) {
+	                parse_tree[parse_tree.length] = "%";
+	            } else if ((match = re.placeholder.exec(_fmt)) !== null) {
+	                if (match[2]) {
+	                    arg_names |= 1;
+	                    var field_list = [],
+	                        replacement_field = match[2],
+	                        field_match = [];
+	                    if ((field_match = re.key.exec(replacement_field)) !== null) {
+	                        field_list[field_list.length] = field_match[1];
+	                        while ((replacement_field = replacement_field.substring(field_match[0].length)) !== "") {
+	                            if ((field_match = re.key_access.exec(replacement_field)) !== null) {
+	                                field_list[field_list.length] = field_match[1];
+	                            } else if ((field_match = re.index_access.exec(replacement_field)) !== null) {
+	                                field_list[field_list.length] = field_match[1];
+	                            } else {
+	                                throw new SyntaxError("[sprintf] failed to parse named argument key");
+	                            }
+	                        }
+	                    } else {
+	                        throw new SyntaxError("[sprintf] failed to parse named argument key");
+	                    }
+	                    match[2] = field_list;
+	                } else {
+	                    arg_names |= 2;
+	                }
+	                if (arg_names === 3) {
+	                    throw new Error("[sprintf] mixing positional and named placeholders is not (yet) supported");
+	                }
+	                parse_tree[parse_tree.length] = match;
+	            } else {
+	                throw new SyntaxError("[sprintf] unexpected placeholder");
+	            }
+	            _fmt = _fmt.substring(match[0].length);
+	        }
+	        return parse_tree;
+	    };
+
+	    var vsprintf = function vsprintf(fmt, argv, _argv) {
+	        _argv = (argv || []).slice(0);
+	        _argv.splice(0, 0, fmt);
+	        return sprintf.apply(null, _argv);
+	    };
+
+	    /**
+	     * helpers
+	     */
+	    function get_type(variable) {
+	        return Object.prototype.toString.call(variable).slice(8, -1).toLowerCase();
+	    }
+
+	    function str_repeat(input, multiplier) {
+	        return Array(multiplier + 1).join(input);
+	    }
+
+	    /**
+	     * export to either browser or node.js
+	     */
+	    if (true) {
+	        exports.sprintf = sprintf;
+	        exports.vsprintf = vsprintf;
+	    } else {
+	        window.sprintf = sprintf;
+	        window.vsprintf = vsprintf;
+
+	        if (typeof define === "function" && define.amd) {
+	            define(function () {
+	                return {
+	                    sprintf: sprintf,
+	                    vsprintf: vsprintf
+	                };
+	            });
+	        }
+	    }
+	})(typeof window === "undefined" ? undefined : window);
 
 /***/ }
 /******/ ]);

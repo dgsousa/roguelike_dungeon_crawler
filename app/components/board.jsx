@@ -15,9 +15,11 @@ export default class Board extends Component {
 			'1': '',
 			'2': 'red'
 		};
+
 		let tiles = this.props.map.map((col, x) => {
 			return col.map((tile, y) => {
-				let char = chars[tile];
+				char = this.props.exploredCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
+				
 				let style = {
 					top: y * 30,
 					left: x * 30
@@ -29,7 +31,7 @@ export default class Board extends Component {
 						char = {char} />
 				)
 			})
-		})
+		});
 		return tiles;
 	}
 
@@ -38,7 +40,8 @@ export default class Board extends Component {
 		let entityComponents = this.props.entities.map((entity, i) => {
 			let style = {
 				top: entity.coords[1] * 30,
-				left: entity.coords[0] * 30
+				left: entity.coords[0] * 30,
+				display: this.props.exploredCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
 			}
 			return (<EntityComponent key={i} style={style}/>)
 		})

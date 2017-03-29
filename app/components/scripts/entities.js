@@ -57,8 +57,8 @@ const attacker = {
 			const defense = entity.getDefenseValue();
 			const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
 			entity.takeDamage(this, damage);
-			return entity._hp > 0 ? `You attacked the ${entity._name} for ${damage} damage` :
-									`You defeated the ${entity._name}`
+			return entity._hp > 0 ? `Attack the ${entity._name} for ${damage} damage, you have.` :
+									`Defeat the ${entity._name}, you have.`
 		}
 	},
 	getAttackValue() {
