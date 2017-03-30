@@ -89,32 +89,11 @@ export default class App extends Component {
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
 		const entity = this.entityAt(this.state.entities, [playerX, playerY]);
 		let state;
-		const exploredCells = this.state.exploredCells;
-		let fov = this.state.fov;
-		if(this.squareIsEmpty(playerX, playerY)) {
+		if(this.isStaircase(playerX, playerY) && this.squareIsEmpty(playerX, playerY)) {
+			state = this.goUpstairs(playerX, playerY, screenX, screenY);
+		} else if(this.squareIsEmpty(playerX, playerY)) {
 			// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
-			const player = this.state.player;
-			player.coords = [playerX, playerY];
-			fov.compute(playerX, playerY, 3, (fovX, fovY, radius, visibility) => {
-				exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
-			})	
-			state = {
-				player: player,
-				coords: [screenX, screenY],
-				message: '',
-				exploredCells: exploredCells
-			}
-			if(this.state.map[playerX][playerY] == 2) {
-				state.floor = this.state.floor + 1;
-				fov.compute(playerX, playerY, 3, (fovX, fovY, radius, visiblitiy) => {
-					exploredCells[fovX + ',' + fovY + ',' + state.floor] = true;
-				})
-				state.map = this.state.world.tiles[state.floor];
-				state.message = 'Enter the next level, you have.';
-				state.fov = this.state.world.fov[state.floor];
-				state.entities = this.generateEntities(this.state.map, trooperTemplate, 5, [player]);
-				state.exploredCells = exploredCells;
-			}	
+			state = this.move(playerX, playerY, screenX, screenY);	
 		} else if(entity) {
 			state = {
 				message: this.state.player.attack(entity),
@@ -130,6 +109,45 @@ export default class App extends Component {
 		this.engine.unlock();
 		state = {...state, entities: state.entities || this.addMoreTroopers()}
 		this.setState(state);
+	}
+
+	move(x, y, screenX, screenY) {
+		const player = this.state.player;
+		const fov = this.state.fov;
+		const exploredCells = this.state.exploredCells;
+		player.coords = [x, y];
+		fov.compute(x, y, 3, (x, y, radius, visibility) => {
+			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
+		})	
+		return {
+			player: player,
+			coords: [screenX, screenY],
+			message: '',
+			exploredCells: exploredCells
+		}
+	}
+
+	isStaircase(x, y) {
+		return this.state.map[x][y] == 2
+	}
+
+	goUpstairs(x, y, screenX, screenY) {
+		const player = this.state.player;
+		const exploredCells = {};
+		const floor = this.state.floor + 1;
+		const entities = this.generateEntities(this.state.map, trooperTemplate, 5, [this.state.player]);
+		player.coords = [x, y];
+		this.state.fov.compute(x, y, 3, (x, y, radius, visiblitiy) => {
+			exploredCells[x + ',' + y + ',' + floor] = true;
+		})
+		console.log(exploredCells);
+		return {
+			map: this.state.world.tiles[floor],
+			message: 'Enter the next level, you have.',
+			player: player,
+			exploredCells: exploredCells,
+			entities: entities
+		}
 	}
 
 	
