@@ -67,12 +67,10 @@ export default class App extends Component {
 
 	scroll(e) {
 		e.preventDefault();
-		console.log(e.keyCode);
 		if(e.keyCode === ROT.VK_I) {
 			this.scrollScreen(0, -1);
 					
 		} else if(e.keyCode === ROT.VK_M) {
-			console.log('test');
 			this.scrollScreen(0, 1);	
 			
 		} else if(e.keyCode === ROT.VK_J) {
@@ -216,8 +214,8 @@ export default class App extends Component {
 		return (
 			<div>
 				<div 
-					className={'message'}>
-					{this.state.message}
+					className={'message'}><h4>
+					{this.state.message}</h4>
 				</div>
 				<div 
 					className={'view'}

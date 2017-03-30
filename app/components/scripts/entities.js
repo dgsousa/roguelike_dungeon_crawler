@@ -2,6 +2,9 @@
 const playerActor = {
 	name: "PlayerActor",
 	groupName: "Actor",
+	init(template) {
+		this._name = 'Jedi'
+	},
 	act() {
 		this._engine.lock();
 	}
@@ -34,6 +37,9 @@ const destructible = {
 	},
 	takeDamage(attacker, damage) {
 		this._hp -= damage;
+		if(this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
+			this.attack(attacker);
+		}
 	},
 	getMaxHp() {
 		return this._maxHp;
@@ -70,7 +76,7 @@ export const playerTemplate = {
 	_attackValue: 15,
 	_defenseValue: 20,
 	_maxHp: 20,
-	mixins: [playerActor, attacker]
+	mixins: [playerActor, attacker, destructible]
 };
 
 
@@ -78,7 +84,7 @@ export const trooperTemplate = {
 	_attackValue: 5,
 	_defenseValue: 10,
 	_maxHp: 5,
-	mixins: [trooperActor, destructible]
+	mixins: [trooperActor, attacker, destructible]
 };
 
 
