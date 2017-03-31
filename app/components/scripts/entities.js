@@ -14,17 +14,24 @@ const trooperActor = {
 	name: "TrooperActor",
 	groupName: "Actor",
 	init(template) {
+		this._newCoords = null;
 		this._newTrooperCoords = false;
 		this._name = 'storm trooper';
 	},
 	act() {
-		if(Math.random() < .01) {
+		this.walkAround();
+		if(Math.random() < .005) {
 			const xOffset = Math.floor(Math.random() * 3) - 1;
 			const yOffset = Math.floor(Math.random() * 3) - 1;
 			this._newTrooperCoords = [this.x + xOffset, this.y + yOffset];
 		} else {
 			this._newTrooperCoords = false;
 		}
+	},
+	walkAround() {
+		const xOffset = Math.floor(Math.random() * 3) - 1;
+		const yOffset = Math.floor(Math.random() * 3) - 1;
+		this._newCoords = [this.x + xOffset, this.y + yOffset];
 	}
 }
 
@@ -39,6 +46,9 @@ const destructible = {
 		this._hp -= damage;
 		if(this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
 			this.attack(attacker);
+		} else if(this._hp < 0 && this.hasMixin('PlayerActor')) {
+			console.log("You Lose!")
+			this.act();
 		}
 	},
 	getMaxHp() {
@@ -75,7 +85,7 @@ const attacker = {
 export const playerTemplate = {
 	_attackValue: 15,
 	_defenseValue: 20,
-	_maxHp: 20,
+	_maxHp: 2,
 	mixins: [playerActor, attacker, destructible]
 };
 

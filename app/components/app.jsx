@@ -19,7 +19,6 @@ export default class App extends Component {
 			message: '',
 			floor: 0,
 			fov: null,
-			visibleCells: {},
 			exploredCells: {}
 		}
 	};
@@ -31,13 +30,6 @@ export default class App extends Component {
 	};
 
 	
-	dig(x, y) {
-		const map = this.state.map;
-		map[x][y] = true;
-		return map;
-	}
-	
-
 	createGame() {
 		const world = new World(this.props.width, this.props.height, this.props.depth);
 		const map = world.tiles[this.state.floor];
@@ -63,7 +55,7 @@ export default class App extends Component {
 		}
 	};
 
-
+	//Navigation functions
 
 	scroll(e) {
 		e.preventDefault();
@@ -92,33 +84,49 @@ export default class App extends Component {
 		if(this.isStaircase(playerX, playerY) && this.squareIsEmpty(playerX, playerY)) {
 			state = this.goUpstairs(playerX, playerY, screenX, screenY);
 		} else if(this.squareIsEmpty(playerX, playerY)) {
-			// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
 			state = this.move(playerX, playerY, screenX, screenY);	
 		} else if(entity) {
-			state = {
-				message: this.state.player.attack(entity),
-				entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
-				
-			}
+			state = this.encounterEntity(entity);
 		} else {
-			state = {
-				map: this.dig(playerX, playerY),
-				message: 'Do or do not. There is no try'
-			}
+			state = this.dig(playerX, playerY);
 		}
 		this.engine.unlock();
 		state = {...state, entities: state.entities || this.addMoreTroopers()}
 		this.setState(state);
 	}
 
+	goUpstairs(x, y, screenX, screenY) {
+		const player = this.state.player;
+		const exploredCells = {};
+		const floor = this.state.floor + 1;
+		player.coords = [x, y];
+		this.state.fov.compute(x, y, 3, (x, y, radius, visiblitiy) => {
+			exploredCells[x + ',' + y + ',' + floor] = true;
+		})
+		this.state.entities.forEach((entity) => {
+			this.scheduler.remove(entity);
+		})
+		return {
+			map: this.state.world.tiles[floor],
+			player: player,
+			entities: this.generateEntities(this.state.map, trooperTemplate, 15, [this.state.player]),
+			message: 'Enter the next level, you have.',
+			coords: [screenX, screenY],
+			fov: this.state.world.fov[floor],
+			exploredCells: exploredCells,
+			floor: floor,
+		}
+	}
+
 	move(x, y, screenX, screenY) {
 		const player = this.state.player;
-		const fov = this.state.fov;
 		const exploredCells = this.state.exploredCells;
+		const entities = this.state.entities;
 		player.coords = [x, y];
-		fov.compute(x, y, 3, (x, y, radius, visibility) => {
+		this.state.fov.compute(x, y, 3, (x, y, radius, visibility) => {
 			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
 		})	
+		this.moveTroopers(this.state.entities, x, y);
 		return {
 			player: player,
 			coords: [screenX, screenY],
@@ -127,37 +135,54 @@ export default class App extends Component {
 		}
 	}
 
+	dig(x, y) {
+		const map = this.state.map;
+		map[x][y] = true;
+		return {
+			map: map,
+			message: 'Do or do not. There is no try'
+		};
+	}
+
+	encounterEntity(entity) {
+		return {
+			message: this.state.player.attack(entity),
+			entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
+		}
+	}
+
+
+	//functions for discerning what kind of square is being encountered
+
 	isStaircase(x, y) {
 		return this.state.map[x][y] == 2
 	}
 
-	goUpstairs(x, y, screenX, screenY) {
-		const player = this.state.player;
-		const exploredCells = {};
-		const floor = this.state.floor + 1;
-		const entities = this.generateEntities(this.state.map, trooperTemplate, 5, [this.state.player]);
-		player.coords = [x, y];
-		this.state.fov.compute(x, y, 3, (x, y, radius, visiblitiy) => {
-			exploredCells[x + ',' + y + ',' + floor] = true;
-		})
-		console.log(exploredCells);
-		return {
-			map: this.state.world.tiles[floor],
-			message: 'Enter the next level, you have.',
-			player: player,
-			exploredCells: exploredCells,
-			entities: entities
-		}
-	}
-
-	
+		
 	squareIsEmpty(x, y, entities = this.state.entities, map = this.state.map) {
-		if  (map[x][y] && !this.entityAt(entities, [x, y])) {
-			return true;
+		if(x >= 0 && x < this.props.width && y >= 0 && y < this.props.height) {
+			if  (map[x][y] && !this.entityAt(entities, [x, y])) {
+				return true;
+			} 
 		}
 		return false;
 	}
 
+	entityAt(entities, coords) {
+		if(!entities) return false;
+		for(let i = 0; i < entities.length; i++) {
+			if(entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
+				return entities[i];
+			}
+		}
+		return false;
+	}
+
+	playerAt(coords, playerCoords = this.state.player.coords) {
+		return coords[0] == playerCoords[0] && coords[1] == playerCoords[1];
+	}
+
+	//functions for generating entities
 
 	initializeEntity(entities, map) {
 		let x, y;
@@ -188,7 +213,7 @@ export default class App extends Component {
 			if(newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
 				let newTrooper = new Entity(trooperTemplate)
 				newTrooper.coords = newTrooperCoords;
-				this.scheduler.add(newTrooper);
+				this.scheduler.add(newTrooper, true);
 				newTroopers.push(newTrooper);
 			}
 		}
@@ -217,16 +242,19 @@ export default class App extends Component {
 		return entity;
 	}
 
-
-	entityAt(entities, coords) {
-		if(!entities) return false;
-		for(let i = 0; i < entities.length; i++) {
-			if(entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
-				return entities[i];
+	moveTroopers(entities, x, y) {
+		const troopers = entities;
+		for (let i = 0; i < troopers.length; i++) {
+			if(troopers[i]._newCoords && 
+				!this.playerAt(troopers[i]._newCoords, [x, y]) &&
+				this.squareIsEmpty(troopers[i]._newCoords[0], troopers[i]._newCoords[1])) {
+				troopers[i].x = troopers[i]._newCoords[0];
+				troopers[i].y = troopers[i]._newCoords[1];
 			}
 		}
-		return false;
+		return troopers;
 	}
+
 	
 	render() {
 		return (
