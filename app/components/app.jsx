@@ -36,8 +36,8 @@ export default class App extends Component {
 		const map = world.tiles[this.state.floor];
 		const fov = world.fov[this.state.floor];
 		const exploredCells = {};
-		const player = this.generateEntity(map, playerTemplate);
-		const stormTroopers = this.generateEntities(map, trooperTemplate, 15, [player]);
+		const player = this.generateEntity(playerTemplate, map);
+		const stormTroopers = this.generateEntities(trooperTemplate, 15, map, player);
 		//const lightSabers = this.generateItems(map, saberTemplate, 3, [player, ...stormTroopers])
 		fov.compute(player.coords[0], player.coords[1], 3, (fovX, fovY, radius, visibility) => {
 			exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
@@ -83,26 +83,27 @@ export default class App extends Component {
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
 		const entity = this.entityAt(this.state.entities, [playerX, playerY]);
 		let state;
-		if(this.isStaircase(playerX, playerY) && this.squareIsEmpty(playerX, playerY)) {
-			state = this.goUpstairs(playerX, playerY, screenX, screenY);
-		} else if(this.squareIsEmpty(playerX, playerY)) {
-			state = this.move(playerX, playerY, screenX, screenY);	
+		if(this.isStaircase([playerX, playerY]) && this.squareIsEmpty([playerX, playerY])) {
+			state = this.goUpstairs([playerX, playerY], [screenX, screenY]);
+		} else if(this.squareIsEmpty([playerX, playerY])) {
+			state = this.move([playerX, playerY], [screenX, screenY]);	
 		} else if(entity) {
-			state = this.encounterEntity(entity);
+			state = this.attackEntity(entity);
 		} else {
-			state = this.dig(playerX, playerY);
+			state = this.dig([playerX, playerY]);
 		}
 		this.engine.unlock();
 		state = {...state, entities: state.entities || this.addMoreTroopers()}
 		this.setState(state);
+		
 	}
 
-	goUpstairs(x, y, screenX, screenY) {
+	goUpstairs(playerCoords, screenCoords) {
 		const player = this.state.player;
 		const exploredCells = {};
 		const floor = this.state.floor + 1;
-		player.coords = [x, y];
-		this.state.fov.compute(x, y, 3, (x, y, radius, visiblitiy) => {
+		player.coords = playerCoords;
+		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visiblitiy) => {
 			exploredCells[x + ',' + y + ',' + floor] = true;
 		})
 		this.state.entities.forEach((entity) => {
@@ -113,40 +114,40 @@ export default class App extends Component {
 			player: player,
 			entities: this.generateEntities(this.state.map, trooperTemplate, 15, [this.state.player]),
 			message: 'Enter the next level, you have.',
-			coords: [screenX, screenY],
+			coords: screenCoords,
 			fov: this.state.world.fov[floor],
 			exploredCells: exploredCells,
 			floor: floor,
 		}
 	}
 
-	move(x, y, screenX, screenY) {
+	move(playerCoords, screenCoords) {
 		const player = this.state.player;
 		const exploredCells = this.state.exploredCells;
 		const entities = this.state.entities;
-		player.coords = [x, y];
-		this.state.fov.compute(x, y, 3, (x, y, radius, visibility) => {
+		player.coords = playerCoords;
+		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visibility) => {
 			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
 		})	
-		this.moveTroopers(this.state.entities, x, y);
+		this.moveTroopers(this.state.entities, player);
 		return {
 			player: player,
-			coords: [screenX, screenY],
+			coords: screenCoords,
 			message: '',
 			exploredCells: exploredCells
 		}
 	}
 
-	dig(x, y) {
+	dig(playerCoords) {
 		const map = this.state.map;
-		map[x][y] = true;
+		map[playerCoords[0]][playerCoords[1]] = true;
 		return {
 			map: map,
 			message: 'Do or do not. There is no try'
 		};
 	}
 
-	encounterEntity(entity) {
+	attackEntity(entity) {
 		return {
 			message: this.state.player.attack(entity),
 			entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
@@ -156,14 +157,14 @@ export default class App extends Component {
 
 	//functions for discerning what kind of square is being encountered
 
-	isStaircase(x, y) {
-		return this.state.map[x][y] == 2
+	isStaircase(coords) {
+		return this.state.map[coords[0]][coords[1]] == 2
 	}
 
 		
-	squareIsEmpty(x, y, entities = this.state.entities, map = this.state.map) {
-		if(x >= 0 && x < this.props.width && y >= 0 && y < this.props.height) {
-			if  (map[x][y] && !this.entityAt(entities, [x, y])) {
+	squareIsEmpty(coords, map = this.state.map, entities = this.state.entities, player = this.state.player) {
+		if(coords[0] >= 0 && coords[0] < this.props.width && coords[1] >= 0 && coords[1] < this.props.height) {
+			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords)) {
 				return true;
 			} 
 		}
@@ -181,46 +182,40 @@ export default class App extends Component {
 		return false;
 	}
 
-	playerAt(coords, playerCoords = this.state.player.coords) {
-		return coords[0] == playerCoords[0] && coords[1] == playerCoords[1];
+	playerAt(player, coords) {
+		return player.coords && coords[0] == player.coords[0] && coords[1] == player.coords[1];
 	}
 
 	//functions for generating entities
 
-	initializeEntity(entities, map) {
+	initializeEntity(map = this.state.map, entities = this.state.entities, player = this.state.player) {
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * this.props.width);
 			y = Math.floor(Math.random() * this.props.height);
-		} while (!this.squareIsEmpty(x, y, entities, map));
-		return [x: x, y: y];
+		} while (!this.squareIsEmpty([x, y], map, entities,  player));
+		return [x, y];
 	}
 
 
-	generateEntities(map, template, num, existingEntities) {
-		let entities = [...existingEntities] || [];
+	generateEntity(template, map) {
+		let entity = new Entity(template);
+		entity.coords = this.initializeEntity(map, []);
+		entity.engine = this.engine;
+		this.scheduler.add(entity, true);
+		return entity;
+	}
+
+
+	generateEntities(template, num, map, player) {
+		let entities = [];
 		for(let i = 0; i < num; i++) {
 			let entity = new Entity(template);
-			entity.coords = this.initializeEntity(entities, map);
+			entity.coords = this.initializeEntity(map, entities, player);
 			entities.push(entity);
 			this.scheduler.add(entity, true);
 		}
-		return existingEntities ? entities.splice(existingEntities.length) : entities;
-	}
-
-
-	addMoreTroopers() {
-		let newTroopers = [];
-		for(let i = 0; i < this.state.entities.length; i++) {
-			let newTrooperCoords = this.state.entities[i]._newTrooperCoords;
-			if(newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
-				let newTrooper = new Entity(trooperTemplate)
-				newTrooper.coords = newTrooperCoords;
-				this.scheduler.add(newTrooper, true);
-				newTroopers.push(newTrooper);
-			}
-		}
-		return [...this.state.entities, ...newTroopers]
+		return entities;
 	}
 
 
@@ -237,20 +232,26 @@ export default class App extends Component {
 	}
 
 
-	generateEntity(map, template) {
-		let entity = new Entity(template);
-		entity.coords = this.initializeEntity([], map);
-		entity.engine = this.engine;
-		this.scheduler.add(entity, true);
-		return entity;
+	addMoreTroopers() {
+		let newTroopers = [];
+		for(let i = 0; i < this.state.entities.length; i++) {
+			let newTrooperCoords = this.state.entities[i]._newTrooperCoords;
+			if(newTrooperCoords && this.squareIsEmpty(newTrooperCoords)) {
+				let newTrooper = new Entity(trooperTemplate)
+				newTrooper.coords = newTrooperCoords;
+				this.scheduler.add(newTrooper, true);
+				newTroopers.push(newTrooper);
+			}
+		}
+		return [...this.state.entities, ...newTroopers]
 	}
 
-	moveTroopers(entities, x, y) {
+
+	moveTroopers(entities, player) {
 		const troopers = entities;
 		for (let i = 0; i < troopers.length; i++) {
 			if(troopers[i]._newCoords && 
-				!this.playerAt(troopers[i]._newCoords, [x, y]) &&
-				this.squareIsEmpty(troopers[i]._newCoords[0], troopers[i]._newCoords[1])) {
+				this.squareIsEmpty(troopers[i]._newCoords, this.state.map, this.state.entities, player)) {
 				troopers[i].coords = troopers[i]._newCoords;
 			}
 		}

@@ -6,7 +6,7 @@ const playerActor = {
 		this._name = 'Jedi'
 	},
 	act() {
-		this._engine.lock();
+		this.engine.lock();
 	}
 }
 
@@ -46,10 +46,9 @@ const destructible = {
 		this._hp -= damage;
 		if(this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
 			this.attack(attacker);
-		} else if(this._hp < 0 && this.hasMixin('PlayerActor')) {
-			console.log("You Lose!")
-			this.act();
-		}
+		} 
+		return this._hp > 0 ? `Attack the ${this._name} for ${damage} damage, you have.` :
+								`Defeat the ${this._name}, you have.`
 	},
 	getMaxHp() {
 		return this._maxHp;
@@ -72,9 +71,7 @@ const attacker = {
 			const attack = this.getAttackValue();
 			const defense = entity.getDefenseValue();
 			const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
-			entity.takeDamage(this, damage);
-			return entity._hp > 0 ? `Attack the ${entity._name} for ${damage} damage, you have.` :
-									`Defeat the ${entity._name}, you have.`
+			return entity.takeDamage(this, damage);
 		}
 	},
 	getAttackValue() {
