@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import * as ROT from '../../bower_components/rot.js/rot.js';
 import Board from './board.jsx';
 import Entity from "./scripts/entity.js";
+import {Item, saberTemplate} from "./scripts/item.js";
 import { playerTemplate, trooperTemplate } from "./scripts/entities.js";
 import World from "./scripts/world.js";
 import * as Sprint from "sprintf-js";
@@ -37,6 +38,7 @@ export default class App extends Component {
 		const exploredCells = {};
 		const player = this.generateEntity(map, playerTemplate);
 		const stormTroopers = this.generateEntities(map, trooperTemplate, 15, [player]);
+		//const lightSabers = this.generateItems(map, saberTemplate, 3, [player, ...stormTroopers])
 		fov.compute(player.coords[0], player.coords[1], 3, (fovX, fovY, radius, visibility) => {
 			exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
 		})
@@ -169,10 +171,11 @@ export default class App extends Component {
 	}
 
 	entityAt(entities, coords) {
-		if(!entities) return false;
-		for(let i = 0; i < entities.length; i++) {
-			if(entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
-				return entities[i];
+		if(entities) {
+			for(let i = 0; i < entities.length; i++) {
+				if(entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
+					return entities[i];
+				}
 			}
 		}
 		return false;
@@ -248,8 +251,7 @@ export default class App extends Component {
 			if(troopers[i]._newCoords && 
 				!this.playerAt(troopers[i]._newCoords, [x, y]) &&
 				this.squareIsEmpty(troopers[i]._newCoords[0], troopers[i]._newCoords[1])) {
-				troopers[i].x = troopers[i]._newCoords[0];
-				troopers[i].y = troopers[i]._newCoords[1];
+				troopers[i].coords = troopers[i]._newCoords;
 			}
 		}
 		return troopers;

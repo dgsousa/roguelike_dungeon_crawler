@@ -3,7 +3,6 @@ export default class Entity {
 	constructor(properties) {
 		this.x;
 		this.y;
-		this.coords = [];
 		this.attachedMixins = {};
 		this.attachedMixinGroups = {};
 		const mixins = properties["mixins"] || [];

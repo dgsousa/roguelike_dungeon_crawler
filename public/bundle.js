@@ -44,8 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -169,8 +167,6 @@
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
-
-	'use strict';
 
 	// shim for using process in browser
 	var process = module.exports = {};
@@ -21575,7 +21571,7 @@
 
 
 	// module
-	exports.push([module.id, "#app {\n  margin: auto; }\n\n.message {\n  box-sizing: border-box;\n  height: 100px;\n  width: 750px;\n  margin: auto;\n  background: #B3B6BF;\n  color: red;\n  text-align: center;\n  padding-top: 32px;\n  font-size: 32px; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: auto;\n  overflow: hidden; }\n  .view:focus {\n    outline: none; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n\n.red {\n  background: red; }\n\n.blue {\n  background: blue; }\n\n.trooper {\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 0px -3px; }\n", ""]);
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.message {\n  box-sizing: border-box;\n  height: 100px;\n  width: 750px;\n  margin: auto;\n  background: #B3B6BF;\n  color: red;\n  text-align: center;\n  padding-top: 10px;\n  font-size: 32px; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: auto;\n  overflow: hidden; }\n  .view:focus {\n    outline: none; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n\n.red {\n  background: red; }\n\n.grey {\n  background: #262729; }\n\n.trooper {\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 0px -3px; }\n", ""]);
 
 	// exports
 
@@ -21583,8 +21579,6 @@
 /***/ },
 /* 180 */
 /***/ function(module, exports) {
-
-	"use strict";
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -21909,8 +21903,6 @@
 /* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -21973,7 +21965,7 @@
 				message: '',
 				floor: 0,
 				fov: null,
-				visibleCells: {}
+				exploredCells: {}
 			};
 			return _this;
 		}
@@ -21986,22 +21978,19 @@
 				this.setState(this.createGame());
 			}
 		}, {
-			key: 'dig',
-			value: function dig(x, y) {
-				var map = this.state.map;
-				map[x][y] = true;
-				return map;
-			}
-		}, {
 			key: 'createGame',
 			value: function createGame() {
+				var _this2 = this;
+
 				var world = new _world2.default(this.props.width, this.props.height, this.props.depth);
 				var map = world.tiles[this.state.floor];
-				var fov = world._fov[this.state.floor];
-				var player = void 0;
-				var stormTroopers = void 0;
-				player = this.generateEntity(map, _entities.playerTemplate);
-				stormTroopers = this.generateEntities(map, _entities.trooperTemplate, 15, [player]);
+				var fov = world.fov[this.state.floor];
+				var exploredCells = {};
+				var player = this.generateEntity(map, _entities.playerTemplate);
+				var stormTroopers = this.generateEntities(map, _entities.trooperTemplate, 15, [player]);
+				fov.compute(player.coords[0], player.coords[1], 3, function (fovX, fovY, radius, visibility) {
+					exploredCells[fovX + ',' + fovY + ',' + _this2.state.floor] = true;
+				});
 
 				return {
 					world: world,
@@ -22009,20 +21998,25 @@
 					player: player,
 					entities: [].concat(_toConsumableArray(stormTroopers)),
 					coords: [Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))],
-					fov: fov
+					fov: fov,
+					exploredCells: exploredCells
 				};
 			}
 		}, {
 			key: 'scroll',
+
+
+			//Navigation functions
+
 			value: function scroll(e) {
 				e.preventDefault();
-				if (e.keyCode === ROT.VK_UP) {
+				if (e.keyCode === ROT.VK_I) {
 					this.scrollScreen(0, -1);
-				} else if (e.keyCode === ROT.VK_DOWN) {
+				} else if (e.keyCode === ROT.VK_M) {
 					this.scrollScreen(0, 1);
-				} else if (e.keyCode === ROT.VK_LEFT) {
+				} else if (e.keyCode === ROT.VK_J) {
 					this.scrollScreen(-1, 0);
-				} else if (e.keyCode === ROT.VK_RIGHT) {
+				} else if (e.keyCode === ROT.VK_K) {
 					this.scrollScreen(1, 0);
 				}
 			}
@@ -22035,41 +22029,90 @@
 				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
 				var entity = this.entityAt(this.state.entities, [playerX, playerY]);
 				var state = void 0;
-				var visibleCells = {};
-				var fov = this.state.fov;
-				if (this.squareIsEmpty(playerX, playerY)) {
-					// Be careful using object spread syntax here - it only copies enumerable methods(not _proto_)
-					var player = this.state.player;
-					player.coords = [playerX, playerY];
-					state = {
-						player: player,
-						coords: [screenX, screenY],
-						message: ''
-					};
-					if (this.state.map[playerX][playerY] == 2) {
-						state.floor = this.state.floor + 1;
-						state.map = this.state.world.tiles[state.floor];
-						state.entities = this.generateEntities(state.map, _entities.trooperTemplate, 5, [player]);
-						state.message = 'You entered the next level!';
-					}
+				if (this.isStaircase(playerX, playerY) && this.squareIsEmpty(playerX, playerY)) {
+					state = this.goUpstairs(playerX, playerY, screenX, screenY);
+				} else if (this.squareIsEmpty(playerX, playerY)) {
+					state = this.move(playerX, playerY, screenX, screenY);
 				} else if (entity) {
-					var message = this.state.player.attack(entity);
-					state = {
-						entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
-						message: message
-					};
+					state = this.encounterEntity(entity);
 				} else {
-					state = {
-						map: this.dig(playerX, playerY),
-						message: ''
-					};
+					state = this.dig(playerX, playerY);
 				}
-				fov.compute(1, 2, 3, function (x, y, radius, visibility) {
-					console.log(radius);
-				});
 				this.engine.unlock();
 				state = _extends({}, state, { entities: state.entities || this.addMoreTroopers() });
 				this.setState(state);
+			}
+		}, {
+			key: 'goUpstairs',
+			value: function goUpstairs(x, y, screenX, screenY) {
+				var _this3 = this;
+
+				var player = this.state.player;
+				var exploredCells = {};
+				var floor = this.state.floor + 1;
+				player.coords = [x, y];
+				this.state.fov.compute(x, y, 3, function (x, y, radius, visiblitiy) {
+					exploredCells[x + ',' + y + ',' + floor] = true;
+				});
+				this.state.entities.forEach(function (entity) {
+					_this3.scheduler.remove(entity);
+				});
+				return {
+					map: this.state.world.tiles[floor],
+					player: player,
+					entities: this.generateEntities(this.state.map, _entities.trooperTemplate, 15, [this.state.player]),
+					message: 'Enter the next level, you have.',
+					coords: [screenX, screenY],
+					fov: this.state.world.fov[floor],
+					exploredCells: exploredCells,
+					floor: floor
+				};
+			}
+		}, {
+			key: 'move',
+			value: function move(x, y, screenX, screenY) {
+				var _this4 = this;
+
+				var player = this.state.player;
+				var exploredCells = this.state.exploredCells;
+				var entities = this.state.entities;
+				player.coords = [x, y];
+				this.state.fov.compute(x, y, 3, function (x, y, radius, visibility) {
+					exploredCells[x + ',' + y + ',' + _this4.state.floor] = true;
+				});
+				this.moveTroopers(this.state.entities, x, y);
+				return {
+					player: player,
+					coords: [screenX, screenY],
+					message: '',
+					exploredCells: exploredCells
+				};
+			}
+		}, {
+			key: 'dig',
+			value: function dig(x, y) {
+				var map = this.state.map;
+				map[x][y] = true;
+				return {
+					map: map,
+					message: 'Do or do not. There is no try'
+				};
+			}
+		}, {
+			key: 'encounterEntity',
+			value: function encounterEntity(entity) {
+				return {
+					message: this.state.player.attack(entity),
+					entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities
+				};
+			}
+
+			//functions for discerning what kind of square is being encountered
+
+		}, {
+			key: 'isStaircase',
+			value: function isStaircase(x, y) {
+				return this.state.map[x][y] == 2;
 			}
 		}, {
 			key: 'squareIsEmpty',
@@ -22077,11 +22120,34 @@
 				var entities = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.state.entities;
 				var map = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state.map;
 
-				if (map[x][y] && !this.entityAt(entities, [x, y])) {
-					return true;
+				if (x >= 0 && x < this.props.width && y >= 0 && y < this.props.height) {
+					if (map[x][y] && !this.entityAt(entities, [x, y])) {
+						return true;
+					}
 				}
 				return false;
 			}
+		}, {
+			key: 'entityAt',
+			value: function entityAt(entities, coords) {
+				if (!entities) return false;
+				for (var i = 0; i < entities.length; i++) {
+					if (entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
+						return entities[i];
+					}
+				}
+				return false;
+			}
+		}, {
+			key: 'playerAt',
+			value: function playerAt(coords) {
+				var playerCoords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.player.coords;
+
+				return coords[0] == playerCoords[0] && coords[1] == playerCoords[1];
+			}
+
+			//functions for generating entities
+
 		}, {
 			key: 'initializeEntity',
 			value: function initializeEntity(entities, map) {
@@ -22114,7 +22180,7 @@
 					if (newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
 						var newTrooper = new _entity2.default(_entities.trooperTemplate);
 						newTrooper.coords = newTrooperCoords;
-						this.scheduler.add(newTrooper);
+						this.scheduler.add(newTrooper, true);
 						newTroopers.push(newTrooper);
 					}
 				}
@@ -22143,15 +22209,15 @@
 				return entity;
 			}
 		}, {
-			key: 'entityAt',
-			value: function entityAt(entities, coords) {
-				if (!entities) return false;
-				for (var i = 0; i < entities.length; i++) {
-					if (entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
-						return entities[i];
+			key: 'moveTroopers',
+			value: function moveTroopers(entities, x, y) {
+				var troopers = entities;
+				for (var i = 0; i < troopers.length; i++) {
+					if (troopers[i]._newCoords && !this.playerAt(troopers[i]._newCoords, [x, y]) && this.squareIsEmpty(troopers[i]._newCoords[0], troopers[i]._newCoords[1])) {
+						troopers[i].coords = troopers[i]._newCoords;
 					}
 				}
-				return false;
+				return troopers;
 			}
 		}, {
 			key: 'render',
@@ -22163,7 +22229,11 @@
 						'div',
 						{
 							className: 'message' },
-						this.state.message
+						_react2.default.createElement(
+							'h4',
+							null,
+							this.state.message
+						)
 					),
 					_react2.default.createElement(
 						'div',
@@ -22177,7 +22247,9 @@
 							height: this.props.height,
 							player: this.state.player,
 							entities: this.state.entities,
-							coords: this.state.coords })
+							coords: this.state.coords,
+							exploredCells: this.state.exploredCells,
+							floor: this.state.floor })
 					)
 				);
 			}
@@ -22191,8 +22263,6 @@
 /***/ },
 /* 186 */
 /***/ function(module, exports) {
-
-	"use strict";
 
 	/*
 		This is rot.js, the ROguelike Toolkit in JavaScript.
@@ -27795,8 +27865,6 @@
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -27846,9 +27914,11 @@
 					'1': '',
 					'2': 'red'
 				};
+
 				var tiles = this.props.map.map(function (col, x) {
 					return col.map(function (tile, y) {
-						var char = chars[tile];
+						char = _this2.props.exploredCells[x + ',' + y + ',' + _this2.props.floor] ? chars[tile] : 'grey';
+
 						var style = {
 							top: y * 30,
 							left: x * 30
@@ -27864,10 +27934,13 @@
 		}, {
 			key: "getEntityComponents",
 			value: function getEntityComponents() {
+				var _this3 = this;
+
 				var entityComponents = this.props.entities.map(function (entity, i) {
 					var style = {
 						top: entity.coords[1] * 30,
-						left: entity.coords[0] * 30
+						left: entity.coords[0] * 30,
+						display: _this3.props.exploredCells[entity.coords[0] + ',' + entity.coords[1] + ',' + _this3.props.floor] ? 'block' : 'none'
 					};
 					return _react2.default.createElement(_entity2.default, { key: i, style: style });
 				});
@@ -27904,8 +27977,6 @@
 /***/ },
 /* 188 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -27955,8 +28026,6 @@
 /***/ },
 /* 189 */
 /***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -28011,8 +28080,6 @@
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -28058,8 +28125,6 @@
 /* 191 */
 /***/ function(module, exports) {
 
-	"use strict";
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -28074,7 +28139,6 @@
 
 			this.x;
 			this.y;
-			this.coords = [];
 			this.attachedMixins = {};
 			this.attachedMixinGroups = {};
 			var mixins = properties["mixins"] || [];
@@ -28132,8 +28196,6 @@
 /* 192 */
 /***/ function(module, exports) {
 
-	"use strict";
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -28141,6 +28203,9 @@
 	var playerActor = {
 		name: "PlayerActor",
 		groupName: "Actor",
+		init: function init(template) {
+			this._name = 'Jedi';
+		},
 		act: function act() {
 			this._engine.lock();
 		}
@@ -28150,17 +28215,24 @@
 		name: "TrooperActor",
 		groupName: "Actor",
 		init: function init(template) {
+			this._newCoords = null;
 			this._newTrooperCoords = false;
 			this._name = 'storm trooper';
 		},
 		act: function act() {
-			if (Math.random() < .01) {
+			this.walkAround();
+			if (Math.random() < .005) {
 				var xOffset = Math.floor(Math.random() * 3) - 1;
 				var yOffset = Math.floor(Math.random() * 3) - 1;
 				this._newTrooperCoords = [this.x + xOffset, this.y + yOffset];
 			} else {
 				this._newTrooperCoords = false;
 			}
+		},
+		walkAround: function walkAround() {
+			var xOffset = Math.floor(Math.random() * 3) - 1;
+			var yOffset = Math.floor(Math.random() * 3) - 1;
+			this._newCoords = [this.x + xOffset, this.y + yOffset];
 		}
 	};
 
@@ -28173,6 +28245,12 @@
 		},
 		takeDamage: function takeDamage(attacker, damage) {
 			this._hp -= damage;
+			if (this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
+				this.attack(attacker);
+			} else if (this._hp < 0 && this.hasMixin('PlayerActor')) {
+				console.log("You Lose!");
+				this.act();
+			}
 		},
 		getMaxHp: function getMaxHp() {
 			return this._maxHp;
@@ -28196,7 +28274,7 @@
 				var defense = entity.getDefenseValue();
 				var damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
 				entity.takeDamage(this, damage);
-				return entity._hp > 0 ? "You attacked the " + entity._name + " for " + damage + " damage" : "You defeated the " + entity._name;
+				return entity._hp > 0 ? "Attack the " + entity._name + " for " + damage + " damage, you have." : "Defeat the " + entity._name + ", you have.";
 			}
 		},
 		getAttackValue: function getAttackValue() {
@@ -28207,22 +28285,20 @@
 	var playerTemplate = exports.playerTemplate = {
 		_attackValue: 15,
 		_defenseValue: 20,
-		_maxHp: 20,
-		mixins: [playerActor, attacker]
+		_maxHp: 2,
+		mixins: [playerActor, attacker, destructible]
 	};
 
 	var trooperTemplate = exports.trooperTemplate = {
 		_attackValue: 5,
 		_defenseValue: 10,
 		_maxHp: 5,
-		mixins: [trooperActor, destructible]
+		mixins: [trooperActor, attacker, destructible]
 	};
 
 /***/ },
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -28247,6 +28323,7 @@
 			this._depth = depth;
 			this._tiles = new Array(depth);
 			this._regions = new Array(depth);
+			//this._exporedTiles = new Array(depth);
 			this._fov = [];
 			this.setupFov();
 
@@ -28257,6 +28334,7 @@
 					this._regions[z][x] = new Array(this._height);
 				}
 			}
+
 			for (var _z = 0; _z < this._depth; _z++) {
 				this.setUpRegions(_z);
 			}
@@ -28350,7 +28428,7 @@
 					for (var y = 0; y < this._height; y++) {
 						if (this._regions[z][x][y] == region) {
 							this._regions[z][x][y] == 0;
-							this._tiles[z][x][y] == false;
+							this._tiles[z][x][y] == 0;
 						}
 					}
 				}
@@ -28400,8 +28478,10 @@
 				var _this = this;
 
 				var _loop = function _loop(z) {
-					_this._fov.push(new ROT.FOV.DiscreteShadowcasting(function (x, y) {
-						return _this._tiles[z][x][y];
+					_this._fov.push(new ROT.FOV.PreciseShadowcasting(function (x, y) {
+						if (x >= 0 && x < _this._width && y >= 0 && y <= _this._height) {
+							return _this._tiles[z][x][y];
+						}
 					}, { topology: 4 }));
 				};
 
@@ -28429,8 +28509,6 @@
 /***/ },
 /* 194 */
 /***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 
 	(function (window) {
 	    var re = {
