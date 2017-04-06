@@ -16,6 +16,7 @@ export default class App extends Component {
 			map: [],
 			player: {},
 			entities: [],
+			items: [],
 			coords: [],
 			message: '',
 			floor: 0,
@@ -38,16 +39,16 @@ export default class App extends Component {
 		const exploredCells = {};
 		const player = this.generateEntity(playerTemplate, map);
 		const stormTroopers = this.generateEntities(trooperTemplate, 15, map, player);
-		//const lightSabers = this.generateItems(map, saberTemplate, 3, [player, ...stormTroopers])
+		const lightSabers = this.generateItems(saberTemplate, 5, map, player)
 		fov.compute(player.coords[0], player.coords[1], 3, (fovX, fovY, radius, visibility) => {
 			exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
 		})
-
 		return {
 			world: world,
 			map: map,
 			player: player,
 			entities: [...stormTroopers],
+			items: [...lightSabers],
 			coords: [
 				Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), 
 				Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))
@@ -109,10 +110,12 @@ export default class App extends Component {
 		this.state.entities.forEach((entity) => {
 			this.scheduler.remove(entity);
 		})
+
 		return {
 			map: this.state.world.tiles[floor],
 			player: player,
-			entities: this.generateEntities(this.state.map, trooperTemplate, 15, [this.state.player]),
+			entities: this.generateEntities(trooperTemplate, 15, this.state.world.tiles[floor], player),
+			items: this.generateItems(saberTemplate, 5, this.state.world.tiles[floor], player),
 			message: 'Enter the next level, you have.',
 			coords: screenCoords,
 			fov: this.state.world.fov[floor],
@@ -126,12 +129,14 @@ export default class App extends Component {
 		const exploredCells = this.state.exploredCells;
 		const entities = this.state.entities;
 		player.coords = playerCoords;
+		const items = this.pickUpItem(player);
 		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visibility) => {
 			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
 		})	
 		this.moveTroopers(this.state.entities, player);
 		return {
 			player: player,
+			items: items,
 			coords: screenCoords,
 			message: '',
 			exploredCells: exploredCells
@@ -182,13 +187,15 @@ export default class App extends Component {
 		return false;
 	}
 
+	
+
 	playerAt(player, coords) {
 		return player.coords && coords[0] == player.coords[0] && coords[1] == player.coords[1];
 	}
 
 	//functions for generating entities
 
-	initializeEntity(map = this.state.map, entities = this.state.entities, player = this.state.player) {
+	initialize(map = this.state.map, entities = this.state.entities, player = this.state.player) {
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * this.props.width);
@@ -200,7 +207,7 @@ export default class App extends Component {
 
 	generateEntity(template, map) {
 		let entity = new Entity(template);
-		entity.coords = this.initializeEntity(map, []);
+		entity.coords = this.initialize(map);
 		entity.engine = this.engine;
 		this.scheduler.add(entity, true);
 		return entity;
@@ -211,14 +218,14 @@ export default class App extends Component {
 		let entities = [];
 		for(let i = 0; i < num; i++) {
 			let entity = new Entity(template);
-			entity.coords = this.initializeEntity(map, entities, player);
+			entity.coords = this.initialize(map, entities, player);
 			entities.push(entity);
 			this.scheduler.add(entity, true);
 		}
 		return entities;
 	}
 
-
+	
 	removeEntity(entity) {
 		const entities = this.state.entities;
 		this.scheduler.remove(entity);
@@ -231,6 +238,27 @@ export default class App extends Component {
 		return entities;
 	}
 
+
+	generateItems(template, num, map, player) {
+		let items = [];
+		for(let i = 0; i < num; i++) {
+			let item = new Item(template);
+			item.coords = this.initialize(map, [], player);
+			items.push(item);
+		}
+		return items;
+	}
+
+	pickUpItem(player) {
+		items = this.state.items;
+		for(i = 0; i < items.length; i++) {
+			if(items[i].coords[0] === player.coords[0] && items[i].coords[1] === player.coords[1]) {
+				player._attackValue += 5;
+				items.splice(i, 1);
+			}
+		}
+		return items;
+	}
 
 	addMoreTroopers() {
 		let newTroopers = [];
@@ -277,6 +305,7 @@ export default class App extends Component {
 						height={this.props.height}
 						player={this.state.player}
 						entities={this.state.entities}
+						items={this.state.items}
 						coords={this.state.coords}
 						exploredCells={this.state.exploredCells}
 						floor={this.state.floor}>

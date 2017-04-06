@@ -50,6 +50,15 @@
 	height: 30px;
 }
 
+.item {
+	position: absolute;
+	z-index: 14;
+	width: 30px;
+	height: 30px;
+	background: blue;
+}
+
+
 .player {
 	position: absolute;
 	z-index: 20;
@@ -67,6 +76,12 @@
 	background: url('chewy.png') no-repeat;
 	background-color: black;
 	background-position: 5px 0px;
+}
+
+.saber {
+	background: url('saber.png') no-repeat;
+	background-color: black;
+	background-position: 10px;
 }
 
 .red {

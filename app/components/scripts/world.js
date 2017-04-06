@@ -92,7 +92,7 @@ export default class World {
 			for(let y = 0; y < this._height; y++) {
 				if(this.canFillRegion(x, y, z)) {
 					tilesFilled = this.fillRegion(region, x, y, z);
-					if(tilesFilled < 20) {
+					if(tilesFilled < 200) {
 						this.removeRegion(region, z);
 					} else {
 						region++;

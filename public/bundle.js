@@ -21571,7 +21571,7 @@
 
 
 	// module
-	exports.push([module.id, "#app {\n  margin: auto; }\n\n.message {\n  box-sizing: border-box;\n  height: 100px;\n  width: 750px;\n  margin: auto;\n  background: #B3B6BF;\n  color: red;\n  text-align: center;\n  padding-top: 10px;\n  font-size: 32px; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: auto;\n  overflow: hidden; }\n  .view:focus {\n    outline: none; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n\n.red {\n  background: red; }\n\n.grey {\n  background: #262729; }\n\n.trooper {\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 0px -3px; }\n", ""]);
+	exports.push([module.id, "#app {\n  margin: auto; }\n\n.message {\n  box-sizing: border-box;\n  height: 100px;\n  width: 750px;\n  margin: auto;\n  background: #B3B6BF;\n  color: red;\n  text-align: center;\n  padding-top: 10px;\n  font-size: 32px; }\n\n.view {\n  width: 750px;\n  height: 450px;\n  margin: auto;\n  overflow: hidden; }\n  .view:focus {\n    outline: none; }\n\n.board {\n  position: relative;\n  margin: auto;\n  width: 1500px;\n  height: 1500px; }\n\n.tile {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: black;\n  font-size: 30px;\n  padding-left: 10px; }\n\n.entity {\n  position: absolute;\n  z-index: 15;\n  width: 30px;\n  height: 30px; }\n\n.item {\n  position: absolute;\n  z-index: 10;\n  width: 30px;\n  height: 30px;\n  background: blue; }\n\n.player {\n  position: absolute;\n  z-index: 20;\n  width: 30px;\n  height: 30px;\n  color: red; }\n\n.yoda {\n  background: url(" + __webpack_require__(181) + ") no-repeat;\n  background-position: 0 0px; }\n\n.chewy {\n  background: url(" + __webpack_require__(182) + ") no-repeat;\n  background-color: black;\n  background-position: 5px 0px; }\n\n.red {\n  background: red; }\n\n.grey {\n  background: #262729; }\n\n.trooper {\n  background: url(" + __webpack_require__(183) + ") no-repeat;\n  background-color: black;\n  background-position: 0px -3px; }\n", ""]);
 
 	// exports
 
@@ -21923,17 +21923,19 @@
 
 	var _board2 = _interopRequireDefault(_board);
 
-	var _entity = __webpack_require__(191);
+	var _entity = __webpack_require__(192);
 
 	var _entity2 = _interopRequireDefault(_entity);
 
-	var _entities = __webpack_require__(192);
+	var _item = __webpack_require__(193);
 
-	var _world = __webpack_require__(193);
+	var _entities = __webpack_require__(194);
+
+	var _world = __webpack_require__(195);
 
 	var _world2 = _interopRequireDefault(_world);
 
-	var _sprintfJs = __webpack_require__(194);
+	var _sprintfJs = __webpack_require__(196);
 
 	var Sprint = _interopRequireWildcard(_sprintfJs);
 
@@ -21961,6 +21963,7 @@
 				map: [],
 				player: {},
 				entities: [],
+				items: [],
 				coords: [],
 				message: '',
 				floor: 0,
@@ -21986,17 +21989,18 @@
 				var map = world.tiles[this.state.floor];
 				var fov = world.fov[this.state.floor];
 				var exploredCells = {};
-				var player = this.generateEntity(map, _entities.playerTemplate);
-				var stormTroopers = this.generateEntities(map, _entities.trooperTemplate, 15, [player]);
+				var player = this.generateEntity(_entities.playerTemplate, map);
+				var stormTroopers = this.generateEntities(_entities.trooperTemplate, 15, map, player);
+				var lightSabers = this.generateItems(_item.saberTemplate, 5, map, player);
 				fov.compute(player.coords[0], player.coords[1], 3, function (fovX, fovY, radius, visibility) {
 					exploredCells[fovX + ',' + fovY + ',' + _this2.state.floor] = true;
 				});
-
 				return {
 					world: world,
 					map: map,
 					player: player,
 					entities: [].concat(_toConsumableArray(stormTroopers)),
+					items: [].concat(_toConsumableArray(lightSabers)),
 					coords: [Math.max(0, Math.min(player.coords[0] - 12, this.props.width - 25)), Math.max(0, Math.min(player.coords[1] - 7, this.props.height - 15))],
 					fov: fov,
 					exploredCells: exploredCells
@@ -22009,6 +22013,7 @@
 			//Navigation functions
 
 			value: function scroll(e) {
+				console.log(this.state);
 				e.preventDefault();
 				if (e.keyCode === ROT.VK_I) {
 					this.scrollScreen(0, -1);
@@ -22029,14 +22034,14 @@
 				var screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
 				var entity = this.entityAt(this.state.entities, [playerX, playerY]);
 				var state = void 0;
-				if (this.isStaircase(playerX, playerY) && this.squareIsEmpty(playerX, playerY)) {
-					state = this.goUpstairs(playerX, playerY, screenX, screenY);
-				} else if (this.squareIsEmpty(playerX, playerY)) {
-					state = this.move(playerX, playerY, screenX, screenY);
+				if (this.isStaircase([playerX, playerY]) && this.squareIsEmpty([playerX, playerY])) {
+					state = this.goUpstairs([playerX, playerY], [screenX, screenY]);
+				} else if (this.squareIsEmpty([playerX, playerY])) {
+					state = this.move([playerX, playerY], [screenX, screenY]);
 				} else if (entity) {
-					state = this.encounterEntity(entity);
+					state = this.attackEntity(entity);
 				} else {
-					state = this.dig(playerX, playerY);
+					state = this.dig([playerX, playerY]);
 				}
 				this.engine.unlock();
 				state = _extends({}, state, { entities: state.entities || this.addMoreTroopers() });
@@ -22044,14 +22049,14 @@
 			}
 		}, {
 			key: 'goUpstairs',
-			value: function goUpstairs(x, y, screenX, screenY) {
+			value: function goUpstairs(playerCoords, screenCoords) {
 				var _this3 = this;
 
 				var player = this.state.player;
 				var exploredCells = {};
 				var floor = this.state.floor + 1;
-				player.coords = [x, y];
-				this.state.fov.compute(x, y, 3, function (x, y, radius, visiblitiy) {
+				player.coords = playerCoords;
+				this.state.fov.compute(playerCoords[0], playerCoords[1], 3, function (x, y, radius, visiblitiy) {
 					exploredCells[x + ',' + y + ',' + floor] = true;
 				});
 				this.state.entities.forEach(function (entity) {
@@ -22062,7 +22067,7 @@
 					player: player,
 					entities: this.generateEntities(this.state.map, _entities.trooperTemplate, 15, [this.state.player]),
 					message: 'Enter the next level, you have.',
-					coords: [screenX, screenY],
+					coords: screenCoords,
 					fov: this.state.world.fov[floor],
 					exploredCells: exploredCells,
 					floor: floor
@@ -22070,37 +22075,37 @@
 			}
 		}, {
 			key: 'move',
-			value: function move(x, y, screenX, screenY) {
+			value: function move(playerCoords, screenCoords) {
 				var _this4 = this;
 
 				var player = this.state.player;
 				var exploredCells = this.state.exploredCells;
 				var entities = this.state.entities;
-				player.coords = [x, y];
-				this.state.fov.compute(x, y, 3, function (x, y, radius, visibility) {
+				player.coords = playerCoords;
+				this.state.fov.compute(playerCoords[0], playerCoords[1], 3, function (x, y, radius, visibility) {
 					exploredCells[x + ',' + y + ',' + _this4.state.floor] = true;
 				});
-				this.moveTroopers(this.state.entities, x, y);
+				this.moveTroopers(this.state.entities, player);
 				return {
 					player: player,
-					coords: [screenX, screenY],
+					coords: screenCoords,
 					message: '',
 					exploredCells: exploredCells
 				};
 			}
 		}, {
 			key: 'dig',
-			value: function dig(x, y) {
+			value: function dig(playerCoords) {
 				var map = this.state.map;
-				map[x][y] = true;
+				map[playerCoords[0]][playerCoords[1]] = true;
 				return {
 					map: map,
 					message: 'Do or do not. There is no try'
 				};
 			}
 		}, {
-			key: 'encounterEntity',
-			value: function encounterEntity(entity) {
+			key: 'attackEntity',
+			value: function attackEntity(entity) {
 				return {
 					message: this.state.player.attack(entity),
 					entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities
@@ -22111,17 +22116,18 @@
 
 		}, {
 			key: 'isStaircase',
-			value: function isStaircase(x, y) {
-				return this.state.map[x][y] == 2;
+			value: function isStaircase(coords) {
+				return this.state.map[coords[0]][coords[1]] == 2;
 			}
 		}, {
 			key: 'squareIsEmpty',
-			value: function squareIsEmpty(x, y) {
+			value: function squareIsEmpty(coords) {
+				var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.map;
 				var entities = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.state.entities;
-				var map = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state.map;
+				var player = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.state.player;
 
-				if (x >= 0 && x < this.props.width && y >= 0 && y < this.props.height) {
-					if (map[x][y] && !this.entityAt(entities, [x, y])) {
+				if (coords[0] >= 0 && coords[0] < this.props.width && coords[1] >= 0 && coords[1] < this.props.height) {
+					if (map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords)) {
 						return true;
 					}
 				}
@@ -22130,61 +22136,69 @@
 		}, {
 			key: 'entityAt',
 			value: function entityAt(entities, coords) {
-				if (!entities) return false;
-				for (var i = 0; i < entities.length; i++) {
-					if (entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
-						return entities[i];
+				if (entities) {
+					for (var i = 0; i < entities.length; i++) {
+						if (entities[i].coords[0] == coords[0] && entities[i].coords[1] == coords[1]) {
+							return entities[i];
+						}
 					}
 				}
 				return false;
 			}
 		}, {
 			key: 'playerAt',
-			value: function playerAt(coords) {
-				var playerCoords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.player.coords;
-
-				return coords[0] == playerCoords[0] && coords[1] == playerCoords[1];
+			value: function playerAt(player, coords) {
+				return player.coords && coords[0] == player.coords[0] && coords[1] == player.coords[1];
 			}
 
 			//functions for generating entities
 
 		}, {
-			key: 'initializeEntity',
-			value: function initializeEntity(entities, map) {
+			key: 'initialize',
+			value: function initialize() {
+				var map = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.state.map;
+				var entities = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.entities;
+				var player = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.state.player;
+
 				var x = void 0,
 				    y = void 0;
 				do {
 					x = Math.floor(Math.random() * this.props.width);
 					y = Math.floor(Math.random() * this.props.height);
-				} while (!this.squareIsEmpty(x, y, entities, map));
+				} while (!this.squareIsEmpty([x, y], map, entities, player));
 				return [x, y];
 			}
 		}, {
+			key: 'generateEntity',
+			value: function generateEntity(template, map) {
+				var entity = new _entity2.default(template);
+				entity.coords = this.initialize(map);
+				entity.engine = this.engine;
+				this.scheduler.add(entity, true);
+				return entity;
+			}
+		}, {
 			key: 'generateEntities',
-			value: function generateEntities(map, template, num, existingEntities) {
-				var entities = [].concat(_toConsumableArray(existingEntities)) || [];
+			value: function generateEntities(template, num, map, player) {
+				var entities = [];
 				for (var i = 0; i < num; i++) {
 					var entity = new _entity2.default(template);
-					entity.coords = this.initializeEntity(entities, map);
+					entity.coords = this.initialize(map, entities, player);
 					entities.push(entity);
 					this.scheduler.add(entity, true);
 				}
-				return existingEntities ? entities.splice(existingEntities.length) : entities;
+				return entities;
 			}
 		}, {
-			key: 'addMoreTroopers',
-			value: function addMoreTroopers() {
-				var newTroopers = [];
-				for (var i = 0; i < this.state.entities.length; i++) {
-					var newTrooperCoords = this.state.entities[i]._newTrooperCoords;
-					if (newTrooperCoords && this.squareIsEmpty(newTrooperCoords[0], newTrooperCoords[1])) {
-						var newTrooper = new _entity2.default(_entities.trooperTemplate);
-						newTrooper.coords = newTrooperCoords;
-						this.scheduler.add(newTrooper, true);
-						newTroopers.push(newTrooper);
-					}
+			key: 'generateItems',
+			value: function generateItems(template, num, map, player) {
+				var items = [];
+				for (var i = 0; i < num; i++) {
+					var item = new _item.Item(template);
+					item.coords = this.initialize(map, [], player);
+					items.push(item);
 				}
-				return [].concat(_toConsumableArray(this.state.entities), newTroopers);
+				return items;
 			}
 		}, {
 			key: 'removeEntity',
@@ -22200,20 +22214,26 @@
 				return entities;
 			}
 		}, {
-			key: 'generateEntity',
-			value: function generateEntity(map, template) {
-				var entity = new _entity2.default(template);
-				entity.coords = this.initializeEntity([], map);
-				entity.engine = this.engine;
-				this.scheduler.add(entity, true);
-				return entity;
+			key: 'addMoreTroopers',
+			value: function addMoreTroopers() {
+				var newTroopers = [];
+				for (var i = 0; i < this.state.entities.length; i++) {
+					var newTrooperCoords = this.state.entities[i]._newTrooperCoords;
+					if (newTrooperCoords && this.squareIsEmpty(newTrooperCoords)) {
+						var newTrooper = new _entity2.default(_entities.trooperTemplate);
+						newTrooper.coords = newTrooperCoords;
+						this.scheduler.add(newTrooper, true);
+						newTroopers.push(newTrooper);
+					}
+				}
+				return [].concat(_toConsumableArray(this.state.entities), newTroopers);
 			}
 		}, {
 			key: 'moveTroopers',
-			value: function moveTroopers(entities, x, y) {
+			value: function moveTroopers(entities, player) {
 				var troopers = entities;
 				for (var i = 0; i < troopers.length; i++) {
-					if (troopers[i]._newCoords && !this.playerAt(troopers[i]._newCoords, [x, y]) && this.squareIsEmpty(troopers[i]._newCoords[0], troopers[i]._newCoords[1])) {
+					if (troopers[i]._newCoords && this.squareIsEmpty(troopers[i]._newCoords, this.state.map, this.state.entities, player)) {
 						troopers[i].coords = troopers[i]._newCoords;
 					}
 				}
@@ -22247,6 +22267,7 @@
 							height: this.props.height,
 							player: this.state.player,
 							entities: this.state.entities,
+							items: this.state.items,
 							coords: this.state.coords,
 							exploredCells: this.state.exploredCells,
 							floor: this.state.floor })
@@ -27887,6 +27908,10 @@
 
 	var _entity2 = _interopRequireDefault(_entity);
 
+	var _item = __webpack_require__(191);
+
+	var _item2 = _interopRequireDefault(_item);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27947,6 +27972,21 @@
 				return entityComponents;
 			}
 		}, {
+			key: "getItemComponents",
+			value: function getItemComponents() {
+				var _this4 = this;
+
+				var itemComponents = this.props.items.map(function (item, i) {
+					var style = {
+						top: item.coords[1] * 30,
+						left: item.coords[0] * 30,
+						display: _this4.props.exploredCells[item.coords[0] + ',' + item.coords[1] + ',' + _this4.props.floor] ? 'block' : 'none'
+					};
+					return _react2.default.createElement(_item2.default, { key: i, style: style });
+				});
+				return itemComponents;
+			}
+		}, {
 			key: "render",
 			value: function render() {
 				var tiles = this.getTiles();
@@ -27964,6 +28004,7 @@
 					_react2.default.createElement(_player2.default, {
 						player: this.props.player }),
 					entityComponents,
+					itemComponents,
 					tiles
 				);
 			}
@@ -28123,6 +28164,51 @@
 
 /***/ },
 /* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ItemComponent = function (_Component) {
+		_inherits(ItemComponent, _Component);
+
+		function ItemComponent(props) {
+			_classCallCheck(this, ItemComponent);
+
+			return _possibleConstructorReturn(this, (ItemComponent.__proto__ || Object.getPrototypeOf(ItemComponent)).call(this, props));
+		}
+
+		_createClass(ItemComponent, [{
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement("div", {
+					className: "item saber",
+					style: this.props.style });
+			}
+		}]);
+
+		return ItemComponent;
+	}(_react.Component);
+
+	exports.default = ItemComponent;
+
+/***/ },
+/* 192 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", {
@@ -28193,7 +28279,49 @@
 	exports.default = Entity;
 
 /***/ },
-/* 192 */
+/* 193 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Item = function () {
+		function Item(properties) {
+			_classCallCheck(this, Item);
+
+			this.x;
+			this.y;
+			this.name = properties["name"] || "";
+		}
+
+		_createClass(Item, [{
+			key: "coords",
+			get: function get() {
+				return [this.x, this.y];
+			},
+			set: function set(coordinates) {
+				this.x = coordinates[0];
+				this.y = coordinates[1];
+			}
+		}]);
+
+		return Item;
+	}();
+
+	var saberTemplate = {
+		name: "LightSaber"
+	};
+
+	exports.Item = Item;
+	exports.saberTemplate = saberTemplate;
+
+/***/ },
+/* 194 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", {
@@ -28207,7 +28335,7 @@
 			this._name = 'Jedi';
 		},
 		act: function act() {
-			this._engine.lock();
+			this.engine.lock();
 		}
 	};
 
@@ -28247,10 +28375,8 @@
 			this._hp -= damage;
 			if (this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
 				this.attack(attacker);
-			} else if (this._hp < 0 && this.hasMixin('PlayerActor')) {
-				console.log("You Lose!");
-				this.act();
 			}
+			return this._hp > 0 ? "Attack the " + this._name + " for " + damage + " damage, you have." : "Defeat the " + this._name + ", you have.";
 		},
 		getMaxHp: function getMaxHp() {
 			return this._maxHp;
@@ -28273,8 +28399,7 @@
 				var attack = this.getAttackValue();
 				var defense = entity.getDefenseValue();
 				var damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
-				entity.takeDamage(this, damage);
-				return entity._hp > 0 ? "Attack the " + entity._name + " for " + damage + " damage, you have." : "Defeat the " + entity._name + ", you have.";
+				return entity.takeDamage(this, damage);
 			}
 		},
 		getAttackValue: function getAttackValue() {
@@ -28297,7 +28422,7 @@
 	};
 
 /***/ },
-/* 193 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	Object.defineProperty(exports, "__esModule", {
@@ -28507,7 +28632,7 @@
 	exports.default = World;
 
 /***/ },
-/* 194 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (window) {

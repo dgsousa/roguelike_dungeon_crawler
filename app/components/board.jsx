@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import Player from "./player.jsx";
 import Tile from "./tile.jsx";
 import EntityComponent from "./entity.jsx";
-
+import ItemComponent from "./item.jsx";
 
 export default class Board extends Component {
 	constructor(props) {
@@ -48,10 +48,24 @@ export default class Board extends Component {
 		return entityComponents;
 	}
 
+	getItemComponents() {
+		let itemComponents = this.props.items.map((item, i) => {
+			let style = {
+				top: item.coords[1] * 30,
+				left: item.coords[0] * 30,
+				display: this.props.exploredCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
+			}
+			return (<ItemComponent key={i} style={style}/>)
+		})
+
+		return itemComponents;
+	}
+
 
 	render() {
 		let tiles = this.getTiles();
 		let entityComponents = this.getEntityComponents();
+		let itemComponents = this.getItemComponents();
 		let style = {
 			top: -this.props.coords[1] * 30,
 			left: -this.props.coords[0] * 30
@@ -64,6 +78,7 @@ export default class Board extends Component {
 				<Player 
 					player={this.props.player}/>
 				{entityComponents}
+				{itemComponents}
 				{tiles}
 				
 			</div>

@@ -1,8 +1,8 @@
-export default class Item {
+class Item {
 	constructor(properties) {
 		this.x;
 		this.y;
-		this.name = properites["name"] || "";
+		this.name = properties["name"] || "";
 	}
 
 	get coords() {
@@ -16,3 +16,8 @@ export default class Item {
 }
 
 
+const saberTemplate = {
+	name: "LightSaber"
+}
+
+export {Item, saberTemplate};
