@@ -48,4 +48,27 @@ export default class Entity {
 	set engine(engine) {
 		this._engine = engine;
 	}
+
+	get stats() {
+		return {
+			attackVaue: this._attackValue,
+			defenseValue: this._defenseValue,
+			hp: this._hp,
+			experience: this._experience
+		}
+	}
+
+	set stats(object) {
+		this._attackValue = object.attackValue || this._attackValue;
+		this._defenseValue = object.defenseValue || this._defenseValue;
+		this._hp = object.hp || this._hp;
+		this._experience = object.experience || this._expeience;
+	}
 }
+
+
+
+
+
+
+

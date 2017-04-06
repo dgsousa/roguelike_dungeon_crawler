@@ -38,8 +38,8 @@ export default class App extends Component {
 		const fov = world.fov[this.state.floor];
 		const exploredCells = {};
 		const player = this.generateEntity(playerTemplate, map);
-		const stormTroopers = this.generateEntities(trooperTemplate, 15, map, player);
-		const lightSabers = this.generateItems(saberTemplate, 5, map, player)
+		const stormTroopers = this.generateEntities(trooperTemplate, 10, map, player);
+		const lightSabers = this.generateItems(saberTemplate, 1, map, player)
 		fov.compute(player.coords[0], player.coords[1], 3, (fovX, fovY, radius, visibility) => {
 			exploredCells[fovX + ',' + fovY + ',' + this.state.floor] = true;
 		})
@@ -114,7 +114,7 @@ export default class App extends Component {
 		return {
 			map: this.state.world.tiles[floor],
 			player: player,
-			entities: this.generateEntities(trooperTemplate, 15, this.state.world.tiles[floor], player),
+			entities: this.generateEntities(trooperTemplate, 15, this.state.world.tiles[floor], player, floor),
 			items: this.generateItems(saberTemplate, 5, this.state.world.tiles[floor], player),
 			message: 'Enter the next level, you have.',
 			coords: screenCoords,
@@ -214,11 +214,17 @@ export default class App extends Component {
 	}
 
 
-	generateEntities(template, num, map, player) {
+	generateEntities(template, num, map, player, floor=this.state.floor) {
 		let entities = [];
 		for(let i = 0; i < num; i++) {
 			let entity = new Entity(template);
 			entity.coords = this.initialize(map, entities, player);
+			entity.stats = {
+				attackValue: 15 * (floor + 1),
+				defenseValue: 10 * (floor + 1),
+				experience: 5 * (floor + 1),
+				hp: 5 * (floor + 1)
+			}
 			entities.push(entity);
 			this.scheduler.add(entity, true);
 		}
@@ -260,13 +266,19 @@ export default class App extends Component {
 		return items;
 	}
 
-	addMoreTroopers() {
+	addMoreTroopers(floor = this.state.floor) {
 		let newTroopers = [];
 		for(let i = 0; i < this.state.entities.length; i++) {
 			let newTrooperCoords = this.state.entities[i]._newTrooperCoords;
 			if(newTrooperCoords && this.squareIsEmpty(newTrooperCoords)) {
 				let newTrooper = new Entity(trooperTemplate)
 				newTrooper.coords = newTrooperCoords;
+				newTrooper.stats = {
+					attackValue: 15 * (floor + 1),
+					defenseValue: 10 * (floor + 1),
+					experience: 5 * (floor + 1),
+					hp: 10 * (floor + 1)
+				}
 				this.scheduler.add(newTrooper, true);
 				newTroopers.push(newTrooper);
 			}
