@@ -3,35 +3,48 @@ const playerActor = {
 	name: "PlayerActor",
 	groupName: "Actor",
 	init(template) {
-		this._name = 'Jedi'
+		this._name = 'Hero'
 	},
 	act() {
 		this.engine.lock();
 	}
 }
 
-const trooperActor = {
-	name: "TrooperActor",
+const enemyActor = {
+	name: "EnemyActor",
 	groupName: "Actor",
 	init(template) {
 		this._newCoords = null;
-		this._newTrooperCoords = false;
-		this._name = 'storm trooper';
+		this._newEnemyCoords = false;
+		this._name = 'hench men';
+		this._type = 'henchmen'
 	},
 	act() {
 		this.walkAround();
 		if(Math.random() < .005) {
 			const xOffset = Math.floor(Math.random() * 3) - 1;
 			const yOffset = Math.floor(Math.random() * 3) - 1;
-			this._newTrooperCoords = [this.x + xOffset, this.y + yOffset];
+			this._newEnemyCoords = [this.x + xOffset, this.y + yOffset];
 		} else {
-			this._newTrooperCoords = false;
+			this._newEnemyCoords = false;
 		}
 	},
 	walkAround() {
 		const xOffset = Math.floor(Math.random() * 3) - 1;
 		const yOffset = Math.floor(Math.random() * 3) - 1;
 		this._newCoords = [this.x + xOffset, this.y + yOffset];
+	}
+}
+
+const bossActor = {
+	name: "BossActor",
+	groupName: "Actor",
+	init(template) {
+		this._name = "Boss Man",
+		this._type = "boss"
+	},
+	act() {
+		return;
 	}
 }
 
@@ -44,14 +57,17 @@ const destructible = {
 	takeDamage(attacker, damage) {
 		this._hp -= damage;
 		if(this._hp > 0 && this.hasMixin('Attacker') && !this.hasMixin('PlayerActor')) {
-			this.attack(attacker);
-			return `Attack the ${this._name} for ${damage} damage, you have.`
+			const message = this.attack(attacker);
+			return [`You attacked the ${this._name} for ${damage} damage.`, `${message}`]
 		} else if(this._hp <= 0 && !this.hasMixin('PlayerActor')) {
-			console.log(this._attackValue, this._defenseValue, this._experience, this._hp);
-			attacker._experience += this._experience
-			attacker.levelUp()
-			return `Defeat the ${this._name}, you have.`
-		}							
+			attacker._experience += this._experience;
+			attacker.levelUp();
+			return [`You defeated the ${this._name}.`]
+		} else if(this._hp > 0 && this.hasMixin('Attacker') && this.hasMixin('PlayerActor')) {
+			return [`You were attacked by the ${attacker._name} for ${damage} damage.`];
+		} else if(this._hp < 0 && this.hasMixin('Attacker') && this.hasMixin("PlayerActor")) {
+			return [`You were killed by the ${attacker._name}`];
+		}						
 	},
 	getMaxHp() {
 		return this._maxHp;
@@ -86,7 +102,7 @@ const attacker = {
 		const sumRange = (min, max) => {
 			return min !== max ? sumRange(min, max - 1) + max : 0
 		}
-		if(this._experience === (sumRange(0, this._level + 1)) * 100) {
+		if(this._experience >= (sumRange(0, this._level + 1)) * 100) {
 			this._level += 1;
 			this._attackValue += 10 * this._level;
 			this._defenseValue += 5 * this._level;
@@ -106,12 +122,22 @@ export const playerTemplate = {
 };
 
 
-export const trooperTemplate = {
-	_attackValue: 20,
-	_defenseValue: 10,
-	_hp: 10,
-	_experience: 10,
-	mixins: [trooperActor, attacker, destructible]
+export const enemyTemplate = (num) => {
+	return {
+		_attackValue: 20 * num,
+		_defenseValue: 10 * num,
+		_hp: 5 * num,
+		_experience: 10 * num,
+		mixins: [enemyActor, attacker, destructible]
+	}
 };
+
+export const bossTemplate = {
+	_attackValue: 100,
+	_defenseValue: 100,
+	_hp: 50,
+	mixins: [bossActor, attacker, destructible]
+}
+
 
 

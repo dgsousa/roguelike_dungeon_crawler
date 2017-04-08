@@ -9,7 +9,7 @@ export default class EntityComponent extends Component {
 	render() {
 		return (
 			<div
-				className={"entity trooper"}
+				className={"entity " + this.props.type}
 				style={this.props.style}>
 				
 			</div>

@@ -16,7 +16,7 @@ export default class Player extends Component {
 		}
 		return (
 			<div
-				className={'player yoda'}
+				className={'player'}
 				style={style}>
 			</div>
 		)

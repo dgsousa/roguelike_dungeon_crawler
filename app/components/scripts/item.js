@@ -3,21 +3,30 @@ class Item {
 		this.x;
 		this.y;
 		this.name = properties["name"] || "";
-	}
-
-	get coords() {
-		return [this.x, this.y];
-	}
-
-	set coords(coordinates) {
-		this.x = coordinates[0];
-		this.y = coordinates[1];
+		this.type = properties["type"] || "";
 	}
 }
 
 
-const saberTemplate = {
-	name: "LightSaber"
-}
+const foodTemplate = (num) => {
+	return {	
+		name: "food",
+		type: "food",
+		hp: 10 * num
+	}
+};
 
-export {Item, saberTemplate};
+const weaponTemplate = (num) => {
+	return {
+		name: "weapon",
+		type: "weapon",
+		attackValue: 10 * num
+	}
+};
+
+
+
+
+
+
+export {Item, foodTemplate, weaponTemplate};

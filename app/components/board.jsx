@@ -10,17 +10,18 @@ export default class Board extends Component {
 	}
 
 	getTiles() {
-		let chars = {
-			'0': 'chewy',
-			'1': '',
-			'2': 'red'
+		const chars = {
+			'0': 'wall',
+			'1': 'floor',
+			'2': 'floor',
+			'3': 'floor',
+			'5': 'stairs'
 		};
 
-		let tiles = this.props.map.map((col, x) => {
+		const tiles = this.props.map.map((col, x) => {
 			return col.map((tile, y) => {
 				char = this.props.exploredCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
-				
-				let style = {
+				const style = {
 					top: y * 30,
 					left: x * 30
 				}
@@ -37,20 +38,21 @@ export default class Board extends Component {
 
 
 	getEntityComponents() {
-		let entityComponents = this.props.entities.map((entity, i) => {
-			let style = {
+		const entityComponents = this.props.entities.map((entity, i) => {
+			const type = entity._type;
+			const style = {
 				top: entity.coords[1] * 30,
 				left: entity.coords[0] * 30,
 				display: this.props.exploredCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
 			}
-			return (<EntityComponent key={i} style={style}/>)
+			return (<EntityComponent key={i} style={style} type={type}/>)
 		})
 		return entityComponents;
 	}
 
 	getItemComponents() {
-		let itemComponents = this.props.items.map((item, i) => {
-			let style = {
+		const itemComponents = this.props.items.map((item, i) => {
+			const style = {
 				top: item.coords[1] * 30,
 				left: item.coords[0] * 30,
 				display: this.props.exploredCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
@@ -63,10 +65,10 @@ export default class Board extends Component {
 
 
 	render() {
-		let tiles = this.getTiles();
-		let entityComponents = this.getEntityComponents();
-		let itemComponents = this.getItemComponents();
-		let style = {
+		const tiles = this.getTiles();
+		const entityComponents = this.getEntityComponents();
+		const itemComponents = this.getItemComponents();
+		const style = {
 			top: -this.props.coords[1] * 30,
 			left: -this.props.coords[0] * 30
 		}
