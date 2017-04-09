@@ -6,7 +6,11 @@ export const playerTemplate = {
 	_defenseValue: 10,
 	_hp: 100,
 	_experience: 0,
-	_level: 0
+	_level: 0,
+
+	act: () => {
+		console.log(this);
+	}
 
 	// takeDamage: (attacker, damage) => {
 	// 	this._hp -= damage;
@@ -40,7 +44,7 @@ export const enemyTemplate = (num) => {
 		_experience: 10 * num,
 
 		act: () => {
-			this.walkAround();
+			//this.walkAround();
 		},
 		
 		walkAround: () => {
@@ -57,7 +61,10 @@ export const bossTemplate = {
 	_type: "boss",
 	_attackValue: 100,
 	_defenseValue: 100,
-	_hp: 50
+	_hp: 50,
+	act: () => {
+		return;
+	}
 }
 
 

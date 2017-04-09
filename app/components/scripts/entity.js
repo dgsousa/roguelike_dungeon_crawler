@@ -8,9 +8,9 @@ export default class Entity {
 		}
 	}
 
-	act() {
-		return;
-	}
+	// act() {
+	// 	return;
+	// }
 
 	// attack(entity) {
 	// 	const attack = this._attackValue;
