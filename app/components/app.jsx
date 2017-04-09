@@ -15,6 +15,7 @@ export default class App extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			world: [],
 			map: [],
 			player: {},
 			entities: [],
@@ -64,97 +65,98 @@ export default class App extends Component {
 
 	scroll(e) {
 		e.preventDefault();
-		if(e.keyCode === ROT.VK_I) {
-			this.scrollScreen(0, -1);
-					
-		} else if(e.keyCode === ROT.VK_M) {
-			this.scrollScreen(0, 1);	
-			
-		} else if(e.keyCode === ROT.VK_J) {
-			this.scrollScreen(-1, 0);
-			
-		} else if(e.keyCode === ROT.VK_K) {
-			this.scrollScreen(1, 0);
-		}
+		e.keyCode === ROT.VK_I ? this.scrollScreen(0, -1) :
+		e.keyCode === ROT.VK_M ? this.scrollScreen(0, 1) :
+		e.keyCode === ROT.VK_J ? this.scrollScreen(-1, 0) :
+		e.keyCode === ROT.VK_K ? this.scrollScreen(1, 0) : false
 	};
 
-
-	scrollScreen(x, y) {
+	updateCoords(x, y) {
 		const playerX = Math.max(0, Math.min(this.props.width - 1, this.state.player.coords[0] + x));
 	 	const playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
 		const screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
-		let state;
-		if(this.isStaircase([playerX, playerY]) && this.squareIsEmpty([playerX, playerY])) {
-			state = this.goUpstairs([playerX, playerY], [screenX, screenY]);
-		} else if(this.squareIsEmpty([playerX, playerY])) {
-			state = this.move([playerX, playerY], [screenX, screenY]);	
-		} else if(entity = this.entityAt(this.state.entities, [playerX, playerY])) {
-			state = this.attackEntity(entity);
-		} 
-		this.state.entities.forEach(function(entity) {
+		return {
+			playerCoords: [playerX, playerY],
+			screenCoords: [screenX, screenY]
+		}
+	}
+
+
+	scrollScreen(x, y) {
+		let {playerCoords, screenCoords} = this.updateCoords(x, y);
+		
+		let	state = this.goUpstairs(playerCoords, screenCoords) || 
+					this.move(playerCoords, screenCoords) 		||
+					this.attackEntity(playerCoords)				||
+					this.state;
+		 
+		this.state.entities.forEach((entity) => {
 			entity.act();
 		})
-		this.setState(state || this.state);
-		
+		this.setState(state);
 	}
 
 	goUpstairs(playerCoords, screenCoords) {
-		const player = this.state.player;
-		player.coords = playerCoords;
-		const exploredCells = {};
-		const floor = this.state.floor + 1;
-		const map = this.state.world.regions[floor];
-		const enemies = floor == 3 ? 
-						[...this.generateEntities(enemyTemplate(floor + 1), 10, map, player), ...this.generateEntities(bossTemplate, 1, map, player)]:
-						this.generateEntities(enemyTemplate(floor + 1), 10, map, player);
-		const weapons = this.generateItems(weaponTemplate(floor + 1), 1, this.state.world.regions[floor], player);
-		const food = this.generateItems(foodTemplate(floor + 1), 5, this.state.world.regions[floor], player);
+		if(this.isStaircase(playerCoords) && this.squareIsEmpty(playerCoords)) {
+			const player = this.state.player;
+			player.coords = playerCoords;
+			const exploredCells = {};
+			const floor = this.state.floor + 1;
+			const map = this.state.world.regions[floor];
+			const enemies = floor == 3 ? 
+							[...this.generateEntities(enemyTemplate(floor + 1), 10, map, player), ...this.generateEntities(bossTemplate, 1, map, player)]:
+							this.generateEntities(enemyTemplate(floor + 1), 10, map, player);
+			const weapons = this.generateItems(weaponTemplate(floor + 1), 1, this.state.world.regions[floor], player);
+			const food = this.generateItems(foodTemplate(floor + 1), 5, this.state.world.regions[floor], player);
 
 
-		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visiblitiy) => {
-			exploredCells[x + ',' + y + ',' + floor] = true;
-		})
-		return {
-			map: map,
-			player: player,
-			entities: enemies,
-			items: [...weapons, ...food],
-			message: [`You are now on the floor number ${floor + 1}.`],
-			coords: screenCoords,
-			fov: this.state.world.fov[floor],
-			exploredCells: exploredCells,
-			floor: floor,
+			this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visiblitiy) => {
+				exploredCells[x + ',' + y + ',' + floor] = true;
+			})
+			return {
+				map: map,
+				player: player,
+				entities: enemies,
+				items: [...weapons, ...food],
+				message: [`You are now on the floor number ${floor + 1}.`],
+				coords: screenCoords,
+				fov: this.state.world.fov[floor],
+				exploredCells: exploredCells,
+				floor: floor,
+			}
 		}
 	}
 
 	move(playerCoords, screenCoords) {
-		const player = this.state.player;
-		player.coords = playerCoords;
-		const exploredCells = this.state.exploredCells;
-		const message = [];
-		const items = this.pickUpItem(player, message);
-		const entities = this.moveEntities(this.state.entities, player);
-
-		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visibility) => {
-			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
-		})	
-		
-		return {
-			player: player,
-			entities: entities,
-			items: items,
-			coords: screenCoords,
-			message: message,
-			exploredCells: exploredCells
+		if(this.squareIsEmpty(playerCoords)) {
+			const player = this.state.player;
+			player.coords = playerCoords;
+			const exploredCells = this.state.exploredCells;
+			const message = [];
+			const items = this.pickUpItem(player, message);
+			const entities = this.moveEntities(this.state.entities, player);
+			this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visibility) => {
+				exploredCells[x + ',' + y + ',' + this.state.floor] = true;
+			})		
+			return {
+				player: player,
+				entities: entities,
+				items: items,
+				coords: screenCoords,
+				message: message,
+				exploredCells: exploredCells
+			}
 		}
 	}
 
 
-	attackEntity(entity) {
-		return {
-			message: this.state.player.attack(entity),
-			entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
+	attackEntity(playerCoords) {
+		if(entity = this.entityAt(this.state.entities, playerCoords)) {
+			return {
+				message: this.state.player.attack(entity),
+				entities: entity._hp <= 0 ? this.removeEntity(entity) : this.state.entities,
+			}
 		}
 	}
 
@@ -168,7 +170,7 @@ export default class App extends Component {
 		
 	squareIsEmpty(coords, map = this.state.map, entities = this.state.entities, player = this.state.player) {
 		if(coords[0] >= 0 && coords[0] < this.props.width && coords[1] >= 0 && coords[1] < this.props.height) {
-			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords) && !this.isStaircase(coords, map)) {
+			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords)) {
 				return true;
 			} 
 		}
