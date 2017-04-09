@@ -3,34 +3,34 @@ export default class Entity {
 	constructor(properties) {
 		this.x;
 		this.y;
-		this.attachedMixins = {};
-		this.attachedMixinGroups = {};
-		const mixins = properties["mixins"] || [];
-		for (let i = 0; i < mixins.length; i++) {
-			for (let key in mixins[i]) {
-				if(key != "name" && key != "init" && !this.hasOwnProperty(key)) {
-					this[key] = mixins[i][key];
-				}
-			}
-			this.attachedMixins[mixins[i]["name"]] = true;
-			if(mixins[i]["groupName"]) {
-				this.attachedMixinGroups[mixins[i]["groupName"]] = true;
-			}
-			if(mixins[i]["init"]) {
-				mixins[i].init.call(this, properties);
-			}
+		for(let key in properties) {
+			this[key] = properties[key];
 		}
 	}
 
-	hasMixin(mixin) {
-		for(let key in this.attachedMixins) {
-			if(key === mixin) {
-				return true;
-			}
-		}
-		return false;
+	act() {
+		return;
 	}
 
+	// attack(entity) {
+	// 	const attack = this._attackValue;
+	// 	const defense = entity._defenseValue;
+	// 	const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
+	// 	return entity.takeDamage(this, damage);
+	// }
+
+	// takeDamage(attacker, damage) {
+	// 	this._hp -= damage;
+	// 	if(this._hp > 0) {
+	// 		const message = this.attack(attacker);
+	// 		return [`You attacked the ${this._name} for ${damage} damage.`, `${message}`]
+	// 	} else if(this._hp <= 0) {
+	// 		attacker._experience += this._experience;
+	// 		attacker.levelUp();
+	// 		return [`You defeated the ${this._name}.`]
+	// 	} 
+						
+	// }
 
 	get coords() {
 		return [this.x, this.y];
@@ -41,22 +41,6 @@ export default class Entity {
 		this.y = coordinates[1];
 	}
 
-
-	get stats() {
-		return {
-			attackVaue: this._attackValue,
-			defenseValue: this._defenseValue,
-			hp: this._hp,
-			experience: this._experience
-		}
-	}
-
-	set stats(object) {
-		this._attackValue = object.attackValue || this._attackValue;
-		this._defenseValue = object.defenseValue || this._defenseValue;
-		this._hp = object.hp || this._hp;
-		this._experience = object.experience || this._expeience;
-	}
 }
 
 
