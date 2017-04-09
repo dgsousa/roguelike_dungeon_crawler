@@ -4,6 +4,8 @@ class Item {
 		this.y;
 		this.name = properties["name"] || "";
 		this.type = properties["type"] || "";
+		this._attackValue = properties["attackValue"] || 0;
+		this._hp = properties["hp"] || 0;
 	}
 }
 
@@ -23,10 +25,6 @@ const weaponTemplate = (num) => {
 		attackValue: 10 * num
 	}
 };
-
-
-
-
 
 
 export {Item, foodTemplate, weaponTemplate};

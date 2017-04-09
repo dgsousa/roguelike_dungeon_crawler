@@ -28,12 +28,10 @@ export default class App extends Component {
 	};
 	
 	componentWillMount() {
-		this.scheduler = new ROT.Scheduler.Simple();
-		this.engine = new ROT.Engine(this.scheduler);
 		this.setState(this.createGame());
 	};
 
-	
+
 	createGame() {
 		const world = new World(this.props.width, this.props.height, this.props.depth);
 		const map = world.regions[this.state.floor];
@@ -86,45 +84,42 @@ export default class App extends Component {
 	 	const playerY = Math.max(0, Math.min(this.props.height - 1, this.state.player.coords[1] + y));
 		const screenX = Math.max(0, Math.min(playerX - 12, this.props.width - 25));
 		const screenY = Math.max(0, Math.min(playerY - 7, this.props.height - 15));
-		const entity = this.entityAt(this.state.entities, [playerX, playerY]);
 		let state;
 		if(this.isStaircase([playerX, playerY]) && this.squareIsEmpty([playerX, playerY])) {
 			state = this.goUpstairs([playerX, playerY], [screenX, screenY]);
 		} else if(this.squareIsEmpty([playerX, playerY])) {
 			state = this.move([playerX, playerY], [screenX, screenY]);	
-		} else if(entity) {
+		} else if(entity = this.entityAt(this.state.entities, [playerX, playerY])) {
 			state = this.attackEntity(entity);
-		} else {
-			state = this.state;
-		}
-		this.engine.unlock();
-		this.setState(state);
+		} 
+		this.state.entities.forEach(function(entity) {
+			entity.act();
+		})
+		this.setState(state || this.state);
 		
 	}
 
 	goUpstairs(playerCoords, screenCoords) {
 		const player = this.state.player;
+		player.coords = playerCoords;
 		const exploredCells = {};
 		const floor = this.state.floor + 1;
 		const map = this.state.world.regions[floor];
-		player.coords = playerCoords;
+		const enemies = floor == 3 ? 
+						[...this.generateEntities(enemyTemplate(floor + 1), 10, map, player), ...this.generateEntities(bossTemplate, 1, map, player)]:
+						this.generateEntities(enemyTemplate(floor + 1), 10, map, player);
+		const weapons = this.generateItems(weaponTemplate(floor + 1), 1, this.state.world.regions[floor], player);
+		const food = this.generateItems(foodTemplate(floor + 1), 5, this.state.world.regions[floor], player);
+
+
 		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visiblitiy) => {
 			exploredCells[x + ',' + y + ',' + floor] = true;
 		})
-		this.state.entities.forEach((entity) => {
-			this.scheduler.remove(entity);
-		})
-		const enemies = floor == 3 ? 
-						[...this.generateEntities(enemyTemplate(floor + 1), 10, map, player), ...this.generateEntities(bossTemplate, 1, map, player)]:
-						this.generateEntities(enemyTemplate(floor + 1), 10, map, player)
-
-		
 		return {
 			map: map,
 			player: player,
 			entities: enemies,
-			items: [...this.generateItems(weaponTemplate(floor + 1), 1, this.state.world.regions[floor], player), 
-					...this.generateItems(foodTemplate(floor + 1), 5, this.state.world.regions[floor], player)],
+			items: [...weapons, ...food],
 			message: [`You are now on the floor number ${floor + 1}.`],
 			coords: screenCoords,
 			fov: this.state.world.fov[floor],
@@ -135,16 +130,19 @@ export default class App extends Component {
 
 	move(playerCoords, screenCoords) {
 		const player = this.state.player;
-		const exploredCells = this.state.exploredCells;
-		let message = [];
 		player.coords = playerCoords;
+		const exploredCells = this.state.exploredCells;
+		const message = [];
 		const items = this.pickUpItem(player, message);
+		const entities = this.moveEntities(this.state.entities, player);
+
 		this.state.fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visibility) => {
 			exploredCells[x + ',' + y + ',' + this.state.floor] = true;
 		})	
-		this.moveEnemies(this.state.entities, player);
+		
 		return {
 			player: player,
+			entities: entities,
 			items: items,
 			coords: screenCoords,
 			message: message,
@@ -152,14 +150,6 @@ export default class App extends Component {
 		}
 	}
 
-	// dig(playerCoords) {
-	// 	const map = this.state.map;
-	// 	map[playerCoords[0]][playerCoords[1]] = 1;
-	// 	return {
-	// 		map: map,
-	// 		message: [`You dig through the wall.`]
-	// 	};
-	// }
 
 	attackEntity(entity) {
 		return {
@@ -171,14 +161,14 @@ export default class App extends Component {
 
 	//functions for discerning what kind of square is being encountered
 
-	isStaircase(coords) {
-		return this.state.map[coords[0]][coords[1]] == 5
+	isStaircase(coords, map = this.state.map) {
+		return map[coords[0]][coords[1]] == 5
 	}
 
 		
 	squareIsEmpty(coords, map = this.state.map, entities = this.state.entities, player = this.state.player) {
 		if(coords[0] >= 0 && coords[0] < this.props.width && coords[1] >= 0 && coords[1] < this.props.height) {
-			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords)) {
+			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords) && !this.isStaircase(coords, map)) {
 				return true;
 			} 
 		}
@@ -217,8 +207,6 @@ export default class App extends Component {
 	generateEntity(template, map) {
 		let entity = new Entity(template);
 		entity.coords = this.initialize(map);
-		entity.engine = this.engine;
-		this.scheduler.add(entity, true);
 		return entity;
 	}
 
@@ -229,7 +217,6 @@ export default class App extends Component {
 			let entity = new Entity(template);
 			entity.coords = this.initialize(map, entities, player);
 			entities.push(entity);
-			this.scheduler.add(entity, true);
 		}
 		return entities;
 	}
@@ -237,7 +224,6 @@ export default class App extends Component {
 	
 	removeEntity(entity) {
 		const entities = this.state.entities;
-		this.scheduler.remove(entity);
 		for(let i = 0; i < entities.length; i++) {
 			if(entities[i] == entity) {
 				entities.splice(i, 1);
@@ -262,44 +248,24 @@ export default class App extends Component {
 		items = this.state.items;
 		for(i = 0; i < items.length; i++) {
 			if(items[i].coords[0] === player.coords[0] && items[i].coords[1] === player.coords[1]) {
-				if(items[i].type == "food") {
-					player._hp += 10;
-					message.push([`You picked up a food.`])
-				}
-				if(items[i].type == "weapon") {
-					player._attackValue += 10;
-					message.push([`You found a weapon.`])
-				}
+				player._hp += items[i]._hp;
+				player._attackValue += items[i]._attackValue;
+				message.push([`You found a ${items[i].type}.`])
 				items.splice(i, 1);
 			}
 		}
 		return items;
 	}
 
-	// addMoreEnemies(floor = this.state.floor) {
-	// 	let newEnemies = [];
-	// 	for(let i = 0; i < this.state.entities.length; i++) {
-	// 		let newEnemyCoords = this.state.entities[i]._newEnemyCoords;
-	// 		if(newEnemyCoords && this.squareIsEmpty(newEnemyCoords)) {
-	// 			let newEnemy = new Entity(enemyTemplate(floor + 1))
-	// 			newEnemy.coords = newEnemyCoords;
-	// 			this.scheduler.add(newEnemy, true);
-	// 			newEnemies.push(newEnemy);
-	// 		}
-	// 	}
-	// 	return [...this.state.entities, ...newEnemies]
-	// }
 
-
-	moveEnemies(entities, player) {
-		const enemies = entities;
-		for (let i = 0; i < enemies.length; i++) {
-			if(enemies[i]._newCoords && 
-				this.squareIsEmpty(enemies[i]._newCoords, this.state.map, this.state.entities, player)) {
-				enemies[i].coords = enemies[i]._newCoords;
+	moveEntities(entities, player) {
+		for (let i = 0; i < entities.length; i++) {
+			if(entities[i]._newCoords && 
+				this.squareIsEmpty(entities[i]._newCoords, this.state.map, this.state.entities, player)) {
+				entities[i].coords = entities[i]._newCoords;
 			}
 		}
-		return enemies;
+		return entities;
 	}
 	
 	render() {

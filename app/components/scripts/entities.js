@@ -15,19 +15,11 @@ const enemyActor = {
 	groupName: "Actor",
 	init(template) {
 		this._newCoords = null;
-		this._newEnemyCoords = false;
 		this._name = 'hench men';
 		this._type = 'henchmen'
 	},
 	act() {
 		this.walkAround();
-		if(Math.random() < .005) {
-			const xOffset = Math.floor(Math.random() * 3) - 1;
-			const yOffset = Math.floor(Math.random() * 3) - 1;
-			this._newEnemyCoords = [this.x + xOffset, this.y + yOffset];
-		} else {
-			this._newEnemyCoords = false;
-		}
 	},
 	walkAround() {
 		const xOffset = Math.floor(Math.random() * 3) - 1;

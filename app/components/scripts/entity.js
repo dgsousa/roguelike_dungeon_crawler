@@ -41,13 +41,6 @@ export default class Entity {
 		this.y = coordinates[1];
 	}
 
-	get engine() {
-		return this._engine;
-	}
-
-	set engine(engine) {
-		this._engine = engine;
-	}
 
 	get stats() {
 		return {
