@@ -14,7 +14,7 @@ export default class Message extends Component {
 					key={key}>
 					{item}<br/>
 				</span>
-				)
+			)
 		})
 
 
