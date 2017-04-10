@@ -8,29 +8,21 @@ export default class Entity {
 		}
 	}
 
-	// act() {
-	// 	return;
-	// }
+	attack(opponent) {
+		const attack = this._attackValue;
+		const defense = entity._defenseValue;
+		const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
+		opponent.takeDamage(this, damage);
+	}
 
-	// attack(entity) {
-	// 	const attack = this._attackValue;
-	// 	const defense = entity._defenseValue;
-	// 	const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
-	// 	return entity.takeDamage(this, damage);
-	// }
+	takeDamage(attacker, damage) {
+		this._hp -= damage;
+		if(this._hp > 0) this.attack(attacker);			
+	}
 
-	// takeDamage(attacker, damage) {
-	// 	this._hp -= damage;
-	// 	if(this._hp > 0) {
-	// 		const message = this.attack(attacker);
-	// 		return [`You attacked the ${this._name} for ${damage} damage.`, `${message}`]
-	// 	} else if(this._hp <= 0) {
-	// 		attacker._experience += this._experience;
-	// 		attacker.levelUp();
-	// 		return [`You defeated the ${this._name}.`]
-	// 	} 
-						
-	// }
+	act() {
+		return;
+	}
 
 	get coords() {
 		return [this.x, this.y];

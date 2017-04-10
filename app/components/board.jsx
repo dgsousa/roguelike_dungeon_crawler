@@ -21,6 +21,7 @@ export default class Board extends Component {
 		const tiles = this.props.map.map((col, x) => {
 			return col.map((tile, y) => {
 				char = this.props.exploredCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
+				//char = chars[tile];
 				const style = {
 					top: y * 30,
 					left: x * 30
