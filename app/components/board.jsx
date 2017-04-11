@@ -20,7 +20,7 @@ export default class Board extends Component {
 
 		const tiles = this.props.map.map((col, x) => {
 			return col.map((tile, y) => {
-				char = this.props.exploredCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
+				char = this.props.visibleCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
 				//char = chars[tile];
 				const style = {
 					top: y * 30,
@@ -44,7 +44,7 @@ export default class Board extends Component {
 			const style = {
 				top: entity.coords[1] * 30,
 				left: entity.coords[0] * 30,
-				display: this.props.exploredCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
+				display: this.props.visibleCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
 			}
 			return (<EntityComponent key={i} style={style} type={type}/>)
 		})
@@ -56,7 +56,7 @@ export default class Board extends Component {
 			const style = {
 				top: item.coords[1] * 30,
 				left: item.coords[0] * 30,
-				display: this.props.exploredCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
+				display: this.props.visibleCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
 			}
 			return (<ItemComponent key={i} style={style}/>)
 		})
@@ -66,12 +66,15 @@ export default class Board extends Component {
 
 
 	render() {
+		const {player, height, width} = this.props;
 		const tiles = this.getTiles();
 		const entityComponents = this.getEntityComponents();
 		const itemComponents = this.getItemComponents();
+		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const style = {
-			top: -this.props.coords[1] * 30,
-			left: -this.props.coords[0] * 30
+			top: -screenY * 30,
+			left: -screenX * 30
 		}
 			
 		return (
@@ -79,7 +82,7 @@ export default class Board extends Component {
 				className={"board"}
 				style={style}>
 				<Player 
-					player={this.props.player}/>
+					player={player}/>
 				{entityComponents}
 				{itemComponents}
 				{tiles}

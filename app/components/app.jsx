@@ -17,15 +17,11 @@ export default class App extends Component {
 		super(props)
 		this.state = {
 			world: [],
-			map: [],
 			player: {},
 			entities: [],
 			items: [],
-			coords: [],
 			floor: 0,
-			fov: null,
-			exploredCells: {},
-			message: [],
+			message: "",
 			gameEnd: false
 		}
 	};
@@ -37,31 +33,21 @@ export default class App extends Component {
 
 	createGame() {
 		const {width, height, depth} = this.props;
-		const {floor} = this.state;
 		const world = new World(width, height, depth);
-		const map = world.regions[floor];
-		const fov = world.fov[floor];
-		const exploredCells = {};
+		const map = world._regions[0];
 		const player = this.generateEntity(playerTemplate, map);
-		const enemies = this.generateEntities(enemyTemplate(floor + 1), 10, map, player);
-		const weapons = this.generateItems(weaponTemplate(floor + 1), 1, map, player);
-		const food = this.generateItems(foodTemplate(floor + 1), 5, map, player);
-		fov.compute(player.coords[0], player.coords[1], 4, (fovX, fovY, radius, visibility) => {
-			exploredCells[fovX + ',' + fovY + ',' + floor] = true;
-		})
+		const enemies = this.generateEntities(enemyTemplate(1), 10, map, player);
+		const weapons = this.generateItems(weaponTemplate(1), 1, map, player);
+		const food = this.generateItems(foodTemplate(1), 5, map, player);
+		
 		return {
 			world: world,
-			map: map,
 			player: player,
 			entities: [...enemies],
 			items: [...weapons, ...food],
-			coords: [
-				Math.max(0, Math.min(player.coords[0] - 12, width - 25)), 
-				Math.max(0, Math.min(player.coords[1] - 7, height - 15))
-			],
-			fov: fov,
-			exploredCells: exploredCells,
-			message: [`Welcome to the Dungeon!`]
+			floor: 0,
+			message: [`Welcome to the Dungeon!`],
+			gameEnd: false
 		}
 	};
 
@@ -80,34 +66,30 @@ export default class App extends Component {
 		const {player} = this.state;
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
 	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
-		const screenX = Math.max(0, Math.min(playerX - 12, width - 25));
-		const screenY = Math.max(0, Math.min(playerY - 7, height - 15));
 		return {
-			playerCoords: [playerX, playerY],
-			screenCoords: [screenX, screenY]
+			playerCoords: [playerX, playerY]
 		}
 	}
 
-
 	scrollScreen(x, y) {
-		const {playerCoords, screenCoords} = this.updateCoords(x, y);
+		const {playerCoords} = this.updateCoords(x, y);
+		const {world, floor} = this.state;
+		const map = world._regions[floor];
 		
-		const state = 	this.goUpstairs(playerCoords, screenCoords) || 
-						this.move(playerCoords, screenCoords) 		||
-						this.attackEntity(playerCoords)				||
-						this.state;
+		const state = 	this.goUpstairs(playerCoords, map) 		|| 
+						this.move(playerCoords, map) 			||
+						this.attackEntity(playerCoords, map)				
 		
-		state.entities.forEach((entity) => {
-			entity.act();
-		});
-		this.setState(state);
+		
+		this.setState(state || this.state);
+		
 	}
 
-	goUpstairs(playerCoords, screenCoords) {
-		if(this.isStaircase(playerCoords) && this.squareIsEmpty(playerCoords)) {
-			const {player, fov, world} = this.state;
-			player.coords = playerCoords;
-			const exploredCells = {};
+
+	goUpstairs(playerCoords, map) {
+		if(this.isStaircase(playerCoords, map) && this.squareIsEmpty(playerCoords, map)) {
+			const {world} = this.state;
+			const player = Object.assign(new Entity(), this.state.player, {coords: playerCoords});
 			const floor = this.state.floor + 1;
 			const map = world.regions[floor];
 			const enemies = this.generateEntities(enemyTemplate(floor + 1), 10, map, player);
@@ -116,42 +98,29 @@ export default class App extends Component {
 			const weapons = this.generateItems(weaponTemplate(floor + 1), 1, world.regions[floor], player);
 			const food = this.generateItems(foodTemplate(floor + 1), 5, world.regions[floor], player);
 
-			fov.compute(playerCoords[0], playerCoords[1], 3, (x, y, radius, visiblitiy) => {
-				exploredCells[x + ',' + y + ',' + floor] = true;
-			})
 			return {
-				map: map,
 				player: player,
 				entities: entities,
 				items: [...weapons, ...food],
 				message: [`You are now on the floor number ${floor + 1}.`],
-				coords: screenCoords,
-				fov: world.fov[floor],
-				exploredCells: exploredCells,
 				floor: floor,
 			}
 		} 
 		return false;
 	}
 
-	move(playerCoords, screenCoords) {
-		if(this.squareIsEmpty(playerCoords)) {
-			const {player, fov, floor} = this.state;
-			player.coords = playerCoords;
-			const exploredCells = {}//this.state.exploredCells;
-			const message = [];
-			const items = this.pickUpItem(player, message);
-			const entities = this.moveEntities(this.state.entities, player);
-			fov.compute(playerCoords[0], playerCoords[1], 4, (x, y, radius, visibility) => {
-				exploredCells[x + ',' + y + ',' + floor] = true;
-			})		
+	move(playerCoords, map) {
+		if(this.squareIsEmpty(playerCoords, map)) {
+			const {floor} = this.state;
+			const player = Object.assign(new Entity(), this.state.player, {coords: playerCoords});
+			const entities = this.moveEntities(this.copyEntities(this.state.entities), player);
+			const {items, message} = this.pickUpItem(player, message);		
+					
 			return {
-				player: player,
+				player: player, 
 				entities: entities,
 				items: items,
-				coords: screenCoords,
-				message: message,
-				exploredCells: exploredCells
+				message: message
 			}
 		}
 		return false;
@@ -159,13 +128,16 @@ export default class App extends Component {
 
 
 	attackEntity(playerCoords) {
-		const {player, entities} = this.state;
+		const player = this.copyEntity(this.state.player); 
+		const entities = this.copyEntities(this.state.entities);
 		if(entity = this.entityAt(entities, playerCoords)) {
-			player.attack(entity);
+			player.attack(entity); 
 			const gameEnd = this.checkGameStatus(player);
+			
 			return {
+				player: player,
 				message: player._message,
-				entities: entity._hp <= 0 ? this.removeEntity(entity) : entities,
+				entities: entity._hp <= 0 ? this.removeEntity(entity, entities) : entities,
 				gameEnd: gameEnd
 			}
 		}
@@ -175,12 +147,11 @@ export default class App extends Component {
 
 	//functions for discerning what kind of square is being encountered
 
-	isStaircase(coords, map = this.state.map) {
+	isStaircase(coords, map) {
 		return map[coords[0]][coords[1]] == 5
 	}
-
-		
-	squareIsEmpty(coords, map = this.state.map, entities = this.state.entities, player = this.state.player) {
+	
+	squareIsEmpty(coords, map, entities = this.state.entities, player = this.state.player) {
 		const {width, height} = this.props;
 		if(coords[0] >= 0 && coords[0] < width && coords[1] >= 0 && coords[1] < height) {
 			if(map[coords[0]][coords[1]] && !this.entityAt(entities, coords) && !this.playerAt(player, coords)) {
@@ -208,7 +179,7 @@ export default class App extends Component {
 
 	//functions for generating entities
 
-	initialize(map = this.state.map, entities = this.state.entities, player = this.state.player) {
+	initialize(map = this.state.world[this.state.floor], entities = this.state.entities, player = this.state.player) {
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * this.props.width);
@@ -225,7 +196,7 @@ export default class App extends Component {
 	}
 
 
-	generateEntities(template, num, map, player, floor=this.state.floor) {
+	generateEntities(template, num, map, player) {
 		let entities = [];
 		for(let i = 0; i < num; i++) {
 			let entity = new Entity(template);
@@ -236,8 +207,7 @@ export default class App extends Component {
 	}
 
 	
-	removeEntity(entity) {
-		const entities = this.state.entities;
+	removeEntity(entity, entities) { 
 		for(let i = 0; i < entities.length; i++) {
 			if(entities[i] == entity) {
 				entities.splice(i, 1);
@@ -258,28 +228,49 @@ export default class App extends Component {
 		return items;
 	}
 
-	pickUpItem(player, message) {
-		const {items} = this.state;
+	pickUpItem(player) {
+		const items = this.copyItems(this.state.items);
+		const message = [];
 		for(i = 0; i < items.length; i++) {
 			if(items[i].coords[0] === player.coords[0] && items[i].coords[1] === player.coords[1]) {
-				player._hp += items[i]._hp;
-				player._attackValue += items[i]._attackValue;
+				player._hp += items[i]._hp || 0;
+				player._attackValue += items[i]._attackValue || 0;
 				message.push([`You found a ${items[i].type}.`])
 				items.splice(i, 1);
 			}
 		}
-		return items;
+		return {items, message};
 	}
 
 
 	moveEntities(entities, player) {
+		const {world, floor} = this.state;
+		entities.forEach((entity) => {
+			entity.act();
+		})
 		for (let i = 0; i < entities.length; i++) {
 			if(entities[i]._newCoords && 
-				this.squareIsEmpty(entities[i]._newCoords, this.state.map, this.state.entities, player)) {
+				this.squareIsEmpty(entities[i]._newCoords, world._regions[floor], entities, player)) {
 				entities[i].coords = entities[i]._newCoords;
 			}
 		}
 		return entities;
+	}
+
+	copyEntity(entity) {
+		return Object.assign(new Entity(), entity);
+	}
+
+	copyEntities(entities) {
+		return entities.map((entity) => {
+			return Object.assign(new Entity(), entity);
+		})
+	}
+
+	copyItems(items) {
+		return items.map((item) => {
+			return Object.assign(new Item(), item);
+		});
 	}
 
 	checkGameStatus(player) {
@@ -287,13 +278,20 @@ export default class App extends Component {
 				player._experience > 1000 ? "You Win!" : false
 	}
 
-	restart() {
-		this.setState({...this.createGame(), gameEnd: false});
+
+	getVisibleCells(playerCoords, floor, world) {
+		const visibleCells = {};
+		world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y, radius, visiblitiy) => {
+			visibleCells[x + ',' + y + ',' + floor] = true;
+		})
+		return visibleCells;
 	}
 	
 	render() {
 		const {width, height} = this.props;
-		const {message, gameEnd, map, player, entities, items, coords, exploredCells, floor} = this.state;
+		const {message, gameEnd, player, entities, items, coords, floor, world} = this.state;
+		const visibleCells = this.getVisibleCells(player.coords, floor, world);
+		const map = world._regions[floor];
 		return (
 			<div>
 				<Message message={message}/>
@@ -305,7 +303,7 @@ export default class App extends Component {
 
 					<Restart 
 						gameEnd={gameEnd}
-						restart={this.restart.bind(this)}/>			
+						restart={this.componentWillMount.bind(this)}/>			
 					
 					<Board
 						map={map}
@@ -315,7 +313,7 @@ export default class App extends Component {
 						entities={entities}
 						items={items}
 						coords={coords}
-						exploredCells={exploredCells}
+						visibleCells={visibleCells}
 						floor={floor}>
 					</Board>
 				</div>

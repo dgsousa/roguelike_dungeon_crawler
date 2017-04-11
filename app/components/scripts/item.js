@@ -2,10 +2,9 @@ class Item {
 	constructor(properties) {
 		this.x;
 		this.y;
-		this.name = properties["name"] || "";
-		this.type = properties["type"] || "";
-		this._attackValue = properties["attackValue"] || 0;
-		this._hp = properties["hp"] || 0;
+		for(let key in properties) {
+			this[key] = properties[key];
+		}
 	}
 }
 
@@ -14,7 +13,7 @@ const foodTemplate = (num) => {
 	return {	
 		name: "food",
 		type: "food",
-		hp: 10 * num
+		_hp: 10 * num
 	}
 };
 
@@ -22,7 +21,7 @@ const weaponTemplate = (num) => {
 	return {
 		name: "weapon",
 		type: "weapon",
-		attackValue: 10 * num
+		_attackValue: 10 * num
 	}
 };
 
