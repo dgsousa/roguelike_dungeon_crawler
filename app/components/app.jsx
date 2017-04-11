@@ -78,10 +78,11 @@ export default class App extends Component {
 		
 		const state = 	this.goUpstairs(playerCoords, map) 		|| 
 						this.move(playerCoords, map) 			||
-						this.attackEntity(playerCoords, map)				
+						this.attackEntity(playerCoords, map)	||
+						this.state;				
 		
 		
-		this.setState(state || this.state);
+		this.setState(state);
 		
 	}
 
@@ -294,6 +295,7 @@ export default class App extends Component {
 		const map = world._regions[floor];
 		return (
 			<div>
+				<Stats player={player}/>
 				<Message message={message}/>
 				
 				<div 
@@ -307,17 +309,17 @@ export default class App extends Component {
 					
 					<Board
 						map={map}
+						visibleCells={visibleCells}
 						width={width}
 						height={height}
 						player={player}
 						entities={entities}
 						items={items}
-						coords={coords}
-						visibleCells={visibleCells}
+						
 						floor={floor}>
 					</Board>
 				</div>
-				<Stats player={player}/>
+				
 
 			</div>
 			

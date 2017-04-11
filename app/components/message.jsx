@@ -10,10 +10,11 @@ export default class Message extends Component {
 	render() {
 		const items = this.props.message.map((item, key) => {
 			return (
-				<span 
-					key={key}>
+				<p 
+					key={key}
+					className="message-text">
 					{item}<br/>
-				</span>
+				</p>
 			)
 		})
 

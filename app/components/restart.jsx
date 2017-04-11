@@ -15,6 +15,7 @@ export default class Restart extends Component {
 				style={{display: display}}>
 				<h1>{this.props.gameEnd}</h1>
 				<button onClick={this.props.restart}>Play Again?</button>
+
 			</div>
 		)
 	}

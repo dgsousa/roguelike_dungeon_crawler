@@ -11,11 +11,11 @@ export default class Stats extends Component {
 	render() {
 		return (
 			<div className="stats">
-				<span>{this.props.player._name}</span>
-				<span>Attack: {this.props.player._attackValue}</span>
-				<span>HP: {this.props.player._hp}</span>
-				<span>XP: {this.props.player._experience}</span>
-				<span>Level: {this.props.player._level}</span>
+				<div><p>{this.props.player._name}</p></div><br/>
+				<div><p>Attack: {this.props.player._attackValue}</p></div><br/>
+				<div><p>HP: {this.props.player._hp}</p></div><br/>
+				<div><p>XP: {this.props.player._experience}</p></div><br/>
+				<div><p>Level: {this.props.player._level}</p></div>
 			</div>
 		)
 	}
