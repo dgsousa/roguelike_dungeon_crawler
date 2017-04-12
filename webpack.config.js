@@ -1,24 +1,29 @@
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
+
 module.exports = {
 	context: __dirname + '/app',
 	entry: './index.jsx',
 	output: {
-		path: 'public',
+		path: __dirname + '/public',
 		filename: 'bundle.js'
 	},
 	module: {
 		loaders: [
 					{
 						test: /\.(jsx|js)$/,
-						exlude: '/node_modules/',
+						exclude: '/node_modules/',
 						loader: 'babel-loader'
 					},
 					{
 						test: /\.scss$/,
-						loaders: ["style", "css", "sass"]
+						loader: ExtractTextPlugin.extract({
+							fallback: "style-loader", 
+							use: "css-loader!sass-loader"
+						})
 					},
 					{
 						test: /rot\.js$/,
-						loaders: ["exports?ROT"]
+						loaders: ["exports-loader?ROT"]
 					},
 					{
 						test: /\.png$/,
@@ -26,5 +31,8 @@ module.exports = {
 					}
 
 		]
-	}
+	},
+	plugins: [
+		new ExtractTextPlugin("[name].css")
+	]
 }
