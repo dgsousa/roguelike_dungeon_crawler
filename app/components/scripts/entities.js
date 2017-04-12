@@ -8,6 +8,7 @@ export const playerTemplate = {
 	_experience: 0,
 	_level: 0,
 	_message: [],
+	_weapon: "Fists",
 
 	takeDamage(attacker, damage) {
 		this._hp -= damage;
@@ -46,8 +47,8 @@ export const playerTemplate = {
 
 export const enemyTemplate = (num) => {
 	return {
-		_name: 'Hench Men',
-		_type: 'henchmen',
+		_name: 'Alien',
+		_type: 'alien',
 		_newCoords: null,
 		_attackValue: 20 * num,
 		_defenseValue: 10 * num,
@@ -69,8 +70,8 @@ export const enemyTemplate = (num) => {
 };
 
 export const bossTemplate = {
-	_name: "Boss",
-	_type: "boss",
+	_name: "Clown",
+	_type: "clown",
 	_attackValue: 100,
 	_defenseValue: 100,
 	_hp: 50,

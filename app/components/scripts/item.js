@@ -8,19 +8,31 @@ class Item {
 	}
 }
 
+const weaponTypes = {
+	"1": "Rock",
+	"2": "Sword",
+	"3": "Axe",
+	"4": "Bomb"
+}
+
+const foodTypes = {
+	"1": "Burger",
+	"2": "Mushroom",
+	"3": "Pancake",
+	"4": "Watermelon"
+}
 
 const foodTemplate = (num) => {
 	return {	
-		name: "food",
-		type: "food",
+		type: foodTypes[num],
 		_hp: 10 * num
 	}
 };
 
 const weaponTemplate = (num) => {
 	return {
-		name: "weapon",
-		type: "weapon",
+		type: weaponTypes[num],
+		weapon: weaponTypes[num],
 		_attackValue: 10 * num
 	}
 };

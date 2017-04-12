@@ -22,7 +22,8 @@ export default class App extends Component {
 			items: [],
 			floor: 0,
 			message: "",
-			gameEnd: false
+			gameEnd: false,
+			lightsOn: false
 		}
 	};
 	
@@ -235,6 +236,7 @@ export default class App extends Component {
 		for(i = 0; i < items.length; i++) {
 			if(items[i].coords[0] === player.coords[0] && items[i].coords[1] === player.coords[1]) {
 				player._hp += items[i]._hp || 0;
+				player._weapon = items[i].weapon || player._weapon;
 				player._attackValue += items[i]._attackValue || 0;
 				message.push([`You found a ${items[i].type}.`])
 				items.splice(i, 1);
@@ -287,15 +289,22 @@ export default class App extends Component {
 		})
 		return visibleCells;
 	}
+
+	switchLights() {
+		const lightsOn = !this.state.lightsOn;
+		this.setState({
+			lightsOn: lightsOn
+		})
+	}
 	
 	render() {
 		const {width, height} = this.props;
-		const {message, gameEnd, player, entities, items, coords, floor, world} = this.state;
+		const {message, gameEnd, player, entities, items, coords, floor, world, lightsOn} = this.state;
 		const visibleCells = this.getVisibleCells(player.coords, floor, world);
 		const map = world._regions[floor];
 		return (
 			<div>
-				<Stats player={player}/>
+				
 				<Message message={message}/>
 				
 				<div 
@@ -306,7 +315,11 @@ export default class App extends Component {
 					<Restart 
 						gameEnd={gameEnd}
 						restart={this.componentWillMount.bind(this)}/>			
-					
+					<Stats player={player}/>
+					<button className="lights"
+						onClick={this.switchLights.bind(this)}>
+						{(lightsOn ? `Lights Off` : `Lights On`)}
+					</button>
 					<Board
 						map={map}
 						visibleCells={visibleCells}
@@ -315,6 +328,7 @@ export default class App extends Component {
 						player={player}
 						entities={entities}
 						items={items}
+						lightsOn = {lightsOn}
 						
 						floor={floor}>
 					</Board>

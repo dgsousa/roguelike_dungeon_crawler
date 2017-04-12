@@ -20,8 +20,7 @@ export default class Board extends Component {
 
 		const tiles = this.props.map.map((col, x) => {
 			return col.map((tile, y) => {
-				char = this.props.visibleCells[x + ',' + y + ',' + this.props.floor] ? chars[tile] : 'grey'
-				//char = chars[tile];
+				char = this.props.visibleCells[x + ',' + y + ',' + this.props.floor] || this.props.lightsOn ? chars[tile] : 'grey'
 				const style = {
 					top: y * 30,
 					left: x * 30
@@ -41,10 +40,11 @@ export default class Board extends Component {
 	getEntityComponents() {
 		const entityComponents = this.props.entities.map((entity, i) => {
 			const type = entity._type;
+			const display = this.props.visibleCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] || this.props.lightsOn ? 'block' : 'none';
 			const style = {
 				top: entity.coords[1] * 30,
 				left: entity.coords[0] * 30,
-				display: this.props.visibleCells[entity.coords[0] + ',' + entity.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
+				display: display
 			}
 			return (<EntityComponent key={i} style={style} type={type}/>)
 		})
@@ -53,12 +53,14 @@ export default class Board extends Component {
 
 	getItemComponents() {
 		const itemComponents = this.props.items.map((item, i) => {
+			const type = item.type;
+			const display = this.props.visibleCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] || this.props.lightsOn ? 'block' : 'none';
 			const style = {
 				top: item.coords[1] * 30,
 				left: item.coords[0] * 30,
-				display: this.props.visibleCells[item.coords[0] + ',' + item.coords[1] + ',' + this.props.floor] ? 'block' : 'none'
+				display: display
 			}
-			return (<ItemComponent key={i} style={style}/>)
+			return (<ItemComponent key={i} style={style} type={type}/>)
 		})
 
 		return itemComponents;

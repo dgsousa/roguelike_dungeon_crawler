@@ -9,7 +9,7 @@ export default class ItemComponent extends Component {
 	render() {
 		return (
 			<div
-				className={"item"}
+				className={"item " + this.props.type}
 				style={this.props.style}>
 				
 			</div>
