@@ -23,20 +23,10 @@ class App extends Component {
 	componentWillMount() {
 		const {dispatch, width, height, depth} = this.props;
 		const world = new World(width, height, depth);
-		const action = WorldActionCreators.createWorld(world);
+		const action = WorldActionCreators.createWorld(world, false);
 		dispatch(action);
-		console.log("dispatch")
 	}
 	
-	
-
-	createGame() {
-
-		// const world = new World(width, height, depth);
-		// const map = world._regions[0];
-		// const player = this.generateEntity(playerTemplate, map);
-		
-	};
 
 	//Navigation functions
 
@@ -90,13 +80,23 @@ class App extends Component {
 	// }
 	
 	render() {
-		if(!this.props.isLoading) {
+		if(this.props.isLoading) {
+			return (
+				<div>Loading....</div>
+			)
+		} else {
 			const {width, height, world, floor} = this.props;
+			const map = world._regions[floor];
 		
 			return (
 				<div>
 					<div className="message"></div>	
-					<Board />		
+					<Board
+						map={map}
+						width={width}
+						height={height}
+						floor={floor}>
+					</Board>	
 					
 					
 
@@ -109,7 +109,6 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-	console.log("map");
 	return {
 		world: state.world,
 		floor: state.floor,
