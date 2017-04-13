@@ -11,7 +11,15 @@ class Board extends Component {
 	}
 
 	render() {
-		console.log(this.props.map);
+		const {player, height, width} = this.props;
+		const tiles = this.getTiles();
+		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
+		const style = {
+			top: -screenY * 30,
+			left: -screenX * 30
+		}
+			
 		return (
 			<div 
 				className={"board"}>
