@@ -1,14 +1,13 @@
 import * as WorldActionTypes from "../actiontypes/world.jsx";
 
-export default function World(state, action) {
+const World = (state, action) => {
 	
 	switch(action.type) {
 
 	case WorldActionTypes.CREATE_WORLD: {
 		return {
 			...state,
-			world: action.world,
-			isLoading: action.isLoading
+			world: action.world
 		}
 	}
 
@@ -16,3 +15,5 @@ export default function World(state, action) {
 		return state;
 	}
 }
+
+export default World;
