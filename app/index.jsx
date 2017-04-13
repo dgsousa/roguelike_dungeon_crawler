@@ -9,7 +9,9 @@ import App from './components/app.jsx';
 
 
 const initialData = {
-	world: 0
+	world: [],
+	floor: 0,
+	isLoading: true
 }
 
 

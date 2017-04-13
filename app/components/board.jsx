@@ -10,6 +10,7 @@ export default class Board extends Component {
 	}
 
 	getTiles() {
+		const {world, floor} = this.props;
 		const chars = {
 			'0': 'wall',
 			'1': 'floor',
@@ -18,7 +19,7 @@ export default class Board extends Component {
 			'5': 'stairs'
 		};
 
-		const tiles = this.props.map.map((col, x) => {
+		const tiles = this.props.world._regions[floor].map((col, x) => {
 			return col.map((tile, y) => {
 				//char = this.props.visibleCells[x + ',' + y + ',' + this.props.floor] || this.props.lightsOn ? chars[tile] : 'grey'
 				const style = {

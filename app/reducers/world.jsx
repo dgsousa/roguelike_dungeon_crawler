@@ -5,6 +5,7 @@ export default function World(state, action) {
 	switch(action.type) {
 
 	case WorldActionTypes.CREATE_WORLD: {
+		console.log("reduce")
 		return {
 			world: action.world
 		}

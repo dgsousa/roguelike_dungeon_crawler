@@ -25,6 +25,7 @@ class App extends Component {
 		const world = new World(width, height, depth);
 		const action = WorldActionCreators.createWorld(world);
 		dispatch(action);
+		console.log("dispatch")
 	}
 	
 	
@@ -89,27 +90,34 @@ class App extends Component {
 	// }
 	
 	render() {
-		const {width, height, world, floor} = this.props;
-		console.log(world);
-		//const map = world._regions[floor];
-		return (
-			<div>
-				<div className="message"></div>	
-				<button onClick={this.updateMap}></button>		
-				
-				
+		if(!this.props.isLoading) {
+			const {width, height, world, floor} = this.props;
+		
+			return (
+				<div>
+					<div className="message"></div>	
+					<Board />		
+					
+					
 
-			</div>
-			
-		)
+				</div>
+				
+			)
+		}
+		
 	}
 }
 
-const mapStateToProps = (state) => (
-	{
-		world: state.world
+const mapStateToProps = (state) => {
+	console.log("map");
+	return {
+		world: state.world,
+		floor: state.floor,
+		isLoading: state.isLoading
 	}
-)	
+}
+	
+	
 
 
 export default connect(mapStateToProps)(App);
