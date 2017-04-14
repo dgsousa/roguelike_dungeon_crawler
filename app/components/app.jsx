@@ -30,6 +30,25 @@ class App extends Component {
 		return [x, y];
 	}
 
+	scroll(e) {
+		console.log("test");
+		e.preventDefault();
+		e.keyCode === ROT.VK_I ? this.scrollScreen(0, -1) :
+		e.keyCode === ROT.VK_M ? this.scrollScreen(0, 1) :
+		e.keyCode === ROT.VK_J ? this.scrollScreen(-1, 0) :
+		e.keyCode === ROT.VK_K ? this.scrollScreen(1, 0) : false
+	};
+
+	updateCoords(x, y) {
+		const {width, height} = this.props;
+		const {player} = this.state;
+		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
+	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
+		return {
+			playerCoords: [playerX, playerY]
+		}
+	}
+
 
 	setUpBoard() {
 		const { width, height, world, floor, occupiedSquares, player} = this.props;
