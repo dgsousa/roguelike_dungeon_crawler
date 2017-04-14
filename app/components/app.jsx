@@ -47,13 +47,10 @@ class App extends Component {
 	 	if(world._regions[floor][playerX][playerY]) movePlayer(player.coords, [playerX, playerY]);
 	}
 
-
-	setUpBoard() {
-		const { width, height, world, floor, occupiedSquares, player} = this.props;
-		const map = world._regions[floor];
-		console.log(map[player.coords[0]][player.coords[1]]);
-		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
-		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
+	getTileClass(x, y) {
+		const {occupiedSquares, world, floor, player} = this.props;
+		const visibleCells = this.getVisibleCells(player.coords);
+		const map = world._regions[floor]
 		const chars = {
 			'0': 'wall',
 			'1': 'floor',
@@ -61,17 +58,35 @@ class App extends Component {
 			'3': 'floor',
 			'5': 'stairs'
 		};
+		return visibleCells[`${x}x${y}`] ? occupiedSquares[`${x}x${y}`] || chars[map[x][y]] : 
+	}
+
+
+	setUpBoard() {
+		const { width, height, world, player} = this.props;
+		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const rows = [];
 		for(let y = screenY; y < screenY + 15; y++) {
 			let row = [];
 			for(let x = screenX; x < screenX + 25; x++) {
-				row.push(createElement("div", {	className: "tile " + (occupiedSquares[`${x}x${y}`] || chars[map[x][y]]), 
+				const tileClass = this.getTileClass(x, y);
+				row.push(createElement("div", {	className: "tile " + tileClass, 
 												key: x+"x"+y, 
 												style: {left: 30 * (x - screenX)}}, " "));
 			}
 			rows.push(createElement("div", {className: "row", key: y}, row));
 		}
 		return rows;
+	}
+
+	getVisibleCells(playerCoords) {
+		const {world, floor} = this.props;
+		const visibleCells = {};
+		world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y, radius, visiblitiy) => {
+			visibleCells[x + ',' + y + ',' + floor] = true;
+		})
+		return visibleCells;
 	}
 
 	render() {
@@ -99,8 +114,7 @@ const mapStateToProps = (state, ownProps) => ({
 	width: ownProps.width,
 	height: ownProps.height,
 	player: state.player,
-	occupiedSquares: state.occupiedSquares,
-	visibleSquares: state.visibleSquares
+	occupiedSquares: state.occupiedSquares
 })
 
 
