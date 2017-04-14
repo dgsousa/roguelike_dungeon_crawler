@@ -62,7 +62,10 @@ class App extends Component {
 		return (
 			<div>
 				<div className="message"></div>
-				<div className="board">
+				<div 
+					className="board"
+					tabIndex={"0"}
+					onKeyDown={this.scroll.bind(this)}>
 					{rows}
 				</div>
 			</div>	
