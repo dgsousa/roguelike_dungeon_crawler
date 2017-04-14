@@ -60,4 +60,18 @@ body {
 }
 
 
+.entity {
+	position: absolute;
+	z-index: 15;
+	width: 30px;
+	height: 30px;
+}
+
+.alien {
+	background: url('alien.png');
+}
+
+.clown {
+	background: url('clown.png');
+}
 
