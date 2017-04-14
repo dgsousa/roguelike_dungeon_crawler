@@ -99,7 +99,8 @@ const mapStateToProps = (state, ownProps) => ({
 	width: ownProps.width,
 	height: ownProps.height,
 	player: state.player,
-	occupiedSquares: state.occupiedSquares
+	occupiedSquares: state.occupiedSquares,
+	visibleSquares: state.visibleSquares
 })
 
 
