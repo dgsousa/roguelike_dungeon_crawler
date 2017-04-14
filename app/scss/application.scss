@@ -33,10 +33,9 @@ body {
 .row {
 	height: 30px;
 	margin: 0;
-	display: inline block;
 	padding: 0;
 	box-sizing: border-box;
-	border: 1px solid green;
+	position: relative;
 }
 
 .tile {
@@ -44,9 +43,13 @@ body {
 	height: 30px;
 	margin: 0;
 	box-sizing: border-box;
-	border: 1px solid red;
+	position: absolute;
 }
 
+.wall {
+	background: brown;
+	border: 3px solid black;
+}
 
 .floor {
 	background: rgba(1, 1, 1, 1);

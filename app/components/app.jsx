@@ -29,9 +29,10 @@ class App extends Component {
 		for(let y = 0; y < 15; y++) {
 			let row = [];
 			for(let x = 0; x < 25; x++) {
-				row.push(createElement("div", {className: "tile " + chars[map[x][y]], key: x+"x"+y}, " "));
+				row.push(createElement("div", {	className: "tile " + chars[map[x][y]], 
+												key: x+"x"+y, 
+												style: {left: 30 * x}}, " "));
 			}
-			console.log()
 			rows.push(createElement("div", {className: "row", key: y}, row));
 		}
 		return rows;
@@ -53,7 +54,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
 	world: new World(state.width, state.height, state.depth),
-	floor: state.floor
+	floor: state.floor,
+	width: state.width,
+	height: state.height
 })
 
 
