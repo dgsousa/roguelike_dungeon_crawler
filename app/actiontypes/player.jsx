@@ -1,1 +1,0 @@
-export const MOVE_PLAYER = "player/MOVE_PLAYER";

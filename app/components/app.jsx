@@ -1,7 +1,10 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
-import * as WorldActionCreators from "../actions/world.jsx";
+import {WorldActionCreators, PlayerActionCreators} from "../actions/index.jsx";
 import World from "./scripts/world.js";
+import Entity from "./scripts/entity.js";
+import { playerTemplate, entityTemplate, bossTemplate } from "./scripts/entities.js";
+
 
 
 class App extends Component {		
@@ -11,11 +14,27 @@ class App extends Component {
 
 
 	componentWillMount() {
-		const {createWorld, world} = this.props;
+		const {createWorld, addPlayer, world} = this.props;
+		addPlayer(new Entity(playerTemplate), this.emptyCoords());
 		createWorld(world);
 	}
 
+
+	emptyCoords() {
+		const {width, height, floor, world} = this.props;
+		let x, y;
+		do {
+			x = Math.floor(Math.random() * width);
+			y = Math.floor(Math.random() * height);
+		} while (!world._regions[floor]);
+		return [x, y];
+	}
+
+
 	setUpBoard() {
+		const occupiedSquares = {
+			"1x1": "player"
+		}
 		const {width, height, world, floor} = this.props;
 		const map = world._regions[floor];
 		const chars = {
@@ -29,7 +48,7 @@ class App extends Component {
 		for(let y = 0; y < 15; y++) {
 			let row = [];
 			for(let x = 0; x < 25; x++) {
-				row.push(createElement("div", {	className: "tile " + chars[map[x][y]], 
+				row.push(createElement("div", {	className: "tile " + (occupiedSquares[`${x}x${y}`] || chars[map[x][y]]), 
 												key: x+"x"+y, 
 												style: {left: 30 * x}}, " "));
 			}
@@ -52,17 +71,23 @@ class App extends Component {
 	
 }
 
-const mapStateToProps = (state) => ({
-	world: new World(state.width, state.height, state.depth),
-	floor: state.floor,
-	width: state.width,
-	height: state.height
+
+
+const mapStateToProps = (state, ownProps) => ({
+	world: new World(ownProps.width, ownProps.height, ownProps.depth),
+	floor: ownProps.floor,
+	width: ownProps.width,
+	height: ownProps.height,
+	player: state.player
 })
 
 
 export default connect(
 	mapStateToProps,
-	{createWorld: WorldActionCreators.createWorld}
+	{
+		createWorld: WorldActionCreators.createWorld,
+		addPlayer: PlayerActionCreators.addPlayer
+	}
 )(App);
 
 

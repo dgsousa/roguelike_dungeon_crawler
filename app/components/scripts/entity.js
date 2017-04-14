@@ -1,8 +1,7 @@
 
 export default class Entity {
 	constructor(properties) {
-		this.x;
-		this.y;
+		this.coords = null;
 		for(let key in properties) {
 			this[key] = properties[key];
 		}
@@ -23,16 +22,6 @@ export default class Entity {
 	act() {
 		return;
 	}
-
-	get coords() {
-		return [this.x, this.y];
-	}
-
-	set coords(coordinates) {
-		this.x = coordinates[0];
-		this.y = coordinates[1];
-	}
-
 }
 
 
