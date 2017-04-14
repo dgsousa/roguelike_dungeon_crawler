@@ -7,9 +7,11 @@ import App from './components/app.jsx';
 import './scss/application.scss';
 
 const initialState = {
-	world: [],
+	world: null,
 	floor: 0,
-	player: {},
+	player: {
+		coords: [0, 0]
+	},
 	occupiedSquares: {}
 }
 

@@ -15,8 +15,8 @@ class App extends Component {
 
 	componentWillMount() {
 		const {createWorld, addPlayer, world} = this.props;
-		addPlayer(new Entity(playerTemplate), this.emptyCoords());
 		createWorld(world);
+		addPlayer(new Entity(playerTemplate), this.emptyCoords());
 	}
 
 
@@ -26,7 +26,7 @@ class App extends Component {
 		do {
 			x = Math.floor(Math.random() * width);
 			y = Math.floor(Math.random() * height);
-		} while (!world._regions[floor]);
+		} while (!world._regions[floor][x][y]);
 		return [x, y];
 	}
 
@@ -34,6 +34,9 @@ class App extends Component {
 	setUpBoard() {
 		const { width, height, world, floor, occupiedSquares, player} = this.props;
 		const map = world._regions[floor];
+		console.log(map[player.coords[0]][player.coords[1]]);
+		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const chars = {
 			'0': 'wall',
 			'1': 'floor',
@@ -42,12 +45,12 @@ class App extends Component {
 			'5': 'stairs'
 		};
 		const rows = [];
-		for(let y = 0; y < 15; y++) {
+		for(let y = screenY; y < screenY + 15; y++) {
 			let row = [];
-			for(let x = 0; x < 25; x++) {
+			for(let x = screenX; x < screenX + 25; x++) {
 				row.push(createElement("div", {	className: "tile " + (occupiedSquares[`${x}x${y}`] || chars[map[x][y]]), 
 												key: x+"x"+y, 
-												style: {left: 30 * x}}, " "));
+												style: {left: 30 * (x - screenX)}}, " "));
 			}
 			rows.push(createElement("div", {className: "row", key: y}, row));
 		}
@@ -71,7 +74,7 @@ class App extends Component {
 
 
 const mapStateToProps = (state, ownProps) => ({
-	world: new World(ownProps.width, ownProps.height, ownProps.depth),
+	world: state.world || new World(ownProps.width, ownProps.height, ownProps.depth),
 	floor: state.floor,
 	width: ownProps.width,
 	height: ownProps.height,
