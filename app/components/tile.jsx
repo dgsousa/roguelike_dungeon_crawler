@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from "react-redux";
 
 
-
-export default class Tile extends Component {	
+class Tile extends Component {	
 	constructor(props) {
 		super(props);
 	}
@@ -15,11 +15,32 @@ export default class Tile extends Component {
 	}
 	
 	render() {
+		const {char, style} = this.props;
 		return (
 			<div 
-				className={"tile " + this.props.char}
-				style={this.props.style}>
+				className={"tile " + char}
+				style={style}>
 			</div>
 		)	
 	}
 }
+
+
+
+
+const mapStateToProps = (state, ownProps) => ({
+	style: {
+			top: ownProps.y * 30,
+			left: ownProps.x * 30
+		},
+	char: chars[ownProps.tile]
+})
+
+export default TileContainer = connect(mapStateToProps)(Tile);
+
+
+
+
+
+
+

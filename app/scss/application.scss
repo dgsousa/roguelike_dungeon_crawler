@@ -9,7 +9,6 @@ body {
 
 #app {
 	margin: auto;
-	position: relative;
 }
 
 .message {
@@ -24,69 +23,30 @@ body {
 	font-size: 20px;
 }
 
-.message-text {
-	color: #A239CA;
-}
-
-.restart {
-	width: 750px;
-	height: 450px;
-	top: 0;
-	left: 0;
-	margin: 0;
-	background: black;
-	z-index: 100;
-	position: absolute;
-	color: white;
-	text-align: center;
-}
-
-.restart h1 {
-	margin: 150px auto 0;
-	width: 40%;
-	color: yellow;
-}
-
-.restart button {
-	margin-top: 80px;
-	width: 150px;
-	height: 80px;
-	color: white;
-	background: blue;
-	font-family: 'Press Start 2P'
-}
-
-.view {
-	width: 750px;
-	height: 450px;
-	margin: auto;
-	overflow: hidden;
-	position: relative;	
-	&:focus {
-		outline: none;
-	}
-}
 
 .board {
-	position: relative;
 	margin: auto;
-	width: 1500px;
-	height: 1500px;
+	width: 750px;
+	height: 450px;
+}
+
+.row {
+	height: 30px;
+	margin: 0;
+	display: inline block;
+	padding: 0;
+	box-sizing: border-box;
+	border: 1px solid green;
 }
 
 .tile {
-	position: absolute;
-	z-index: 10;
 	width: 30px;
 	height: 30px;
-	font-size: 30px;
+	margin: 0;
 	box-sizing: border-box;
+	border: 1px solid red;
 }
 
-.wall {
-	background: #8B4513;
-	border: 3px solid black;
-}
 
 .floor {
 	background: rgba(1, 1, 1, 1);
@@ -94,111 +54,6 @@ body {
 
 .stairs {
 	background: url('door.png');
-}
-
-.entity {
-	position: absolute;
-	z-index: 15;
-	width: 30px;
-	height: 30px;
-}
-
-.alien {
-	background: url('alien.png');
-}
-
-.clown {
-	background: url('clown.png');
-}
-
-.item {
-	position: absolute;
-	z-index: 14;
-	width: 30px;
-	height: 30px;
-}
-
-.Burger {
-	background: url('burger.png');
-}
-
-.Mushroom {
-	background: url('mushroom.png');
-}
-
-.Pancake {
-	background: url('pancake.png');
-}
-
-.Watermelon {
-	background: url('watermelon.png');
-}
-
-.Rock {
-	background: url('rock.png');
-}
-
-.Sword {
-	background: url('sword.png');
-}
-
-.Axe {
-	background: url('axe.png');
-}
-
-.player {
-	position: absolute;
-	z-index: 20;
-	width: 30px;
-	height: 30px;
-	background: blue;
-}
-
-.astro {
-	background: url('astro.png');
-
-}
-
-.grey {
-	background: rgba(71, 23, 246, .3);
-}
-
-.stats {
-	box-sizing: border-box;
-	font-size: 14px;
-	width: 250px;
-	height: 170px;
-	margin: 0;
-	padding: 10px;
-	position: absolute;
-	background: rgba(1, 1, 1, .6);
-	color: #3CC47C;
-	z-index: 50;
-}
-
-.stats div {
-	margin-top: -5px;
-	margin-bottom: -5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	width: 250px;
-}
-
-.stats span {
-	border: 1px solid green;
-	align-self: right;
-}
-
-.lights {
-	position: absolute;
-	z-index: 50;
-	width: 150px;
-	height: 50px;
-	color: white;
-	background: rgba(1, 1, 1, .7);
-	font-family: 'Press Start 2P';
-	outline: none;
-	left: 600px;
 }
 
 
