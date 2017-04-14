@@ -1,4 +1,4 @@
-import * as ROT from '../../../bower_components/rot.js/rot.js';
+import * as ROT from '../../bower_components/rot.js/rot.js';
 
 
 export default class World {

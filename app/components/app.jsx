@@ -1,9 +1,9 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
+import * as ROT from '../../bower_components/rot.js/rot.js';
 import {WorldActionCreators, PlayerActionCreators} from "../actions/index.jsx";
-import World from "./scripts/world.js";
-import Entity from "./scripts/entity.js";
-import { playerTemplate, entityTemplate, bossTemplate } from "./scripts/entities.js";
+import World from "../scripts/world.js";
+import { playerTemplate, entityTemplate, bossTemplate } from "../scripts/entities.js";
 
 
 
@@ -16,7 +16,7 @@ class App extends Component {
 	componentWillMount() {
 		const {createWorld, addPlayer, world} = this.props;
 		createWorld(world);
-		addPlayer(new Entity(playerTemplate), this.emptyCoords());
+		addPlayer(playerTemplate, this.emptyCoords());
 	}
 
 
@@ -31,7 +31,6 @@ class App extends Component {
 	}
 
 	scroll(e) {
-		console.log("test");
 		e.preventDefault();
 		e.keyCode === ROT.VK_I ? this.scrollScreen(0, -1) :
 		e.keyCode === ROT.VK_M ? this.scrollScreen(0, 1) :
@@ -39,14 +38,13 @@ class App extends Component {
 		e.keyCode === ROT.VK_K ? this.scrollScreen(1, 0) : false
 	};
 
-	updateCoords(x, y) {
-		const {width, height} = this.props;
-		const {player} = this.state;
+	scrollScreen(x, y) {
+		const {width, height, player, world, floor, movePlayer, goUpstairs} = this.props;
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
 	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
-		return {
-			playerCoords: [playerX, playerY]
-		}
+
+	 	if(world._regions[floor][playerX][playerY] == 5) goUpstairs(player.coords, [playerX, playerY]);
+	 	if(world._regions[floor][playerX][playerY]) movePlayer(player.coords, [playerX, playerY]);
 	}
 
 
@@ -109,7 +107,9 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: WorldActionCreators.createWorld,
-		addPlayer: PlayerActionCreators.addPlayer
+		addPlayer: PlayerActionCreators.addPlayer,
+		movePlayer: PlayerActionCreators.movePlayer,
+		goUpstairs: PlayerActionCreators.goUpstairs
 	}
 )(App);
 

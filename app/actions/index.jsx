@@ -15,8 +15,21 @@ const addPlayer = (player, coords) => ({
 	coords
 })
 
+const movePlayer = (prevCoords, nextCoords) => ({
+	type: PlayerActionTypes.MOVE_PLAYER,
+	prevCoords,
+	nextCoords
+})
+
+
+const goUpstairs = (prevCoords, nextCoords) => ({
+	type: PlayerActionTypes.GO_UPSTAIRS,
+	prevCoords,
+	nextCoords
+})
+
 
 const WorldActionCreators = {createWorld};
-const PlayerActionCreators = {addPlayer};
+const PlayerActionCreators = {addPlayer, movePlayer, goUpstairs};
 
 export {WorldActionCreators, PlayerActionCreators};
