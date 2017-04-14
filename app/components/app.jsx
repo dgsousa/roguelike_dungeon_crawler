@@ -32,10 +32,7 @@ class App extends Component {
 
 
 	setUpBoard() {
-		const occupiedSquares = {
-			"1x1": "player"
-		}
-		const {width, height, world, floor} = this.props;
+		const { width, height, world, floor, occupiedSquares, player} = this.props;
 		const map = world._regions[floor];
 		const chars = {
 			'0': 'wall',
@@ -75,10 +72,11 @@ class App extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
 	world: new World(ownProps.width, ownProps.height, ownProps.depth),
-	floor: ownProps.floor,
+	floor: state.floor,
 	width: ownProps.width,
 	height: ownProps.height,
-	player: state.player
+	player: state.player,
+	occupiedSquares: state.occupiedSquares
 })
 
 

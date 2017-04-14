@@ -6,16 +6,22 @@ import Reducer from "./reducers/index.jsx";
 import App from './components/app.jsx';
 import './scss/application.scss';
 
+const initialState = {
+	world: [],
+	floor: 0,
+	player: {},
+	occupiedSquares: {}
+}
 
 
-
-const store = createStore(Reducer);
+const store = createStore(Reducer, initialState);
 
 
 ReactDOM.render(
 	<Provider store={store}>
-		<App width = {50} height = {50} depth = {4} floor = {0}/>
+		<App width = {50} height = {50} depth = {4}/>
 	</Provider>, 
-	document.getElementById('app'));
+	document.getElementById('app')
+);
 
 

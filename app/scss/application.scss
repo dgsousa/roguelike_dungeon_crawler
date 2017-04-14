@@ -47,7 +47,7 @@ body {
 }
 
 .wall {
-	background: brown;
+	background: #8B4513;
 	border: 3px solid black;
 }
 
@@ -59,19 +59,17 @@ body {
 	background: url('door.png');
 }
 
-
-.entity {
-	position: absolute;
-	z-index: 15;
-	width: 30px;
-	height: 30px;
-}
-
 .alien {
 	background: url('alien.png');
 }
 
 .clown {
 	background: url('clown.png');
+}
+
+.astro {
+	background: url('astro.png');
+	background-color: black;
+
 }
 

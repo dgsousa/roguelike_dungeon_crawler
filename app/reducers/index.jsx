@@ -1,36 +1,39 @@
 import { combineReducers } from "redux";
 import { WorldActionTypes, PlayerActionTypes } from "../actiontypes/index.jsx";
 
-const world = (state = [], action) => {
+const Reducer = (state = {}, action) => {
 	switch(action.type) {
 		case WorldActionTypes.CREATE_WORLD: {
-			return action.world;
+			return Object.assign({}, state, 
+				{
+					world: action.world
+				}
+			);
 		}
+
+		case PlayerActionTypes.ADD_PLAYER: {	
+			return Object.assign({}, state, 
+				{
+					player: {
+						...action.player,
+						coords: action.coords
+					}
+				},
+				{
+					occupiedSquares: {
+						[`${action.coords[0]}x${action.coords[1]}`]: "astro"
+					}
+				}
+			)
+		}
+
 		default:
 			return state;
 	}
 }
 
 
-const player = (state = {}, action) => {
-	switch(action.type) {
-		case PlayerActionTypes.ADD_PLAYER: {	
-			return {
-					...action.player,
-					coords: action.coords
-			}
-		}
-		default: 
-			return state;
-	}
-}
 
-
-
-const Reducer = combineReducers({
-	world,
-	player
-})
 
 export default Reducer;
 
