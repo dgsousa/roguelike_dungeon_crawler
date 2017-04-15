@@ -1,7 +1,7 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
-import {WorldActionCreators, PlayerActionCreators} from "../actions/index.jsx";
+import {WorldActionCreators, PlayerActionCreators, LightActionCreators } from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, entityTemplate, bossTemplate } from "../scripts/entities.js";
 
@@ -48,7 +48,7 @@ class App extends Component {
 	}
 
 	getTileClass(x, y) {
-		const {occupiedSquares, world, floor, player} = this.props;
+		const {occupiedSquares, world, floor, player, lightsOn} = this.props;
 		const visibleCells = this.getVisibleCells(player.coords);
 		const map = world._regions[floor]
 		const chars = {
@@ -58,7 +58,7 @@ class App extends Component {
 			'3': 'floor',
 			'5': 'stairs'
 		};
-		return visibleCells[`${x}x${y}`] ? occupiedSquares[`${x}x${y}`] || chars[map[x][y]] : 
+		return visibleCells[`${x},${y},${floor}`] || lightsOn ? occupiedSquares[`${x}x${y}`] || chars[map[x][y]] : "grey"
 	}
 
 
@@ -84,12 +84,14 @@ class App extends Component {
 		const {world, floor} = this.props;
 		const visibleCells = {};
 		world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y, radius, visiblitiy) => {
-			visibleCells[x + ',' + y + ',' + floor] = true;
+			visibleCells[`${x},${y},${floor}`] = true;
 		})
 		return visibleCells;
 	}
 
+
 	render() {
+		const {lightsOn, switchLights} = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
@@ -99,6 +101,9 @@ class App extends Component {
 					tabIndex={"0"}
 					onKeyDown={this.scroll.bind(this)}>
 					{rows}
+					<button onClick={switchLights}>
+						{lightsOn ? "Turn Lights Off" : "Turn Lights On"}
+					</button>
 				</div>
 			</div>	
 		)
@@ -114,7 +119,8 @@ const mapStateToProps = (state, ownProps) => ({
 	width: ownProps.width,
 	height: ownProps.height,
 	player: state.player,
-	occupiedSquares: state.occupiedSquares
+	occupiedSquares: state.occupiedSquares,
+	lightsOn: state.lightsOn
 })
 
 
@@ -124,7 +130,8 @@ export default connect(
 		createWorld: WorldActionCreators.createWorld,
 		addPlayer: PlayerActionCreators.addPlayer,
 		movePlayer: PlayerActionCreators.movePlayer,
-		goUpstairs: PlayerActionCreators.goUpstairs
+		goUpstairs: PlayerActionCreators.goUpstairs,
+		switchLights: LightActionCreators.switchLights
 	}
 )(App);
 

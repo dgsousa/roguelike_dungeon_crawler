@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { WorldActionTypes, PlayerActionTypes } from "../actiontypes/index.jsx";
+import { WorldActionTypes, PlayerActionTypes, LightActionTypes } from "../actiontypes/index.jsx";
 import Entity from "../scripts/entity.js";
 
 const Reducer = (state = {}, action) => {
@@ -63,6 +63,13 @@ const Reducer = (state = {}, action) => {
 					floor: state.floor + 1
 				}
 			)
+		}
+
+		case LightActionTypes.SWITCH_LIGHTS: {
+			return {
+				...state,
+				lightsOn: !state.lightsOn
+			}
 		}
 
 		default:
