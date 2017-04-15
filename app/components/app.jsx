@@ -21,14 +21,13 @@ class App extends Component {
 		}
 	}
 
-
 	emptyCoords() {
 		const {width, height, floor, world, occupiedSquares} = this.props;
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * width);
 			y = Math.floor(Math.random() * height);
-		} while (!world._regions[floor][x][y] && !occupiedSquares[`${x}x${y}`]);
+		} while (!this.isEmptySquare(x, y) && !occupiedSquares[`${x}x${y}`]);
 		return [x, y];
 	}
 
@@ -41,13 +40,39 @@ class App extends Component {
 	};
 
 	scrollScreen(x, y) {
-		const {width, height, player, world, floor, movePlayer, goUpstairs} = this.props;
+		const {width, height, player, world, floor} = this.props;
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
 	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 
-	 	if(world._regions[floor][playerX][playerY] == 5) goUpstairs(player.coords, [playerX, playerY]);
-	 	if(world._regions[floor][playerX][playerY]) movePlayer(player.coords, [playerX, playerY]);
+	 	this.nextFloor(playerX, playerY) ||
+	 	this.move(playerX, playerY);
 	}
+
+	nextFloor(x, y) {
+		if(this.isStaircase(x, y)) {
+			const {player, goUpstairs, floor} = this.props;
+			goUpstairs(player.coords, [x, y]);
+		}
+	}
+
+	move(x, y) {
+		if(this.isEmptySquare(x, y)) {
+			const {player, movePlayer} = this.props;
+			movePlayer(player.coords, [x, y]);
+		}
+	}
+
+
+	isStaircase(x, y) {
+		const { world, floor } = this.props;
+		return world._regions[floor][x][y] == 5;
+	}
+
+	isEmptySquare(x, y) {
+		const { world, floor } = this.props;
+		return world._regions[floor][x][y];
+	}
+
 
 	getTileClass(x, y) {
 		const {occupiedSquares, world, floor, player, lightsOn} = this.props;
