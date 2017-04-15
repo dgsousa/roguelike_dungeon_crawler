@@ -13,12 +13,23 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, floor, createWorld, addPlayer, addEntity} = this.props;
+		const {world, floor, createWorld, addPlayer, addEntities} = this.props;
 		createWorld(world);
 		addPlayer(playerTemplate, this.emptyCoords());
-		for(let i = 0; i < 10; i++) {
-			addEntity(enemyTemplate(floor + 1), this.emptyCoords());
+		addEntities(this.generateEntities(enemyTemplate, 10, 0));
+	}
+
+	generateEntities(template, num, floor) {
+		const entities = [];
+		for(let i = 0; i < num; i++) {
+			let entityTemplate = template;
+			entityTemplate.coords = this.emptyCoords();
+			console.log(entityTemplate);
+			console.log(i);
+			entities.push(entityTemplate);
 		}
+		console.log(entities);
+		return entities;
 	}
 
 	emptyCoords() {
@@ -159,8 +170,8 @@ export default connect(
 		createWorld: WorldActionCreators.createWorld,
 		addPlayer: PlayerActionCreators.addPlayer,
 		movePlayer: PlayerActionCreators.movePlayer,
-		addEntity: EntityActionCreators.addEntity,
 		goUpstairs: PlayerActionCreators.goUpstairs,
+		addEntities: EntityActionCreators.addEntities,
 		switchLights: LightActionCreators.switchLights
 
 	}

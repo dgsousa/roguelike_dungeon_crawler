@@ -66,20 +66,17 @@ const Reducer = (state = {}, action) => {
 			)
 		}
 
-		case EntityActionTypes.ADD_ENTITY: {
+		case EntityActionTypes.ADD_ENTITIES: {
+			const occupiedSquares = Object.assign({}, state.occupiedSquares);
+			const entities = action.entities.map((entity) => {
+				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
+				return new Entity(entity);
+			})
+			
 			return {
 				...state,
-				entities: [
-					...state.entities, 
-					new Entity({
-						...action.entity,
-						coords: action.coords
-					})
-				],
-				occupiedSquares: {
-					...state.occupiedSquares,
-					[`${action.coords[0]}x${action.coords[1]}`]: action.entity._type
-				}
+				entities: [ ...entities],
+				occupiedSquares: occupiedSquares
 			}
 		}
 

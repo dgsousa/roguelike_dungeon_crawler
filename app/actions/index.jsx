@@ -33,18 +33,17 @@ const switchLights = () => ({
 	type: LightActionTypes.SWITCH_LIGHTS,
 })
 
-//EntityActionCreators
-const addEntity = (entity, coords) => ({
-	type: EntityActionTypes.ADD_ENTITY,
-	entity,
-	coords
+const addEntities = (entities) => ({
+	type: EntityActionTypes.ADD_ENTITIES,
+	entities
 })
+
 
 
 const WorldActionCreators = {createWorld};
 const PlayerActionCreators = {addPlayer, movePlayer, goUpstairs};
 const LightActionCreators = {switchLights};
-const EntityActionCreators = {addEntity};
+const EntityActionCreators = {addEntities};
 
 export {
 	WorldActionCreators, 
