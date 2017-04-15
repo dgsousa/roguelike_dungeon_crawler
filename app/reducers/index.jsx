@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
-import Entity from "../scripts/entity.js";
+
 
 const Reducer = (state = {}, action) => {
 	switch(action.type) {
