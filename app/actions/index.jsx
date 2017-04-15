@@ -9,23 +9,22 @@ const createWorld = (world) => ({
 
 
 //PlayerActionCreators
-const addPlayer = (player, coords) => ({
+const addPlayer = (player) => ({
 	type: PlayerActionTypes.ADD_PLAYER,
-	player,
-	coords
+	player
 })
 
-const movePlayer = (prevCoords, nextCoords) => ({
+const movePlayer = (player, prevCoords) => ({
 	type: PlayerActionTypes.MOVE_PLAYER,
-	prevCoords,
-	nextCoords
+	player,
+	prevCoords
 })
 
 
-const goUpstairs = (prevCoords, nextCoords) => ({
+const goUpstairs = (player, prevCoords) => ({
 	type: PlayerActionTypes.GO_UPSTAIRS,
-	prevCoords,
-	nextCoords
+	player,
+	prevCoords
 })
 
 //LightActionCreators

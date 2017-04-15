@@ -50,11 +50,11 @@ export const enemyTemplate = (num) => {
 		_name: 'Alien',
 		_type: 'alien',
 		_newCoords: null,
-		_attackValue: 20 * num,
-		_defenseValue: 10 * num,
-		_hp: 5 * num,
-		_experience: 10 * num,
-		_level: num,
+		_attackValue: 20 * (num + 1),
+		_defenseValue: 10 * (num + 1),
+		_hp: 5 * (num + 1),
+		_experience: 10 * (num + 1),
+		_level: (num + 1),
 		
 		walkAround() {
 			const xOffset = Math.floor(Math.random() * 3) - 1;

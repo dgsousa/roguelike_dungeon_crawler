@@ -13,34 +13,21 @@ const Reducer = (state = {}, action) => {
 		}
 
 		case PlayerActionTypes.ADD_PLAYER: {
-			return Object.assign({}, state, 
-				{
-					player: new Entity({
-						...action.player,
-						coords: action.coords
-					})
-				},
-				{
-					occupiedSquares: {
-						[`${action.coords[0]}x${action.coords[1]}`]: action.player._type
-					}
-				}
-			)
+			const player = action.player[0];
+			const occupiedSquares = {[`${action.player[0].coords[0]}x${action.player[0].coords[1]}`]: action.player[0]._type}
+			return { ...state, player, occupiedSquares }	
 		}
 
 		case PlayerActionTypes.MOVE_PLAYER: {
 			return Object.assign({}, state, 
 				{
-					player: new Entity({
-						...state.player,
-						coords: action.nextCoords
-					})
+					player: action.player
 				},
 				{
 					occupiedSquares: {
 						...state.occupiedSquares,
 						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: state.player._type
+						[`${action.player.coords[0]}x${action.player.coords[1]}`]: action.player._type
 					}
 				}
 			)
@@ -49,15 +36,12 @@ const Reducer = (state = {}, action) => {
 		case PlayerActionTypes.GO_UPSTAIRS: {
 			return Object.assign({}, state, 
 				{
-					player: new Entity({
-						...state.player,
-						coords: action.nextCoords
-					})
+					player: action.player
 				},
 				{
 					occupiedSquares: {
 						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: state.player._type
+						[`${action.player.coords[0]}x${action.player.coords[1]}`]: action.player._type
 					}
 				},
 				{
@@ -70,14 +54,10 @@ const Reducer = (state = {}, action) => {
 			const occupiedSquares = Object.assign({}, state.occupiedSquares);
 			const entities = action.entities.map((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-				return new Entity(entity);
+				return entity;
 			})
 			
-			return {
-				...state,
-				entities: [ ...entities],
-				occupiedSquares: occupiedSquares
-			}
+			return { ...state, entities, occupiedSquares }
 		}
 
 		case LightActionTypes.SWITCH_LIGHTS: {

@@ -4,7 +4,7 @@ import * as ROT from '../../bower_components/rot.js/rot.js';
 import {WorldActionCreators, PlayerActionCreators, LightActionCreators, EntityActionCreators } from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
-
+import Entity from "../scripts/entity.js";
 
 
 class App extends Component {		
@@ -15,20 +15,18 @@ class App extends Component {
 	componentWillMount() {
 		const {world, floor, createWorld, addPlayer, addEntities} = this.props;
 		createWorld(world);
-		addPlayer(playerTemplate, this.emptyCoords());
-		addEntities(this.generateEntities(enemyTemplate, 10, 0));
+		addPlayer(this.generateEntities(playerTemplate, 1));
+		addEntities(this.generateEntities(enemyTemplate(floor), 10));
 	}
+
 
 	generateEntities(template, num, floor) {
 		const entities = [];
 		for(let i = 0; i < num; i++) {
-			let entityTemplate = template;
-			entityTemplate.coords = this.emptyCoords();
-			console.log(entityTemplate);
-			console.log(i);
-			entities.push(entityTemplate);
+			let entity = new Entity(template);
+			entity.coords = this.emptyCoords();
+			entities.push(entity);
 		}
-		console.log(entities);
 		return entities;
 	}
 
@@ -38,50 +36,55 @@ class App extends Component {
 		do {
 			x = Math.floor(Math.random() * width);
 			y = Math.floor(Math.random() * height);
-		} while (!this.isEmptySquare(x, y) && !occupiedSquares[`${x}x${y}`]);
+		} while (!this.isEmptySquare([x, y]) && !occupiedSquares[`${x}x${y}`]);
 		return [x, y];
 	}
 
 	scroll(e) {
 		e.preventDefault();
-		e.keyCode === ROT.VK_I ? this.scrollScreen(0, -1) :
-		e.keyCode === ROT.VK_M ? this.scrollScreen(0, 1) :
-		e.keyCode === ROT.VK_J ? this.scrollScreen(-1, 0) :
-		e.keyCode === ROT.VK_K ? this.scrollScreen(1, 0) : false
+		e.keyCode === ROT.VK_I ? this.scrollScreen([0, -1]) :
+		e.keyCode === ROT.VK_M ? this.scrollScreen([0, 1]) :
+		e.keyCode === ROT.VK_J ? this.scrollScreen([-1, 0]) :
+		e.keyCode === ROT.VK_K ? this.scrollScreen([1, 0]) : false
 	};
 
-	scrollScreen(x, y) {
+	scrollScreen(coords) {
 		const {width, height, player, world, floor} = this.props;
-		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
-	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
+		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + coords[0]));
+	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + coords[1]));
+	 	const playerCoords = [playerX, playerY];
 
-	 	this.nextFloor(playerX, playerY) ||
-	 	this.move(playerX, playerY);
+	 	this.nextFloor(playerCoords) ||
+	 	this.move(playerCoords);
 	}
 
-	nextFloor(x, y) {
-		if(this.isStaircase(x, y)) {
-			const {player, goUpstairs, floor} = this.props;
-			goUpstairs(player.coords, [x, y]);
+	nextFloor(coords) {
+		if(this.isStaircase(coords)) {
+			const {player, goUpstairs} = this.props;
+			goUpstairs(this.newPlayer(coords), player.coords);
 		}
 	}
 
-	move(x, y) {
-		if(this.isEmptySquare(x, y)) {
+	move(coords) {
+		if(this.isEmptySquare(coords)) {
 			const {player, movePlayer} = this.props;
-			movePlayer(player.coords, [x, y]);
+			movePlayer(this.newPlayer(coords), player.coords);
 		}
 	}
 
-
-	isStaircase(x, y) {
-		const { world, floor } = this.props;
-		return world._regions[floor][x][y] == 5;
+	newPlayer(coords) {
+		const {player} = this.props;
+		return new Entity({...player, coords: coords});
 	}
 
-	isEmptySquare(x, y) {
+	isStaircase(coords) {
 		const { world, floor } = this.props;
-		return world._regions[floor][x][y];
+		return world._regions[floor][coords[0]][coords[1]] == 5;
+	}
+
+	isEmptySquare(coords) {
+		const { world, floor } = this.props;
+		return world._regions[floor][coords[0]][coords[1]];
 	}
 
 
