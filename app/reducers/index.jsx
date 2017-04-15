@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { WorldActionTypes, PlayerActionTypes, LightActionTypes } from "../actiontypes/index.jsx";
+import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
 import Entity from "../scripts/entity.js";
 
 const Reducer = (state = {}, action) => {
@@ -12,7 +12,7 @@ const Reducer = (state = {}, action) => {
 			);
 		}
 
-		case PlayerActionTypes.ADD_PLAYER: {	
+		case PlayerActionTypes.ADD_PLAYER: {
 			return Object.assign({}, state, 
 				{
 					player: new Entity({
@@ -22,7 +22,7 @@ const Reducer = (state = {}, action) => {
 				},
 				{
 					occupiedSquares: {
-						[`${action.coords[0]}x${action.coords[1]}`]: "astro"
+						[`${action.coords[0]}x${action.coords[1]}`]: action.player._type
 					}
 				}
 			)
@@ -38,8 +38,9 @@ const Reducer = (state = {}, action) => {
 				},
 				{
 					occupiedSquares: {
+						...state.occupiedSquares,
 						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: "astro"
+						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: state.player._type
 					}
 				}
 			)
@@ -56,13 +57,30 @@ const Reducer = (state = {}, action) => {
 				{
 					occupiedSquares: {
 						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: "astro"
+						[`${action.nextCoords[0]}x${action.nextCoords[1]}`]: state.player._type
 					}
 				},
 				{
 					floor: state.floor + 1
 				}
 			)
+		}
+
+		case EntityActionTypes.ADD_ENTITY: {
+			return {
+				...state,
+				entities: [
+					...state.entities, 
+					new Entity({
+						...action.entity,
+						coords: action.coords
+					})
+				],
+				occupiedSquares: {
+					...state.occupiedSquares,
+					[`${action.coords[0]}x${action.coords[1]}`]: action.entity._type
+				}
+			}
 		}
 
 		case LightActionTypes.SWITCH_LIGHTS: {

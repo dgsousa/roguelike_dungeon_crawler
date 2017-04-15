@@ -12,6 +12,7 @@ const initialState = {
 	player: {
 		coords: [0, 0]
 	},
+	entities: [],
 	occupiedSquares: {},
 	lightsOn: false
 }

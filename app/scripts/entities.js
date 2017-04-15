@@ -1,7 +1,7 @@
 
 export const playerTemplate = {
-	_name: 'Hero',
-	_type: 'hero',
+	_name: 'Astro',
+	_type: 'astro',
 	_attackValue: 20,
 	_defenseValue: 10,
 	_hp: 100,
