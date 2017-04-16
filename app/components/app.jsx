@@ -5,6 +5,7 @@ import {WorldActionCreators, PlayerActionCreators, LightActionCreators, EntityAc
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import Entity from "../scripts/entity.js";
+import {Item, foodTemplate, weaponTemplate} from "../scripts/item.js";
 
 
 class App extends Component {		
@@ -17,6 +18,12 @@ class App extends Component {
 		addEntities(this.generateEntities());
 		createWorld(world);
 	}
+
+	// generateItems() {
+	// 	const items = [];
+	// 	const weapon
+	// }
+
 
 
 	generateEntities(floor = this.props.floor) {
@@ -37,9 +44,7 @@ class App extends Component {
 		return entities;
 	}
 
-	generateItems() {
-		
-	}
+	
 
 	emptyCoords(entities, floor = this.props.floor) {
 		const {width, height, world, occupiedSquares} = this.props;
