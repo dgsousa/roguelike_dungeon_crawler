@@ -9,10 +9,11 @@ import './scss/application.scss';
 const initialState = {
 	world: null,
 	floor: 0,
-	player: {
-		coords: [0, 0]
-	},
-	entities: [],
+	entities: [
+		{
+			coords: [0, 0]
+		}
+	],
 	occupiedSquares: {},
 	lightsOn: false
 }

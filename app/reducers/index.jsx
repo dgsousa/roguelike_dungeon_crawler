@@ -12,16 +12,10 @@ const Reducer = (state = {}, action) => {
 			);
 		}
 
-		case PlayerActionTypes.ADD_PLAYER: {
-			const player = action.player[0];
-			const occupiedSquares = {[`${action.player[0].coords[0]}x${action.player[0].coords[1]}`]: action.player[0]._type}
-			return { ...state, player, occupiedSquares }	
-		}
-
 		case PlayerActionTypes.MOVE_PLAYER: {
 			return Object.assign({}, state, 
 				{
-					player: action.player
+					entities: [action.player, ...state.entities.slice(1)]
 				},
 				{
 					occupiedSquares: {
@@ -34,15 +28,16 @@ const Reducer = (state = {}, action) => {
 		}
 
 		case PlayerActionTypes.GO_UPSTAIRS: {
+			const occupiedSquares = {};
+			action.entities.forEach((entity) => {
+				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
+			})
 			return Object.assign({}, state, 
 				{
-					player: action.player
+					entities: action.entities
 				},
 				{
-					occupiedSquares: {
-						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.player.coords[0]}x${action.player.coords[1]}`]: action.player._type
-					}
+					occupiedSquares: occupiedSquares
 				},
 				{
 					floor: state.floor + 1
@@ -52,12 +47,15 @@ const Reducer = (state = {}, action) => {
 
 		case EntityActionTypes.ADD_ENTITIES: {
 			const occupiedSquares = Object.assign({}, state.occupiedSquares);
-			const entities = action.entities.map((entity) => {
+			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-				return entity;
 			})
 			
-			return { ...state, entities, occupiedSquares }
+			return { 
+					...state, 
+					entities: action.entities, 
+					occupiedSquares: occupiedSquares 
+				}
 		}
 
 		case LightActionTypes.SWITCH_LIGHTS: {

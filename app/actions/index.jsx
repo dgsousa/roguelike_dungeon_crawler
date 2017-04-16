@@ -7,13 +7,7 @@ const createWorld = (world) => ({
 	world
 })
 
-
 //PlayerActionCreators
-const addPlayer = (player) => ({
-	type: PlayerActionTypes.ADD_PLAYER,
-	player
-})
-
 const movePlayer = (player, prevCoords) => ({
 	type: PlayerActionTypes.MOVE_PLAYER,
 	player,
@@ -21,10 +15,9 @@ const movePlayer = (player, prevCoords) => ({
 })
 
 
-const goUpstairs = (player, prevCoords) => ({
+const goUpstairs = (entities, prevCoords) => ({
 	type: PlayerActionTypes.GO_UPSTAIRS,
-	player,
-	prevCoords
+	entities
 })
 
 //LightActionCreators
@@ -40,7 +33,7 @@ const addEntities = (entities) => ({
 
 
 const WorldActionCreators = {createWorld};
-const PlayerActionCreators = {addPlayer, movePlayer, goUpstairs};
+const PlayerActionCreators = { movePlayer, goUpstairs};
 const LightActionCreators = {switchLights};
 const EntityActionCreators = {addEntities};
 

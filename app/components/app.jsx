@@ -12,32 +12,54 @@ class App extends Component {
 		super(props);
 	}
 
+	entityMenu(floor, num) {
+		return [
+			[playerTemplate, 1],
+			[enemyTemplate(floor), num],
+			[bossTemplate, floor == 3 ? 1 : 0]
+		]
+		
+	}
+
 	componentWillMount() {
-		const {world, floor, createWorld, addPlayer, addEntities} = this.props;
+		const {world, floor, createWorld, addEntities} = this.props;
+		const menu = this.entityMenu(floor, 10);
+		addEntities(this.generateEntities(menu));
 		createWorld(world);
-		addPlayer(this.generateEntities(playerTemplate, 1));
-		addEntities(this.generateEntities(enemyTemplate(floor), 10));
 	}
 
 
-	generateEntities(template, num, floor) {
+	generateEntities(menu, floor = this.props.floor) {
 		const entities = [];
-		for(let i = 0; i < num; i++) {
-			let entity = new Entity(template);
-			entity.coords = this.emptyCoords();
-			entities.push(entity);
+		for(let i = 0; i < menu.length; i++) {
+			for(let j = 0; j < menu[i][1]; j++) {
+				const entity = new Entity(menu[i][0]);
+				entity.coords = this.emptyCoords(entities, floor);
+				entities.push(entity);
+			}
 		}
 		return entities;
 	}
 
-	emptyCoords() {
-		const {width, height, floor, world, occupiedSquares} = this.props;
+	emptyCoords(entities, floor = this.props.floor) {
+		const {width, height, world, occupiedSquares} = this.props;
 		let x, y;
 		do {
 			x = Math.floor(Math.random() * width);
 			y = Math.floor(Math.random() * height);
-		} while (!this.isEmptySquare([x, y]) && !occupiedSquares[`${x}x${y}`]);
+		} while (!this.isEmptySquare([x, y], floor) || this.entityAt([x, y], entities));
 		return [x, y];
+	};
+
+	entityAt(coords, entities) {
+		if(entities) {
+			for(let i = 0; i < entities.length; i++) {
+				if(entities[i].coords[0] === coords[0] && entities[i].coords[1]) {
+					return entities[i];
+				}
+			}
+		}
+		return false;
 	}
 
 	scroll(e) {
@@ -49,7 +71,8 @@ class App extends Component {
 	};
 
 	scrollScreen(coords) {
-		const {width, height, player, world, floor} = this.props;
+		const {width, height, world, entities, floor} = this.props;
+		const player = entities[0];
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + coords[0]));
 	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + coords[1]));
 	 	const playerCoords = [playerX, playerY];
@@ -60,21 +83,18 @@ class App extends Component {
 
 	nextFloor(coords) {
 		if(this.isStaircase(coords)) {
-			const {player, goUpstairs} = this.props;
-			goUpstairs(this.newPlayer(coords), player.coords);
+			const {entities, floor, goUpstairs} = this.props;
+			const menu = this.entityMenu(floor + 1, 10);
+			const newEntities = [new Entity({...entities[0], coords: coords}), ...this.generateEntities(menu, floor + 1).slice(1)];
+			goUpstairs(newEntities);
 		}
 	}
 
 	move(coords) {
 		if(this.isEmptySquare(coords)) {
-			const {player, movePlayer} = this.props;
-			movePlayer(this.newPlayer(coords), player.coords);
+			const {entities, movePlayer} = this.props;
+			movePlayer(new Entity({...entities[0], coords: coords}), entities[0].coords);
 		}
-	}
-
-	newPlayer(coords) {
-		const {player} = this.props;
-		return new Entity({...player, coords: coords});
 	}
 
 	isStaircase(coords) {
@@ -82,14 +102,14 @@ class App extends Component {
 		return world._regions[floor][coords[0]][coords[1]] == 5;
 	}
 
-	isEmptySquare(coords) {
-		const { world, floor } = this.props;
-		return world._regions[floor][coords[0]][coords[1]];
+	isEmptySquare(coords, floor = this.props.floor) {
+		return this.props.world._regions[floor][coords[0]][coords[1]];
 	}
 
 
 	getTileClass(x, y) {
-		const {occupiedSquares, world, floor, player, lightsOn} = this.props;
+		const {occupiedSquares, world, floor, entities, lightsOn} = this.props;
+		const player = entities[0];
 		const visibleCells = this.getVisibleCells(player.coords);
 		const map = world._regions[floor]
 		const chars = {
@@ -105,7 +125,8 @@ class App extends Component {
 
 
 	setUpBoard() {
-		const { width, height, world, player} = this.props;
+		const { width, height, world, entities } = this.props;
+		const player = entities[0];
 		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
 		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const rows = [];
@@ -138,7 +159,8 @@ class App extends Component {
 		return (
 			<div>
 				<div className="message"></div>
-				<div 
+				
+				<div
 					className="board"
 					tabIndex={"0"}
 					onKeyDown={this.scroll.bind(this)}>
@@ -160,7 +182,6 @@ const mapStateToProps = (state, ownProps) => ({
 	floor: state.floor,
 	width: ownProps.width,
 	height: ownProps.height,
-	player: state.player,
 	entities: state.entities,
 	occupiedSquares: state.occupiedSquares,
 	lightsOn: state.lightsOn
