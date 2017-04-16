@@ -24,7 +24,7 @@ class App extends Component {
 		const player = new Entity(playerTemplate);
 		player.coords = this.emptyCoords(entities, floor);
 		entities.push(player);
-		for(let i = 0; i < 100; i++) {
+		for(let i = 0; i < 10; i++) {
 			const entity = new Entity(enemyTemplate(floor));
 			entity.coords = this.emptyCoords(entities, floor);
 			entities.push(entity);
@@ -35,6 +35,10 @@ class App extends Component {
 			entities.push(boss);
 		}
 		return entities;
+	}
+
+	generateItems() {
+		
 	}
 
 	emptyCoords(entities, floor = this.props.floor) {
@@ -125,7 +129,7 @@ class App extends Component {
 
 
 	getTileClass(x, y) {
-		const {occupiedSquares, world, floor, entities, lightsOn} = this.props;
+		const {occupiedSquares, itemSquares, world, floor, entities, lightsOn} = this.props;
 		const player = entities[0];
 		const visibleCells = this.getVisibleCells(player.coords);
 		const map = world._regions[floor]
@@ -137,7 +141,10 @@ class App extends Component {
 			'5': 'stairs',
 			'6': 'grey'
 		};
-		return visibleCells[`${x},${y},${floor}`] || lightsOn ? occupiedSquares[`${x}x${y}`] || chars[map[x][y]] : chars[6];
+		return 	visibleCells[`${x},${y},${floor}`] 	|| lightsOn ? 
+					occupiedSquares[`${x}x${y}`] 	|| 
+					itemSquares[`${x}x${y}`] 		|| 
+					chars[map[x][y]] : chars[6];
 	}
 
 
@@ -201,6 +208,7 @@ const mapStateToProps = (state, ownProps) => ({
 	height: ownProps.height,
 	entities: state.entities,
 	occupiedSquares: state.occupiedSquares,
+	itemSquares: state.itemSquares,
 	lightsOn: state.lightsOn
 })
 
@@ -213,7 +221,6 @@ export default connect(
 		moveEntities: EntityActionCreators.moveEntities,
 		addEntities: EntityActionCreators.addEntities,
 		switchLights: LightActionCreators.switchLights
-
 	}
 )(App);
 

@@ -15,6 +15,7 @@ const initialState = {
 		}
 	],
 	occupiedSquares: {},
+	itemSquares: {},
 	lightsOn: false
 }
 
