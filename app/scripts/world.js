@@ -36,7 +36,7 @@ export default class World {
 		for(let x = 0; x < width; x++) {
 			level[x] = new Array(height);
 		}
-		const generator = new ROT.Map.Cellular(width, height);
+		const generator = new ROT.Map.Cellular(width, height, {topology: 8});
 		generator.randomize(.5);
 		for(let i = 0; i < 5; i++) {
 			generator.create();

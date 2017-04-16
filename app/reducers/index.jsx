@@ -12,17 +12,17 @@ const Reducer = (state = {}, action) => {
 			);
 		}
 
-		case PlayerActionTypes.MOVE_PLAYER: {
+		case EntityActionTypes.MOVE_ENTITIES: {
+			const occupiedSquares = {};
+			action.entities.forEach((entity) => {
+				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
+			})
 			return Object.assign({}, state, 
 				{
-					entities: [action.player, ...state.entities.slice(1)]
+					entities: action.entities
 				},
 				{
-					occupiedSquares: {
-						...state.occupiedSquares,
-						[`${action.prevCoords[0]}x${action.prevCoords[1]}`]: false,
-						[`${action.player.coords[0]}x${action.player.coords[1]}`]: action.player._type
-					}
+					occupiedSquares: occupiedSquares
 				}
 			)
 		}

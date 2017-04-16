@@ -8,13 +8,6 @@ const createWorld = (world) => ({
 })
 
 //PlayerActionCreators
-const movePlayer = (player, prevCoords) => ({
-	type: PlayerActionTypes.MOVE_PLAYER,
-	player,
-	prevCoords
-})
-
-
 const goUpstairs = (entities, prevCoords) => ({
 	type: PlayerActionTypes.GO_UPSTAIRS,
 	entities
@@ -22,20 +15,25 @@ const goUpstairs = (entities, prevCoords) => ({
 
 //LightActionCreators
 const switchLights = () => ({
-	type: LightActionTypes.SWITCH_LIGHTS,
+	type: LightActionTypes.SWITCH_LIGHTS
 })
 
+//EntityActionCreators
 const addEntities = (entities) => ({
 	type: EntityActionTypes.ADD_ENTITIES,
 	entities
 })
 
+const moveEntities = (entities) => ({
+	type: EntityActionTypes.MOVE_ENTITIES,
+	entities
+})
 
 
 const WorldActionCreators = {createWorld};
-const PlayerActionCreators = { movePlayer, goUpstairs};
+const PlayerActionCreators = { goUpstairs};
 const LightActionCreators = {switchLights};
-const EntityActionCreators = {addEntities};
+const EntityActionCreators = {addEntities, moveEntities};
 
 export {
 	WorldActionCreators, 

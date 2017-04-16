@@ -54,17 +54,7 @@ export const enemyTemplate = (num) => {
 		_defenseValue: 10 * (num + 1),
 		_hp: 5 * (num + 1),
 		_experience: 10 * (num + 1),
-		_level: (num + 1),
-		
-		walkAround() {
-			const xOffset = Math.floor(Math.random() * 3) - 1;
-			const yOffset = Math.floor(Math.random() * 3) - 1;
-			this._newCoords = [this.x + xOffset, this.y + yOffset];
-		},
-
-		act() {
-			this.walkAround();
-		}
+		_level: (num + 1)
 
 	}
 };

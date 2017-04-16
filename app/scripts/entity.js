@@ -18,10 +18,6 @@ export default class Entity {
 		this._hp -= damage;
 		if(this._hp > 0) this.attack(attacker);			
 	}
-
-	act() {
-		return;
-	}
 }
 
 

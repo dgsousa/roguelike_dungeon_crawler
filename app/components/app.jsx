@@ -24,14 +24,14 @@ class App extends Component {
 		const player = new Entity(playerTemplate);
 		player.coords = this.emptyCoords(entities, floor);
 		entities.push(player);
-		for(let i = 0; i < 10; i++) {
+		for(let i = 0; i < 100; i++) {
 			const entity = new Entity(enemyTemplate(floor));
 			entity.coords = this.emptyCoords(entities, floor);
 			entities.push(entity);
 		}
 		if(floor == 3) {
 			const boss = new Entity(bossTemplate);
-			entity.coords = this.emptyCoords(entities, floor);
+			boss.coords = this.emptyCoords(entities, floor);
 			entities.push(boss);
 		}
 		return entities;
@@ -47,16 +47,6 @@ class App extends Component {
 		return [x, y];
 	};
 
-	entityAt(coords, entities) {
-		if(entities) {
-			for(let i = 0; i < entities.length; i++) {
-				if(entities[i].coords[0] === coords[0] && entities[i].coords[1]) {
-					return entities[i];
-				}
-			}
-		}
-		return false;
-	}
 
 	scroll(e) {
 		e.preventDefault();
@@ -66,57 +56,72 @@ class App extends Component {
 		e.keyCode === ROT.VK_K ? this.scrollScreen([1, 0]) : false
 	};
 
-	scrollScreen(coords) {
+	scrollScreen([x, y]) {
 		const {width, height, world, entities, floor} = this.props;
 		const player = entities[0];
-		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + coords[0]));
-	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + coords[1]));
+		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
+	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 	 	const playerCoords = [playerX, playerY];
 
-	 	this.nextFloor(playerCoords) ||
-	 	this.move(playerCoords);
+	 	this.move(playerCoords) ||
+	 	this.nextFloor(playerCoords) 
+	 	
 	}
 
-	nextFloor(coords) {
-		if(this.isStaircase(coords)) {
+	nextFloor(playerCoords) {
+		if(this.isStaircase(playerCoords)) {
 			const {entities, floor, goUpstairs} = this.props;
-			const newEntities = [new Entity({...entities[0], coords: coords}), ...this.generateEntities(floor + 1).slice(1)];
+			const newEntities = [new Entity({...entities[0], coords: playerCoords}), ...this.generateEntities(floor + 1).slice(1)];
 			goUpstairs(newEntities);
 		}
 	}
 
-	move(coords) {
-		if(this.isEmptySquare(coords)) {
-			const {entities, movePlayer} = this.props;
-			movePlayer(new Entity({...entities[0], coords: coords}), entities[0].coords);
+	move(playerCoords) {
+		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
+			const {entities, moveEntities} = this.props;
+			moveEntities([new Entity({...entities[0], coords: playerCoords}), ...this.moveEnemies(playerCoords)]);
 		}
 	}
 
-	isStaircase(coords) {
+	isStaircase([x, y]) {
 		const { world, floor } = this.props;
-		return world._regions[floor][coords[0]][coords[1]] == 5;
+		return world._regions[floor][x][y] == 5;
 	}
 
-	isEmptySquare(coords, floor = this.props.floor) {
-		return this.props.world._regions[floor][coords[0]][coords[1]];
+	isEmptySquare([x, y], floor = this.props.floor) {
+		return this.inBounds([x, y]) && this.props.world._regions[floor][x][y] && !this.isStaircase([x, y]);
 	}
 
+	inBounds([x, y]) {
+		const {width, height} = this.props;
+		return x >= 0 && x < width && y >= 0 && y < height;
+	}
 
-	moveEntities(entities, player) {
-		const {world, floor} = this.state;
-		entities.forEach((entity) => {
-			entity.act();
-		})
-		for (let i = 0; i < entities.length; i++) {
-			if(entities[i]._newCoords && 
-				this.squareIsEmpty(entities[i]._newCoords, world._regions[floor], entities, player)) {
-				entities[i].coords = entities[i]._newCoords;
+	entityAt([x, y], entities) {
+		if(entities) {
+			for(let i = 0; i < entities.length; i++) {
+				if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
+					return entities[i];
+				}
 			}
 		}
-		return entities;
+		return false;
 	}
 
-	
+
+	moveEnemies(playerCoords) {
+		const {world, floor, entities, width, height} = this.props;
+		const newEntities = entities.splice(1).map((entity) => {
+			const xOffset = Math.floor(Math.random() * 3) - 1;
+			const yOffset = Math.floor(Math.random() * 3) - 1;
+			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
+			return 	this.isEmptySquare(coords, floor) && 
+					!(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ?
+						new Entity({...entity, coords: coords}):
+						new Entity(entity);
+		})
+		return newEntities;
+	}
 
 
 	getTileClass(x, y) {
@@ -204,9 +209,8 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: WorldActionCreators.createWorld,
-		addPlayer: PlayerActionCreators.addPlayer,
-		movePlayer: PlayerActionCreators.movePlayer,
 		goUpstairs: PlayerActionCreators.goUpstairs,
+		moveEntities: EntityActionCreators.moveEntities,
 		addEntities: EntityActionCreators.addEntities,
 		switchLights: LightActionCreators.switchLights
 
