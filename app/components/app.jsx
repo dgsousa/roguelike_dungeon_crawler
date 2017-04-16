@@ -1,7 +1,7 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
-import {WorldActionCreators, PlayerActionCreators, LightActionCreators, EntityActionCreators } from "../actions/index.jsx";
+import {WorldActionCreators, LightActionCreators, EntityActionCreators, ItemActionCreators } from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import Entity from "../scripts/entity.js";
@@ -14,17 +14,24 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, floor, createWorld, addEntities} = this.props;
-		addEntities(this.generateEntities());
+		const {world, floor, createWorld, addItems, addEntities} = this.props;
+		addItems(this.generateItems());
+		addEntities(this.generateEntities(), 0);
 		createWorld(world);
 	}
 
-	// generateItems() {
-	// 	const items = [];
-	// 	const weapon
-	// }
-
-
+	generateItems(floor = this.props.floor) {
+		const items = [];
+		const weapon = new Item(weaponTemplate(floor));
+		weapon.coords = this.emptyCoords(items, floor);
+		items.push(weapon);
+		for(let i = 0; i < 5; i++) {
+			const food = new Item(foodTemplate(floor));
+			food.coords = this.emptyCoords(items, floor);
+			items.push(food);
+		}
+		return items;
+	}
 
 	generateEntities(floor = this.props.floor) {
 		const entities = [];
@@ -32,9 +39,9 @@ class App extends Component {
 		player.coords = this.emptyCoords(entities, floor);
 		entities.push(player);
 		for(let i = 0; i < 10; i++) {
-			const entity = new Entity(enemyTemplate(floor));
-			entity.coords = this.emptyCoords(entities, floor);
-			entities.push(entity);
+			const enemy = new Entity(enemyTemplate(floor));
+			enemy.coords = this.emptyCoords(entities, floor);
+			entities.push(enemy);
 		}
 		if(floor == 3) {
 			const boss = new Entity(bossTemplate);
@@ -79,9 +86,9 @@ class App extends Component {
 
 	nextFloor(playerCoords) {
 		if(this.isStaircase(playerCoords)) {
-			const {entities, floor, goUpstairs} = this.props;
+			const {entities, floor, addEntities} = this.props;
 			const newEntities = [new Entity({...entities[0], coords: playerCoords}), ...this.generateEntities(floor + 1).slice(1)];
-			goUpstairs(newEntities);
+			addEntities(newEntities, floor + 1);
 		}
 	}
 
@@ -205,7 +212,6 @@ class App extends Component {
 }
 
 
-
 const mapStateToProps = (state, ownProps) => ({
 	world: state.world || new World(ownProps.width, ownProps.height, ownProps.depth),
 	floor: state.floor,
@@ -222,10 +228,10 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: WorldActionCreators.createWorld,
-		goUpstairs: PlayerActionCreators.goUpstairs,
 		moveEntities: EntityActionCreators.moveEntities,
 		addEntities: EntityActionCreators.addEntities,
-		switchLights: LightActionCreators.switchLights
+		switchLights: LightActionCreators.switchLights,
+		addItems: ItemActionCreators.addItems
 	}
 )(App);
 

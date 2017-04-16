@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
+import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes, ItemActionTypes } from "../actiontypes/index.jsx";
 
 
 const Reducer = (state = {}, action) => {
@@ -17,51 +17,42 @@ const Reducer = (state = {}, action) => {
 			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
 			})
-			return Object.assign({}, state, 
-				{
-					entities: action.entities
-				},
-				{
-					occupiedSquares: occupiedSquares
-				}
-			)
+			return  {
+				...state,
+				entities: action.entities,
+				occupiedSquares: occupiedSquares
+			}
 		}
 
-		case PlayerActionTypes.GO_UPSTAIRS: {
+		case EntityActionTypes.ADD_ENTITIES: {
 			const occupiedSquares = {};
 			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
 			})
-			return Object.assign({}, state, 
-				{
-					entities: action.entities
-				},
-				{
-					occupiedSquares: occupiedSquares
-				},
-				{
-					floor: state.floor + 1
-				}
-			)
-		}
-
-		case EntityActionTypes.ADD_ENTITIES: {
-			const occupiedSquares = Object.assign({}, state.occupiedSquares);
-			action.entities.forEach((entity) => {
-				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-			})
-			
 			return { 
-					...state, 
-					entities: action.entities, 
-					occupiedSquares: occupiedSquares 
-				}
+				...state, 
+				entities: action.entities, 
+				occupiedSquares: occupiedSquares,
+				floor: action.floor 
+			}
 		}
 
 		case LightActionTypes.SWITCH_LIGHTS: {
 			return {
 				...state,
 				lightsOn: !state.lightsOn
+			}
+		}
+
+		case ItemActionTypes.ADD_ITEMS: {
+			const itemSquares = {};
+			action.items.forEach((item) => {
+				itemSquares[`${item.coords[0]}x${item.coords[1]}`] = item._type
+			})
+			return {
+				...state,
+				items: action.items,
+				itemSquares: itemSquares
 			}
 		}
 

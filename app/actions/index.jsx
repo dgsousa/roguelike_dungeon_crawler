@@ -1,4 +1,4 @@
-import {WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
+import {WorldActionTypes, LightActionTypes, EntityActionTypes, ItemActionTypes } from "../actiontypes/index.jsx";
 
 
 //WorldActionCreators
@@ -7,21 +7,16 @@ const createWorld = (world) => ({
 	world
 })
 
-//PlayerActionCreators
-const goUpstairs = (entities, prevCoords) => ({
-	type: PlayerActionTypes.GO_UPSTAIRS,
-	entities
-})
-
 //LightActionCreators
 const switchLights = () => ({
 	type: LightActionTypes.SWITCH_LIGHTS
 })
 
 //EntityActionCreators
-const addEntities = (entities) => ({
+const addEntities = (entities, floor) => ({
 	type: EntityActionTypes.ADD_ENTITIES,
-	entities
+	entities,
+	floor
 })
 
 const moveEntities = (entities) => ({
@@ -29,17 +24,23 @@ const moveEntities = (entities) => ({
 	entities
 })
 
+//ItemActionCreators
+const addItems = (items) => ({
+	type: ItemActionTypes.ADD_ITEMS,
+	items
+})
+
 
 const WorldActionCreators = {createWorld};
-const PlayerActionCreators = { goUpstairs};
 const LightActionCreators = {switchLights};
 const EntityActionCreators = {addEntities, moveEntities};
+const ItemActionCreators = {addItems};
 
 export {
 	WorldActionCreators, 
-	PlayerActionCreators,
 	LightActionCreators,
-	EntityActionCreators
+	EntityActionCreators,
+	ItemActionCreators
 };
 
 

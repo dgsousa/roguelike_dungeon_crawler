@@ -24,16 +24,16 @@ const foodTypes = {
 
 const foodTemplate = (num) => {
 	return {	
-		type: foodTypes[num],
-		_hp: 10 * num
+		type: foodTypes[num + 1],
+		_hp: 10 * (num + 1)
 	}
 };
 
 const weaponTemplate = (num) => {
 	return {
-		type: weaponTypes[num],
-		weapon: weaponTypes[num],
-		_attackValue: 10 * num
+		type: weaponTypes[num + 1],
+		weapon: weaponTypes[num + 1],
+		_attackValue: 10 * (num + 1)
 	}
 };
 
