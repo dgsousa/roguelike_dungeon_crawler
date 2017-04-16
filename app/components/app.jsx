@@ -102,6 +102,23 @@ class App extends Component {
 	}
 
 
+	moveEntities(entities, player) {
+		const {world, floor} = this.state;
+		entities.forEach((entity) => {
+			entity.act();
+		})
+		for (let i = 0; i < entities.length; i++) {
+			if(entities[i]._newCoords && 
+				this.squareIsEmpty(entities[i]._newCoords, world._regions[floor], entities, player)) {
+				entities[i].coords = entities[i]._newCoords;
+			}
+		}
+		return entities;
+	}
+
+	
+
+
 	getTileClass(x, y) {
 		const {occupiedSquares, world, floor, entities, lightsOn} = this.props;
 		const player = entities[0];
