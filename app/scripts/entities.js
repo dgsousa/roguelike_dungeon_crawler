@@ -76,10 +76,7 @@ export const bossTemplate = {
 	_defenseValue: 100,
 	_hp: 50,
 	_level: 1000,
-	_experience: 1000,
-	act() {
-		return;
-	}
+	_experience: 1000
 };
 
 

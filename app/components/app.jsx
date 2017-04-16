@@ -12,31 +12,27 @@ class App extends Component {
 		super(props);
 	}
 
-	entityMenu(floor, num) {
-		return [
-			[playerTemplate, 1],
-			[enemyTemplate(floor), num],
-			[bossTemplate, floor == 3 ? 1 : 0]
-		]
-		
-	}
-
 	componentWillMount() {
 		const {world, floor, createWorld, addEntities} = this.props;
-		const menu = this.entityMenu(floor, 10);
-		addEntities(this.generateEntities(menu));
+		addEntities(this.generateEntities());
 		createWorld(world);
 	}
 
 
-	generateEntities(menu, floor = this.props.floor) {
+	generateEntities(floor = this.props.floor) {
 		const entities = [];
-		for(let i = 0; i < menu.length; i++) {
-			for(let j = 0; j < menu[i][1]; j++) {
-				const entity = new Entity(menu[i][0]);
-				entity.coords = this.emptyCoords(entities, floor);
-				entities.push(entity);
-			}
+		const player = new Entity(playerTemplate);
+		player.coords = this.emptyCoords(entities, floor);
+		entities.push(player);
+		for(let i = 0; i < 10; i++) {
+			const entity = new Entity(enemyTemplate(floor));
+			entity.coords = this.emptyCoords(entities, floor);
+			entities.push(entity);
+		}
+		if(floor == 3) {
+			const boss = new Entity(bossTemplate);
+			entity.coords = this.emptyCoords(entities, floor);
+			entities.push(boss);
 		}
 		return entities;
 	}
@@ -84,8 +80,7 @@ class App extends Component {
 	nextFloor(coords) {
 		if(this.isStaircase(coords)) {
 			const {entities, floor, goUpstairs} = this.props;
-			const menu = this.entityMenu(floor + 1, 10);
-			const newEntities = [new Entity({...entities[0], coords: coords}), ...this.generateEntities(menu, floor + 1).slice(1)];
+			const newEntities = [new Entity({...entities[0], coords: coords}), ...this.generateEntities(floor + 1).slice(1)];
 			goUpstairs(newEntities);
 		}
 	}
