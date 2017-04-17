@@ -7,8 +7,28 @@ const Reducer = (state = {}, action) => {
 		case WorldActionTypes.CREATE_WORLD: {
 			return  {
 				...state,
-				world: action.world,
-				mesage: action.message
+				world: action.world
+			}
+		}
+
+
+		case WorldActionTypes.FILL_FLOOR: {
+			const occupiedSquares = {};
+			const itemSquares = {};
+			action.entities.forEach((entity) => {
+				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
+			});
+			action.items.forEach((item) => {
+				itemSquares[`${item.coords[0]}x${item.coords[1]}`] = item._type
+			})
+			return { 
+				...state, 
+				entities: action.entities, 
+				items: action.items,
+				occupiedSquares: occupiedSquares,
+				itemSquares: itemSquares,
+				floor: action.floor,
+				message: action.message 
 			}
 		}
 
@@ -29,28 +49,12 @@ const Reducer = (state = {}, action) => {
 				itemSquares: {
 					...state.itemSquares,
 					[`${action.entities[0].coords[0]}x${action.entities[0].coords[1]}`]: false
-				}
+				},
+				message: action.message
 			}
 		}
 
-		case EntityActionTypes.ADD_ENTITIES_AND_ITEMS: {
-			const occupiedSquares = {};
-			const itemSquares = {};
-			action.entities.forEach((entity) => {
-				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-			});
-			action.items.forEach((item) => {
-				itemSquares[`${item.coords[0]}x${item.coords[1]}`] = item._type
-			})
-			return { 
-				...state, 
-				entities: action.entities, 
-				items: action.items,
-				occupiedSquares: occupiedSquares,
-				itemSquares: itemSquares,
-				floor: action.floor 
-			}
-		}
+		
 
 		case LightActionTypes.SWITCH_LIGHTS: {
 			return {

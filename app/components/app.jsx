@@ -13,9 +13,12 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, floor, createWorld, addEntitiesAndItems } = this.props;
-		addEntitiesAndItems(this.generateEntities(), this.generateItems(), 0);
-		createWorld(world, `Welcome to the Dungeon!`);
+		const {world, floor, createWorld, fillFloor } = this.props;
+		const entities = this.generateEntities();
+		const items = this.generateItems();
+		const message = `Welcome to the Dungeon!`
+		fillFloor(entities, items, 0, message);
+		createWorld(world);
 	}
 
 
@@ -77,40 +80,42 @@ class App extends Component {
 	 	
 	}
 
-	nextFloor(playerCoords) {
-		if(this.isStaircase(playerCoords)) {
-			const { entities, floor, addEntitiesAndItems } = this.props;
-			const player = {...entities[0], coords: playerCoords};
-			const enemies = this.generateEntities(floor + 1).slice(1);
-			const items = this.generateItems(floor + 1);
-			const nextFloor = floor + 1;
-			addEntitiesAndItems([player, ...enemies], items, nextFloor);
-			return true;
-		}
-		return false;
-	}
-
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
 			const { entities, moveEntities } = this.props;
-			const player = this.checkForItem({...entities[0], coords: playerCoords});
+			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords});
 			const enemies = this.moveEnemies(playerCoords);
-			moveEntities([ player, ...enemies]);
+			moveEntities([ player, ...enemies], message);
 			return true;
 		}
 		return false;
 	}
 
-	checkForItem(entity) {
+	nextFloor(playerCoords) {
+		if(this.isStaircase(playerCoords)) {
+			const { entities, floor, fillFloor } = this.props;
+			const player = {...entities[0], coords: playerCoords};
+			const enemies = this.generateEntities(floor + 1).slice(1);
+			const items = this.generateItems(floor + 1);
+			const message = `You are now on floor number ${floor + 2}`;
+			fillFloor([player, ...enemies], items, floor + 1, message);
+			return true;
+		}
+		return false;
+	}
+
+	checkForItem(player) {
 		const {items} = this.props;
+		let message = ``;
 		items.forEach((item) => {
-			if(item.coords[0] == entity.coords[0] && item.coords[1] == entity.coords[1]) {
-				entity._hp += item._hp || 0;
-				entity._weapon = item.weapon || entity._weapon;
-				entity._attackValue += item._attackValue || 0;
+			if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
+				player._hp += item._hp || 0;
+				player._weapon = item.weapon || player._weapon;
+				player._attackValue += item._attackValue || 0;
+				message = `You picked up a ${item._type}`;
 			}
 		});
-		return entity;
+		return { player, message };
 	}
 
 	isStaircase([x, y]) {
@@ -223,7 +228,7 @@ class App extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state, ownProps) => (console.log(state),{
 	world: state.world || new World(ownProps.width, ownProps.height, ownProps.depth),
 	floor: state.floor,
 	width: ownProps.width,
@@ -240,8 +245,8 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: WorldActionCreators.createWorld,
+		fillFloor: WorldActionCreators.fillFloor,
 		moveEntities: EntityActionCreators.moveEntities,
-		addEntitiesAndItems: EntityActionCreators.addEntitiesAndItems,
 		switchLights: LightActionCreators.switchLights,
 	}
 )(App);

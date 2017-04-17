@@ -2,9 +2,16 @@ import {WorldActionTypes, LightActionTypes, EntityActionTypes } from "../actiont
 
 
 //WorldActionCreators
-const createWorld = (world, message) => ({
+const createWorld = (world) => ({
 	type: WorldActionTypes.CREATE_WORLD,
-	world,
+	world
+})
+
+const fillFloor = (entities, items, floor, message) => ({
+	type: WorldActionTypes.FILL_FLOOR,
+	entities,
+	items, 
+	floor,
 	message
 })
 
@@ -14,25 +21,17 @@ const switchLights = () => ({
 })
 
 //EntityActionCreators
-const addEntitiesAndItems = (entities, items, floor) => ({
-	type: EntityActionTypes.ADD_ENTITIES_AND_ITEMS,
-	entities,
-	items,
-	floor
-})
 
-const moveEntities = (entities) => ({
+const moveEntities = (entities, message) => ({
 	type: EntityActionTypes.MOVE_ENTITIES,
-	entities
+	entities,
+	message
 })
 
 
-
-
-
-const WorldActionCreators = {createWorld};
+const WorldActionCreators = {createWorld, fillFloor};
 const LightActionCreators = {switchLights};
-const EntityActionCreators = {addEntitiesAndItems, moveEntities};
+const EntityActionCreators = {moveEntities};
 
 
 export {
