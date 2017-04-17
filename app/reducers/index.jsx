@@ -7,7 +7,8 @@ const Reducer = (state = {}, action) => {
 		case WorldActionTypes.CREATE_WORLD: {
 			return  {
 				...state,
-				world: action.world
+				world: action.world,
+				mesage: action.message
 			}
 		}
 

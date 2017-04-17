@@ -2,9 +2,10 @@ import {WorldActionTypes, LightActionTypes, EntityActionTypes } from "../actiont
 
 
 //WorldActionCreators
-const createWorld = (world) => ({
+const createWorld = (world, message) => ({
 	type: WorldActionTypes.CREATE_WORLD,
-	world
+	world,
+	message
 })
 
 //LightActionCreators

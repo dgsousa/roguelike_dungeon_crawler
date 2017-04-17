@@ -15,7 +15,7 @@ class App extends Component {
 	componentWillMount() {
 		const {world, floor, createWorld, addEntitiesAndItems } = this.props;
 		addEntitiesAndItems(this.generateEntities(), this.generateItems(), 0);
-		createWorld(world);
+		createWorld(world, `Welcome to the Dungeon!`);
 	}
 
 

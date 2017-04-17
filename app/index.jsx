@@ -17,6 +17,7 @@ const initialState = {
 	items: [],
 	occupiedSquares: {},
 	itemSquares: {},
+	message: "",
 	lightsOn: false
 }
 
