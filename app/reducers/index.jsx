@@ -11,7 +11,6 @@ const Reducer = (state = {}, action) => {
 			}
 		}
 
-
 		case WorldActionTypes.FILL_FLOOR: {
 			const occupiedSquares = {};
 			const itemSquares = {};

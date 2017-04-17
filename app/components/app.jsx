@@ -16,7 +16,7 @@ class App extends Component {
 		const {world, floor, createWorld, fillFloor } = this.props;
 		const entities = this.generateEntities();
 		const items = this.generateItems();
-		const message = `Welcome to the Dungeon!`
+		const message = [`Welcome to the Dungeon!`];
 		fillFloor(entities, items, 0, message);
 		createWorld(world);
 	}
@@ -83,7 +83,8 @@ class App extends Component {
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
 			const { entities, moveEntities } = this.props;
-			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords});
+			const message = [];
+			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords}, message);
 			const enemies = this.moveEnemies(playerCoords);
 			moveEntities([ player, ...enemies], message);
 			return true;
@@ -97,22 +98,21 @@ class App extends Component {
 			const player = {...entities[0], coords: playerCoords};
 			const enemies = this.generateEntities(floor + 1).slice(1);
 			const items = this.generateItems(floor + 1);
-			const message = `You are now on floor number ${floor + 2}`;
+			const message = [`You are now on floor number ${floor + 2}`];
 			fillFloor([player, ...enemies], items, floor + 1, message);
 			return true;
 		}
 		return false;
 	}
 
-	checkForItem(player) {
+	checkForItem(player, message) {
 		const {items} = this.props;
-		let message = ``;
 		items.forEach((item) => {
 			if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
 				player._hp += item._hp || 0;
 				player._weapon = item.weapon || player._weapon;
 				player._attackValue += item._attackValue || 0;
-				message = `You picked up a ${item._type}`;
+				message.push(`You picked up a ${item._type}`);
 			}
 		});
 		return { player, message };
@@ -237,6 +237,7 @@ const mapStateToProps = (state, ownProps) => (console.log(state),{
 	items: state.items,
 	occupiedSquares: state.occupiedSquares,
 	itemSquares: state.itemSquares,
+	message: state.message,
 	lightsOn: state.lightsOn
 })
 
