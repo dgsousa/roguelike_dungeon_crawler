@@ -116,7 +116,7 @@ export default class App extends Component {
 			const {floor} = this.state;
 			const player = Object.assign(new Entity(), this.state.player, {coords: playerCoords});
 			const entities = this.moveEntities(this.copyEntities(this.state.entities), player);
-			const {items, message} = this.pickUpItem(player, message);		
+			const {items, message} = this.pickUpItem(player);		
 					
 			return {
 				player: player, 
