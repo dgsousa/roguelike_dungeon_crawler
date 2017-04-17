@@ -247,7 +247,8 @@ class App extends Component {
 
 
 	render() {
-		const {entities, lightsOn, switchLights, message, gameEnd, height, width, detph} = this.props;
+		const {entities, lightsOn, switchLights, message, gameEnd, height, width, depth} = this.props;
+		console.log(gameEnd);
 		const rows = this.setUpBoard();
 		return (
 			<div>
