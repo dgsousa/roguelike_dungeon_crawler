@@ -29,6 +29,35 @@ body {
 }
 
 
+.restart {
+	width: 750px;
+	height: 450px;
+	top: 0;
+	left: 0;
+	margin: 0;
+	background: black;
+	z-index: 100;
+	position: absolute;
+	color: white;
+	text-align: center;
+}
+
+.restart h1 {
+	margin: 150px auto 0;
+	width: 40%;
+	color: yellow;
+}
+
+.restart button {
+	margin-top: 80px;
+	width: 150px;
+	height: 80px;
+	color: white;
+	background: blue;
+	font-family: 'Press Start 2P'
+}
+
+
 .board {
 	margin: auto;
 	width: 750px;

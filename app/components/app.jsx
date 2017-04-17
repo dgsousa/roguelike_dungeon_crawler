@@ -6,6 +6,8 @@ import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate} from "../scripts/item.js";
 import Message from "./message.jsx";
+import Stats from "./stats.jsx";
+import Restart from "./restart.jsx";
 
 
 class App extends Component {		
@@ -245,7 +247,7 @@ class App extends Component {
 
 
 	render() {
-		const {lightsOn, switchLights, message} = this.props;
+		const {entities, lightsOn, switchLights, message, gameEnd, height, width, detph} = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
@@ -259,8 +261,8 @@ class App extends Component {
 					onKeyDown={this.scroll.bind(this)}>
 					<Restart 
 						gameEnd={gameEnd}
-						restart={this.componentWillMount.bind(this)}/>			
-					<Stats player={player}/>
+						restart={() => {this.restart(new World(height, width, depth))}}/>			
+					<Stats player={entities[0]}/>
 					{rows}
 					<button 
 						className="lights"
