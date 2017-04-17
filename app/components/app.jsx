@@ -104,7 +104,7 @@ export default class App extends Component {
 				player: player,
 				entities: entities,
 				items: [...weapons, ...food],
-				message: [`You are now on the floor number ${floor + 1}.`],
+				message: [`You are now on floor number ${floor + 1}.`],
 				floor: floor,
 			}
 		} 
