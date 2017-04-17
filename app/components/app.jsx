@@ -1,7 +1,7 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
-import { WorldActionCreators, LightActionCreators, EntityActionCreators } from "../actions/index.jsx";
+import ActionCreators from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate} from "../scripts/item.js";
@@ -13,7 +13,11 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, floor, createWorld, fillFloor } = this.props;
+		const {world, createWorld, fillFloor } = this.props;
+		this.restart(world);
+	}
+
+	restart(world) {
 		const entities = this.generateEntities();
 		const items = this.generateItems();
 		const message = [`Welcome to the Dungeon!`];
@@ -75,17 +79,18 @@ class App extends Component {
 	 	const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 	 	const playerCoords = [playerX, playerY];
 
-	 	this.move(playerCoords) ||
-	 	this.nextFloor(playerCoords) 
+	 	this.move(playerCoords) 		||
+	 	this.nextFloor(playerCoords) 	||
+	 	this.attackEntity(playerCoords)
 	 	
 	}
 
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
 			const { entities, moveEntities } = this.props;
-			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords});
+			const {player, message, items} = this.checkForItem({...entities[0], coords: playerCoords});
 			const enemies = this.moveEnemies(playerCoords);
-			moveEntities([ player, ...enemies], message);
+			moveEntities([ player, ...enemies], items, message);
 			return true;
 		}
 		return false;
@@ -104,18 +109,32 @@ class App extends Component {
 		return false;
 	}
 
+	attackEntity(playerCoords) {
+		if(entity = this.entityAt(playerCoords, this.props.entities)) {
+			const { entities, fight } = this.props;
+			const player = {...entities[0] };
+			player.attack(entity); 
+			const newEnemies = this.damageOrRemoveEntity(entity, [...entities.splice(1)]);
+			const gameEnd = this.checkGameStatus(player);
+			fight([player, ...newEnemies], player._message, gameEnd);
+		}
+		return false;
+	}
+
 	checkForItem(player) {
-		const {items} = this.props;
+		const { items } = this.props;
 		const message = [];
-		items.forEach((item) => {
+		items.filter((item) => {
 			if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
 				player._hp += item._hp || 0;
 				player._weapon = item.weapon || player._weapon;
 				player._attackValue += item._attackValue || 0;
 				message.push(`You picked up a ${item._type}`);
+			} else {
+				return item;
 			}
 		});
-		return { player, message };
+		return { player, message, items };
 	}
 
 	isStaircase([x, y]) {
@@ -136,7 +155,7 @@ class App extends Component {
 		if(entities) {
 			for(let i = 0; i < entities.length; i++) {
 				if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
-					return entities[i];
+					return { ...entities[i] };
 				}
 			}
 		}
@@ -205,6 +224,23 @@ class App extends Component {
 		return visibleCells;
 	}
 
+	checkGameStatus(player) {
+		return 	player._hp <= 0 ? `You Lose!` : 
+				player._experience > 1000 ? `You Win!` : false
+	}
+
+	damageOrRemoveEntity(enemy, entities) {
+		const newEntities = [];
+		entities.forEach((entity) => {
+			if(entity.coords[0] != enemy.coords[0] || entity.coords[1] != enemy.coords[1]) {
+				newEntities.push(entity);
+			} else if(enemy._hp > 0) {
+				newEntities.push(enemy);
+			}
+		});
+		return newEntities;
+	}
+
 
 	render() {
 		const {lightsOn, switchLights} = this.props;
@@ -245,10 +281,11 @@ const mapStateToProps = (state, ownProps) => ({
 export default connect(
 	mapStateToProps,
 	{
-		createWorld: WorldActionCreators.createWorld,
-		fillFloor: WorldActionCreators.fillFloor,
-		moveEntities: EntityActionCreators.moveEntities,
-		switchLights: LightActionCreators.switchLights,
+		createWorld: ActionCreators.createWorld,
+		fillFloor: ActionCreators.fillFloor,
+		moveEntities: ActionCreators.moveEntities,
+		switchLights: ActionCreators.switchLights,
+		fight: ActionCreators.fight
 	}
 )(App);
 

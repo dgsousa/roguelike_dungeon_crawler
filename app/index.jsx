@@ -18,7 +18,8 @@ const initialState = {
 	occupiedSquares: {},
 	itemSquares: {},
 	message: [],
-	lightsOn: false
+	lightsOn: false,
+	gameEnd: false
 }
 
 

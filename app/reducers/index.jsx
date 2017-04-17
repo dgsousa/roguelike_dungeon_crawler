@@ -1,17 +1,16 @@
 import { combineReducers } from "redux";
-import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
 
 
 const Reducer = (state = {}, action) => {
 	switch(action.type) {
-		case WorldActionTypes.CREATE_WORLD: {
+		case "CREATE_WORLD": {
 			return  {
 				...state,
 				world: action.world
 			}
 		}
 
-		case WorldActionTypes.FILL_FLOOR: {
+		case "FILL_FLOOR": {
 			const occupiedSquares = {};
 			const itemSquares = {};
 			action.entities.forEach((entity) => {
@@ -31,7 +30,7 @@ const Reducer = (state = {}, action) => {
 			}
 		}
 
-		case EntityActionTypes.MOVE_ENTITIES: {
+		case "MOVE_ENTITIES": {
 			const occupiedSquares = {};
 			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
@@ -40,11 +39,7 @@ const Reducer = (state = {}, action) => {
 				...state,
 				entities: action.entities,
 				occupiedSquares: occupiedSquares,
-				items: items = state.items.filter((item) => {
-					if(item.coords[0] != action.entities[0].coords[0] || item.coords[1] != action.entities[0].coords[1]) {
-						return item;
-					} 
-				}),
+				items: action.items,
 				itemSquares: {
 					...state.itemSquares,
 					[`${action.entities[0].coords[0]}x${action.entities[0].coords[1]}`]: false
@@ -53,9 +48,23 @@ const Reducer = (state = {}, action) => {
 			}
 		}
 
+		case "FIGHT": {
+			const occupiedSquares = {};
+			action.entities.forEach((entity) => {
+				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type
+			})
+			return {
+				...state,
+				entities: action.entities,
+				message: action.message,
+				gameEnd: action.gameEnd,
+				occupiedSquares: occupiedSquares
+			}
+		}
+
 		
 
-		case LightActionTypes.SWITCH_LIGHTS: {
+		case "SWITCH_LIGHTS": {
 			return {
 				...state,
 				lightsOn: !state.lightsOn

@@ -1,44 +1,46 @@
-import {WorldActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
 
-
-//WorldActionCreators
+//ActionCreators
 const createWorld = (world) => ({
-	type: WorldActionTypes.CREATE_WORLD,
+	type: "CREATE_WORLD",
 	world
 })
 
 const fillFloor = (entities, items, floor, message) => ({
-	type: WorldActionTypes.FILL_FLOOR,
+	type: "FILL_FLOOR",
 	entities,
 	items, 
 	floor,
 	message
 })
 
-//LightActionCreators
+
 const switchLights = () => ({
-	type: LightActionTypes.SWITCH_LIGHTS
+	type: "SWITCH_LIGHTS"
 })
 
-//EntityActionCreators
 
-const moveEntities = (entities, message) => ({
-	type: EntityActionTypes.MOVE_ENTITIES,
+
+const moveEntities = (entities, items, message) => ({
+	type: "MOVE_ENTITIES",
 	entities,
+	items,
 	message
 })
 
+const fight = (entities, message, gameEnd) => ({
+	type: "FIGHT",
+	entities,
+	message,
+	gameEnd
+})
 
-const WorldActionCreators = {createWorld, fillFloor};
-const LightActionCreators = {switchLights};
-const EntityActionCreators = {moveEntities};
 
 
-export {
-	WorldActionCreators, 
-	LightActionCreators,
-	EntityActionCreators
-};
+const ActionCreators = {createWorld, fillFloor, switchLights, moveEntities, fight};
+
+
+
+export default ActionCreators
 
 
 
