@@ -228,7 +228,7 @@ class App extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => (console.log(state),{
+const mapStateToProps = (state, ownProps) => ({
 	world: state.world || new World(ownProps.width, ownProps.height, ownProps.depth),
 	floor: state.floor,
 	width: ownProps.width,
