@@ -5,6 +5,7 @@ import ActionCreators from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate} from "../scripts/item.js";
+import Message from "./message.jsx";
 
 
 class App extends Component {		
@@ -244,11 +245,13 @@ class App extends Component {
 
 
 	render() {
-		const {lightsOn, switchLights} = this.props;
+		const {lightsOn, switchLights, message} = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
-				<div className="message"></div>
+				<Message 
+					className={'message'} 
+					message={message}/>
 				
 				<div
 					className="board"
