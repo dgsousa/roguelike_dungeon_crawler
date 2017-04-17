@@ -1,12 +1,3 @@
-class Item {
-	constructor(properties) {
-		this.x;
-		this.y;
-		for(let key in properties) {
-			this[key] = properties[key];
-		}
-	}
-}
 
 const weaponTypes = {
 	"1": "Rock",
@@ -38,4 +29,4 @@ const weaponTemplate = (num) => {
 };
 
 
-export {Item, foodTemplate, weaponTemplate};
+export {foodTemplate, weaponTemplate};

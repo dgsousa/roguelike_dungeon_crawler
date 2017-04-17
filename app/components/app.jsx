@@ -1,11 +1,10 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
-import {WorldActionCreators, LightActionCreators, EntityActionCreators, ItemActionCreators } from "../actions/index.jsx";
+import { WorldActionCreators, LightActionCreators, EntityActionCreators, ItemActionCreators } from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
-import Entity from "../scripts/entity.js";
-import {Item, foodTemplate, weaponTemplate} from "../scripts/item.js";
+import { foodTemplate, weaponTemplate} from "../scripts/item.js";
 
 
 class App extends Component {		
@@ -20,14 +19,13 @@ class App extends Component {
 		createWorld(world);
 	}
 
+
 	generateItems(floor = this.props.floor) {
 		const items = [];
-		const weapon = new Item(weaponTemplate(floor));
-		weapon.coords = this.emptyCoords(items, floor);
+		const weapon = {...weaponTemplate(floor), coords: this.emptyCoords(items, floor)};
 		items.push(weapon);
 		for(let i = 0; i < 5; i++) {
-			const food = new Item(foodTemplate(floor));
-			food.coords = this.emptyCoords(items, floor);
+			const food = {...foodTemplate(floor), coords: this.emptyCoords(items, floor)};
 			items.push(food);
 		}
 		return items;
@@ -35,23 +33,19 @@ class App extends Component {
 
 	generateEntities(floor = this.props.floor) {
 		const entities = [];
-		const player = new Entity(playerTemplate);
-		player.coords = this.emptyCoords(entities, floor);
+		const player = {...playerTemplate, coords: this.emptyCoords(entities, floor)};
 		entities.push(player);
 		for(let i = 0; i < 10; i++) {
-			const enemy = new Entity(enemyTemplate(floor));
-			enemy.coords = this.emptyCoords(entities, floor);
+			const enemy = {...enemyTemplate(floor), coords: this.emptyCoords(entities, floor)};
 			entities.push(enemy);
 		}
 		if(floor == 3) {
-			const boss = new Entity(bossTemplate);
-			boss.coords = this.emptyCoords(entities, floor);
+			const boss = {...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)};
 			entities.push(boss);
 		}
 		return entities;
 	}
 
-	
 
 	emptyCoords(entities, floor = this.props.floor) {
 		const {width, height, world, occupiedSquares} = this.props;
@@ -86,16 +80,17 @@ class App extends Component {
 
 	nextFloor(playerCoords) {
 		if(this.isStaircase(playerCoords)) {
-			const {entities, floor, addEntities} = this.props;
-			const newEntities = [new Entity({...entities[0], coords: playerCoords}), ...this.generateEntities(floor + 1).slice(1)];
-			addEntities(newEntities, floor + 1);
+			const { entities, floor, addEntities, addItems } = this.props;
+			addItems(this.generateItems(floor + 1));
+			addEntities([{...entities[0], coords: playerCoords}, ...this.generateEntities(floor + 1).slice(1)], floor + 1);
 		}
 	}
 
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
-			const {entities, moveEntities} = this.props;
-			moveEntities([new Entity({...entities[0], coords: playerCoords}), ...this.moveEnemies(playerCoords)]);
+			const {entities, moveEntities } = this.props;
+			moveEntities([{...entities[0], coords: playerCoords}, ...this.moveEnemies(playerCoords)]);
+			
 		}
 	}
 
@@ -133,8 +128,8 @@ class App extends Component {
 			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
 			return 	this.isEmptySquare(coords, floor) && 
 					!(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ?
-						new Entity({...entity, coords: coords}):
-						new Entity(entity);
+						{...entity, coords: coords} :
+						entity;
 		})
 		return newEntities;
 	}

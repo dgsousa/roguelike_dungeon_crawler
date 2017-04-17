@@ -49,12 +49,23 @@ export const enemyTemplate = (num) => {
 	return {
 		_name: 'Alien',
 		_type: 'alien',
-		_newCoords: null,
 		_attackValue: 20 * (num + 1),
 		_defenseValue: 10 * (num + 1),
 		_hp: 5 * (num + 1),
 		_experience: 10 * (num + 1),
-		_level: (num + 1)
+		_level: (num + 1),
+
+		attack(opponent) {
+			const attack = this._attackValue;
+			const defense = opponent._defenseValue;
+			const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
+			opponent.takeDamage(this, damage);
+		},
+
+		takeDamage(attacker, damage) {
+			this._hp -= damage;
+			if(this._hp > 0) this.attack(attacker);			
+		}
 
 	}
 };

@@ -5,11 +5,10 @@ import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionType
 const Reducer = (state = {}, action) => {
 	switch(action.type) {
 		case WorldActionTypes.CREATE_WORLD: {
-			return Object.assign({}, state, 
-				{
-					world: action.world
-				}
-			);
+			return  {
+				...state,
+				world: action.world
+			}
 		}
 
 		case EntityActionTypes.MOVE_ENTITIES: {
@@ -19,8 +18,23 @@ const Reducer = (state = {}, action) => {
 			})
 			return  {
 				...state,
-				entities: action.entities,
-				occupiedSquares: occupiedSquares
+				entities: [ 
+					{ 
+						...action.entities[0], 
+
+					}, 
+					...action.entities.splice(1)
+				],
+				occupiedSquares: occupiedSquares,
+				items: state.items.filter((item) => {
+					if(item.coords[0] != action.entities[0].coords[0] || item.coords[1] != action.entities[0].coords[1]) {
+						return item;
+					}
+				}),
+				itemSquares: {
+					...state.itemSquares,
+					[`${action.entities[0].coords[0]}x${action.entities[0].coords[1]}`]: false
+				}
 			}
 		}
 
@@ -28,19 +42,12 @@ const Reducer = (state = {}, action) => {
 			const occupiedSquares = {};
 			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-			})
+			});
 			return { 
 				...state, 
 				entities: action.entities, 
 				occupiedSquares: occupiedSquares,
 				floor: action.floor 
-			}
-		}
-
-		case LightActionTypes.SWITCH_LIGHTS: {
-			return {
-				...state,
-				lightsOn: !state.lightsOn
 			}
 		}
 
@@ -53,6 +60,13 @@ const Reducer = (state = {}, action) => {
 				...state,
 				items: action.items,
 				itemSquares: itemSquares
+			}
+		}
+
+		case LightActionTypes.SWITCH_LIGHTS: {
+			return {
+				...state,
+				lightsOn: !state.lightsOn
 			}
 		}
 
