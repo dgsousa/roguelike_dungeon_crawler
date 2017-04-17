@@ -13,11 +13,12 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, createWorld, fillFloor } = this.props;
+		const {world} = this.props;
 		this.restart(world);
 	}
 
 	restart(world) {
+		const {createWorld, fillFloor} = this.props;
 		const entities = this.generateEntities();
 		const items = this.generateItems();
 		const message = [`Welcome to the Dungeon!`];
@@ -254,7 +255,9 @@ class App extends Component {
 					tabIndex={"0"}
 					onKeyDown={this.scroll.bind(this)}>
 					{rows}
-					<button onClick={switchLights}>
+					<button 
+						className="lights"
+						onClick={switchLights}>
 						{lightsOn ? "Turn Lights Off" : "Turn Lights On"}
 					</button>
 				</div>
