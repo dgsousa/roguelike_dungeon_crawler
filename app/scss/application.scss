@@ -117,19 +117,47 @@ body {
 }
 
 .grey {
-	background-color: grey;
+	background: rgba(71, 23, 246, .3);
 }
 
 
 .lights {
 	position: absolute;
 	z-index: 50;
-	width: 170px;
+	width: 190px;
 	height: 50px;
 	color: white;
 	background: rgba(1, 1, 1, .7);
 	font-family: 'Press Start 2P';
 	outline: none;
 	top: 0;
-	left: 580px;
+	left: 560px;
+}
+
+
+
+.stats {
+	box-sizing: border-box;
+	font-size: 14px;
+	width: 250px;
+	height: 170px;
+	margin: 0;
+	padding: 10px;
+	position: absolute;
+	background: rgba(1, 1, 1, .6);
+	color: #3CC47C;
+	z-index: 50;
+}
+
+.stats div {
+	margin-top: -5px;
+	margin-bottom: -5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 250px;
+}
+
+.stats span {
+	border: 1px solid green;
+	align-self: right;
 }
