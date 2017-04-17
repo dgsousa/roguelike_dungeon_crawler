@@ -89,9 +89,18 @@ class App extends Component {
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
 			const {entities, moveEntities } = this.props;
-			moveEntities([{...entities[0], coords: playerCoords}, ...this.moveEnemies(playerCoords)]);
+			moveEntities([this.pickUpItem({...entities[0], coords: playerCoords}), ...this.moveEnemies(playerCoords)]);
 			
 		}
+	}
+
+	pickUpItem(entity) {
+		const {items} = this.props;
+		items.forEach((item) => {
+			if(item.coords[0] == entity.coords[0] && item.coords[1] == entity.coords[1]) {
+
+			}
+		})
 	}
 
 	isStaircase([x, y]) {

@@ -18,18 +18,12 @@ const Reducer = (state = {}, action) => {
 			})
 			return  {
 				...state,
-				entities: [ 
-					{ 
-						...action.entities[0], 
-
-					}, 
-					...action.entities.splice(1)
-				],
+				entities: action.entities,
 				occupiedSquares: occupiedSquares,
-				items: state.items.filter((item) => {
+				items: items = state.items.filter((item) => {
 					if(item.coords[0] != action.entities[0].coords[0] || item.coords[1] != action.entities[0].coords[1]) {
 						return item;
-					}
+					} 
 				}),
 				itemSquares: {
 					...state.itemSquares,
