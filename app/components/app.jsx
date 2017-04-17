@@ -1,7 +1,7 @@
 import React, {Component, PropTypes, createElement} from 'react';
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
-import { WorldActionCreators, LightActionCreators, EntityActionCreators, ItemActionCreators } from "../actions/index.jsx";
+import { WorldActionCreators, LightActionCreators, EntityActionCreators } from "../actions/index.jsx";
 import World from "../scripts/world.js";
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate} from "../scripts/item.js";
@@ -13,9 +13,8 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, floor, createWorld, addItems, addEntities} = this.props;
-		addItems(this.generateItems());
-		addEntities(this.generateEntities(), 0);
+		const {world, floor, createWorld, addEntitiesAndItems } = this.props;
+		addEntitiesAndItems(this.generateEntities(), this.generateItems(), 0);
 		createWorld(world);
 	}
 
@@ -80,27 +79,38 @@ class App extends Component {
 
 	nextFloor(playerCoords) {
 		if(this.isStaircase(playerCoords)) {
-			const { entities, floor, addEntities, addItems } = this.props;
-			addItems(this.generateItems(floor + 1));
-			addEntities([{...entities[0], coords: playerCoords}, ...this.generateEntities(floor + 1).slice(1)], floor + 1);
+			const { entities, floor, addEntitiesAndItems } = this.props;
+			const player = {...entities[0], coords: playerCoords};
+			const enemies = this.generateEntities(floor + 1).slice(1);
+			const items = this.generateItems(floor + 1);
+			const nextFloor = floor + 1;
+			addEntitiesAndItems([player, ...enemies], items, nextFloor);
+			return true;
 		}
+		return false;
 	}
 
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
-			const {entities, moveEntities } = this.props;
-			moveEntities([this.pickUpItem({...entities[0], coords: playerCoords}), ...this.moveEnemies(playerCoords)]);
-			
+			const { entities, moveEntities } = this.props;
+			const player = this.checkForItem({...entities[0], coords: playerCoords});
+			const enemies = this.moveEnemies(playerCoords);
+			moveEntities([ player, ...enemies]);
+			return true;
 		}
+		return false;
 	}
 
-	pickUpItem(entity) {
+	checkForItem(entity) {
 		const {items} = this.props;
 		items.forEach((item) => {
 			if(item.coords[0] == entity.coords[0] && item.coords[1] == entity.coords[1]) {
-
+				entity._hp += item._hp || 0;
+				entity._weapon = item.weapon || entity._weapon;
+				entity._attackValue += item._attackValue || 0;
 			}
-		})
+		});
+		return entity;
 	}
 
 	isStaircase([x, y]) {
@@ -135,10 +145,8 @@ class App extends Component {
 			const xOffset = Math.floor(Math.random() * 3) - 1;
 			const yOffset = Math.floor(Math.random() * 3) - 1;
 			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-			return 	this.isEmptySquare(coords, floor) && 
-					!(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ?
-						{...entity, coords: coords} :
-						entity;
+			return 	this.isEmptySquare(coords, floor) 	&& !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
+						{...entity, coords: coords} : entity;
 		})
 		return newEntities;
 	}
@@ -212,7 +220,6 @@ class App extends Component {
 			</div>	
 		)
 	}
-	
 }
 
 
@@ -222,6 +229,7 @@ const mapStateToProps = (state, ownProps) => ({
 	width: ownProps.width,
 	height: ownProps.height,
 	entities: state.entities,
+	items: state.items,
 	occupiedSquares: state.occupiedSquares,
 	itemSquares: state.itemSquares,
 	lightsOn: state.lightsOn
@@ -233,9 +241,8 @@ export default connect(
 	{
 		createWorld: WorldActionCreators.createWorld,
 		moveEntities: EntityActionCreators.moveEntities,
-		addEntities: EntityActionCreators.addEntities,
+		addEntitiesAndItems: EntityActionCreators.addEntitiesAndItems,
 		switchLights: LightActionCreators.switchLights,
-		addItems: ItemActionCreators.addItems
 	}
 )(App);
 

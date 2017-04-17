@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes, ItemActionTypes } from "../actiontypes/index.jsx";
+import { WorldActionTypes, PlayerActionTypes, LightActionTypes, EntityActionTypes } from "../actiontypes/index.jsx";
 
 
 const Reducer = (state = {}, action) => {
@@ -32,28 +32,22 @@ const Reducer = (state = {}, action) => {
 			}
 		}
 
-		case EntityActionTypes.ADD_ENTITIES: {
+		case EntityActionTypes.ADD_ENTITIES_AND_ITEMS: {
 			const occupiedSquares = {};
+			const itemSquares = {};
 			action.entities.forEach((entity) => {
 				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
 			});
-			return { 
-				...state, 
-				entities: action.entities, 
-				occupiedSquares: occupiedSquares,
-				floor: action.floor 
-			}
-		}
-
-		case ItemActionTypes.ADD_ITEMS: {
-			const itemSquares = {};
 			action.items.forEach((item) => {
 				itemSquares[`${item.coords[0]}x${item.coords[1]}`] = item._type
 			})
-			return {
-				...state,
+			return { 
+				...state, 
+				entities: action.entities, 
 				items: action.items,
-				itemSquares: itemSquares
+				occupiedSquares: occupiedSquares,
+				itemSquares: itemSquares,
+				floor: action.floor 
 			}
 		}
 

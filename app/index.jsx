@@ -14,6 +14,7 @@ const initialState = {
 			coords: [0, 0]
 		}
 	],
+	items: [],
 	occupiedSquares: {},
 	itemSquares: {},
 	lightsOn: false
