@@ -257,6 +257,10 @@ class App extends Component {
 					className="board"
 					tabIndex={"0"}
 					onKeyDown={this.scroll.bind(this)}>
+					<Restart 
+						gameEnd={gameEnd}
+						restart={this.componentWillMount.bind(this)}/>			
+					<Stats player={player}/>
 					{rows}
 					<button 
 						className="lights"
