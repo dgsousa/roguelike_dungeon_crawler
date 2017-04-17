@@ -83,8 +83,7 @@ class App extends Component {
 	move(playerCoords) {
 		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
 			const { entities, moveEntities } = this.props;
-			const message = [];
-			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords}, message);
+			const {player, message} = this.checkForItem({...entities[0], coords: playerCoords});
 			const enemies = this.moveEnemies(playerCoords);
 			moveEntities([ player, ...enemies], message);
 			return true;
@@ -105,8 +104,9 @@ class App extends Component {
 		return false;
 	}
 
-	checkForItem(player, message) {
+	checkForItem(player) {
 		const {items} = this.props;
+		const message = [];
 		items.forEach((item) => {
 			if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
 				player._hp += item._hp || 0;
