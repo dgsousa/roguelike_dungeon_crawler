@@ -1,22 +1,19 @@
 import React, {Component, PropTypes} from 'react';
 
-export default class Restart extends Component {
-	constructor(props) {
-		super(props);
-	}
+const Restart = ({gameEnd, restart}) => {
 
-	render() {
-		
-		const display = this.props.gameEnd ? "block" : "none";
+	return (
+		<div
+			className="restart"
+			style={{display: gameEnd ? "block" : "none"}}
+			>
+			<h1>{gameEnd}</h1>
+			<button onClick={restart}>Play Again?</button>
 
-		return (
-			<div
-				className="restart"
-				style={{display: display}}>
-				<h1>{this.props.gameEnd}</h1>
-				<button onClick={this.props.restart}>Play Again?</button>
-
-			</div>
-		)
-	}
+		</div>
+	)
 }
+
+export default Restart;
+
+

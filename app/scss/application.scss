@@ -9,7 +9,6 @@ body {
 
 #app {
 	margin: auto;
-	position: relative;
 }
 
 .message {
@@ -24,9 +23,11 @@ body {
 	font-size: 20px;
 }
 
+
 .message-text {
 	color: #A239CA;
 }
+
 
 .restart {
 	width: 750px;
@@ -56,31 +57,29 @@ body {
 	font-family: 'Press Start 2P'
 }
 
-.view {
-	width: 750px;
-	height: 450px;
-	margin: auto;
-	overflow: hidden;
-	position: relative;	
-	&:focus {
-		outline: none;
-	}
-}
 
 .board {
-	position: relative;
 	margin: auto;
-	width: 1500px;
-	height: 1500px;
+	width: 750px;
+	height: 450px;
+	outline: none;
+	position: relative;
+}
+
+.row {
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	position: relative;
 }
 
 .tile {
-	position: absolute;
-	z-index: 10;
 	width: 30px;
 	height: 30px;
-	font-size: 30px;
+	margin: 0;
 	box-sizing: border-box;
+	position: absolute;
 }
 
 .wall {
@@ -96,72 +95,80 @@ body {
 	background: url('door.png');
 }
 
-.entity {
-	position: absolute;
-	z-index: 15;
-	width: 30px;
-	height: 30px;
-}
-
 .alien {
 	background: url('alien.png');
+	background-color: black;
 }
 
 .clown {
 	background: url('clown.png');
-}
-
-.item {
-	position: absolute;
-	z-index: 14;
-	width: 30px;
-	height: 30px;
-}
-
-.Burger {
-	background: url('burger.png');
-}
-
-.Mushroom {
-	background: url('mushroom.png');
-}
-
-.Pancake {
-	background: url('pancake.png');
-}
-
-.Watermelon {
-	background: url('watermelon.png');
-}
-
-.Rock {
-	background: url('rock.png');
-}
-
-.Sword {
-	background: url('sword.png');
-}
-
-.Axe {
-	background: url('axe.png');
-}
-
-.player {
-	position: absolute;
-	z-index: 20;
-	width: 30px;
-	height: 30px;
-	background: blue;
+	background-color: black;
 }
 
 .astro {
 	background: url('astro.png');
+	background-color: black;
+}
 
+.Burger {
+	background: url('burger.png');
+	background-color: black;
+}
+
+.Mushroom {
+	background: url('mushroom.png');
+	background-color: black;
+}
+
+.Pancake {
+	background: url('pancake.png');
+	background-color: black;
+}
+
+.Watermelon {
+	background: url('watermelon.png');
+	background-color: black;
+}
+
+.Rock {
+	background: url('rock.png');
+	background-color: black;
+}
+
+.Sword {
+	background: url('sword.png');
+	background-color: black;
+}
+
+.Axe {
+	background: url('axe.png');
+	background-color: black;
+}
+
+.Bomb {
+	background: url('bomb.png');
+	background-color: black;
 }
 
 .grey {
 	background: rgba(71, 23, 246, .3);
 }
+
+
+.lights {
+	position: absolute;
+	z-index: 50;
+	width: 190px;
+	height: 50px;
+	color: white;
+	background: rgba(1, 1, 1, .7);
+	font-family: 'Press Start 2P';
+	outline: none;
+	top: 0;
+	left: 560px;
+}
+
+
 
 .stats {
 	box-sizing: border-box;
@@ -188,18 +195,3 @@ body {
 	border: 1px solid green;
 	align-self: right;
 }
-
-.lights {
-	position: absolute;
-	z-index: 50;
-	width: 150px;
-	height: 50px;
-	color: white;
-	background: rgba(1, 1, 1, .7);
-	font-family: 'Press Start 2P';
-	outline: none;
-	left: 600px;
-}
-
-
-

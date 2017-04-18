@@ -2,28 +2,21 @@ import React, {Component, Proptypes} from 'react';
 
 
 
-export default class Message extends Component {
-	constructor(props) {
-		super(props);
-	}
+const Message = ({message}) => {
 
-	render() {
-		const items = this.props.message.map((item, key) => {
-			return (
+	return (
+		<div 
+			className={'message'}>
+			{ message.map((item, key) => (
 				<p 
 					key={key}
 					className="message-text">
 					{item}<br/>
 				</p>
-			)
-		})
-
-
-		return (
-			<div 
-				className={'message'}>
-				{items}
-			</div>
-		)	
-	}
+				))
+			}
+		</div>
+	)	
 }
+
+export default Message;

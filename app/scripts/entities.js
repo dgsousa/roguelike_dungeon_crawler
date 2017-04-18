@@ -1,7 +1,7 @@
 
 export const playerTemplate = {
-	_name: 'Hero',
-	_type: 'hero',
+	_name: 'Astro',
+	_type: 'astro',
 	_attackValue: 20,
 	_defenseValue: 10,
 	_hp: 100,
@@ -49,21 +49,22 @@ export const enemyTemplate = (num) => {
 	return {
 		_name: 'Alien',
 		_type: 'alien',
-		_newCoords: null,
-		_attackValue: 20 * num,
-		_defenseValue: 10 * num,
-		_hp: 5 * num,
-		_experience: 10 * num,
-		_level: num,
-		
-		walkAround() {
-			const xOffset = Math.floor(Math.random() * 3) - 1;
-			const yOffset = Math.floor(Math.random() * 3) - 1;
-			this._newCoords = [this.x + xOffset, this.y + yOffset];
+		_attackValue: 20 * (num + 1),
+		_defenseValue: 10 * (num + 1),
+		_hp: 5 * (num + 1),
+		_experience: 10 * (num + 1),
+		_level: (num + 1),
+
+		attack(opponent) {
+			const attack = this._attackValue;
+			const defense = opponent._defenseValue;
+			const damage = 1 + Math.floor(Math.random() * Math.max(0, attack - defense));
+			opponent.takeDamage(this, damage);
 		},
 
-		act() {
-			this.walkAround();
+		takeDamage(attacker, damage) {
+			this._hp -= damage;
+			if(this._hp > 0) this.attack(attacker);			
 		}
 
 	}
@@ -76,10 +77,7 @@ export const bossTemplate = {
 	_defenseValue: 100,
 	_hp: 50,
 	_level: 1000,
-	_experience: 1000,
-	act() {
-		return;
-	}
+	_experience: 1000
 };
 
 
