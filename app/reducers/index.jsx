@@ -8,39 +8,27 @@ const Reducer = (state = {}, action) => {
 				...state,
 				world: action.world,
 				gameEnd: false,
-				tester: state.tester + 1
+				floor: 0
 			}
 		}
 
 		case "FILL_FLOOR": {
-			const occupiedSquares = {};
-			const itemSquares = {};
-			action.entities.forEach((entity) => {
-				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-			});
-			action.items.forEach((item) => {
-				itemSquares[`${item.coords[0]}x${item.coords[1]}`] = item._type
-			})
 			return { 
 				...state, 
 				entities: action.entities, 
 				items: action.items,
-				occupiedSquares: occupiedSquares,
-				itemSquares: itemSquares,
+				occupiedSquares: action.occupiedSquares,
+				itemSquares: action.itemSquares,
 				floor: action.floor,
 				message: action.message 
 			}
 		}
 
 		case "MOVE_ENTITIES": {
-			const occupiedSquares = {};
-			action.entities.forEach((entity) => {
-				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type 
-			})
 			return  {
 				...state,
 				entities: action.entities,
-				occupiedSquares: occupiedSquares,
+				occupiedSquares: action.occupiedSquares,
 				items: action.items,
 				itemSquares: {
 					...state.itemSquares,
@@ -51,20 +39,14 @@ const Reducer = (state = {}, action) => {
 		}
 
 		case "FIGHT": {
-			const occupiedSquares = {};
-			action.entities.forEach((entity) => {
-				occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type
-			})
 			return {
 				...state,
 				entities: action.entities,
 				message: action.message,
 				gameEnd: action.gameEnd,
-				occupiedSquares: occupiedSquares
+				occupiedSquares: action.occupiedSquares
 			}
 		}
-
-		
 
 		case "SWITCH_LIGHTS": {
 			return {

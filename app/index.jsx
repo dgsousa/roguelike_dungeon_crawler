@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from "react-redux";
-import {createStore} from "redux";
+import {applyMiddleware, createStore} from "redux";
 import Reducer from "./reducers/index.jsx";
 import App from './components/app.jsx';
 import './scss/application.scss';
@@ -25,6 +25,7 @@ const initialState = {
 
 
 const store = createStore(Reducer, initialState);
+
 
 
 

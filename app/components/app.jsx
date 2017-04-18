@@ -1,4 +1,5 @@
 import React, {Component, PropTypes, createElement} from 'react';
+import {dispatch} from "redux";
 import {connect} from "react-redux";
 import * as ROT from '../../bower_components/rot.js/rot.js';
 import ActionCreators from "../actions/index.jsx";
@@ -16,29 +17,30 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world, createWorld, fillFloor} = this.props;
+		const {world, createWorld} = this.props;
 		createWorld(world);
-		const entities = this.generateEntities();
-		const items = this.generateItems();
-		const message = [`Welcome to the Dungeon!`];
-		fillFloor(entities, items, 0, message);
+		this.setupBoard();
 	}
 
-	componentWillUpdate(nextProps) {
-		if(this.props.world !== nextProps.world) {
-			const {fillFloor} = this.props;
-			const entities = this.generateEntities();
-			const items = this.generateItems();
-			const message = [`Welcome to the Dungeon!`];
-			fillFloor(entities, items, 0, message);
+	componentDidUpdate(prevProps) {
+		if(this.props.world !== prevProps.world) {
+			this.setupBoard();
 		}
 	}
-
-
 
 	restart() {
 		const {width, height, depth, createWorld} = this.props;
 		createWorld(new World(width, height, depth));
+	}
+
+	setupBoard() {
+		const {fillFloor} = this.props;
+		const entities = this.generateEntities();
+		const items = this.generateItems();
+		const message = [`Welcome to the Dungeon!`];
+		const occupiedSquares = this.getOccupiedSquares(entities);
+		const itemSquares = this.getOccupiedSquares(items);
+		fillFloor(entities, items, 0, message, occupiedSquares, itemSquares);
 	}
 
 
@@ -106,7 +108,8 @@ class App extends Component {
 			const { entities, moveEntities } = this.props;
 			const {player, message, items} = this.checkForItem({...entities[0], coords: playerCoords});
 			const enemies = this.moveEnemies(playerCoords);
-			moveEntities([ player, ...enemies], items, message);
+			const occupiedSquares = this.getOccupiedSquares([ player, ...enemies]);
+			moveEntities([ player, ...enemies], items, message, occupiedSquares);
 			return true;
 		}
 		return false;
@@ -119,7 +122,9 @@ class App extends Component {
 			const enemies = this.generateEntities(floor + 1).slice(1);
 			const items = this.generateItems(floor + 1);
 			const message = [`You are now on floor number ${floor + 2}`];
-			fillFloor([player, ...enemies], items, floor + 1, message);
+			const occupiedSquares = this.getOccupiedSquares([player, ...enemies]);
+			const itemSquares = this.getOccupiedSquares(items);
+			fillFloor([player, ...enemies], items, floor + 1, message, occupiedSquares, itemSquares);
 			return true;
 		}
 		return false;
@@ -132,7 +137,8 @@ class App extends Component {
 			player.attack(entity); 
 			const newEnemies = this.damageOrRemoveEntity(entity, [...entities.splice(1)]);
 			const gameEnd = this.checkGameStatus(player);
-			fight([player, ...newEnemies], player._message, gameEnd);
+			const occupiedSquares = this.getOccupiedSquares([player, ...newEnemies]);
+			fight([player, ...newEnemies], player._message, gameEnd, occupiedSquares);
 		}
 		return false;
 	}
@@ -143,7 +149,7 @@ class App extends Component {
 		items.filter((item) => {
 			if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
 				player._hp += item._hp || 0;
-				player._weapon = item.weapon || player._weapon;
+				player._weapon = item._weapon || player._weapon;
 				player._attackValue += item._attackValue || 0;
 				message.push(`You picked up a ${item._type}`);
 			} else {
@@ -257,6 +263,14 @@ class App extends Component {
 		return newEntities;
 	}
 
+	getOccupiedSquares(entities) {
+		const occupiedSquares = {};
+		entities.forEach((entity) => {
+			occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type
+		})
+		return occupiedSquares;
+	}
+
 
 	render() {
 		const {entities, lightsOn, switchLights, message, gameEnd, height, width, depth} = this.props;
@@ -302,7 +316,6 @@ const mapStateToProps = (state, ownProps) => ({
 	gameEnd: state.gameEnd,
 	tester: state.tester
 })
-
 
 export default connect(
 	mapStateToProps,

@@ -5,12 +5,14 @@ const createWorld = (world) => ({
 	world
 })
 
-const fillFloor = (entities, items, floor, message) => ({
+const fillFloor = (entities, items, floor, message, occupiedSquares, itemSquares) => ({
 	type: "FILL_FLOOR",
 	entities,
 	items, 
 	floor,
-	message
+	message,
+	occupiedSquares,
+	itemSquares
 })
 
 
@@ -19,20 +21,23 @@ const switchLights = () => ({
 })
 
 
-
-const moveEntities = (entities, items, message) => ({
+const moveEntities = (entities, items, message, occupiedSquares) => ({
 	type: "MOVE_ENTITIES",
 	entities,
 	items,
-	message
+	message,
+	occupiedSquares
 })
 
-const fight = (entities, message, gameEnd) => ({
+const fight = (entities, message, gameEnd, occupiedSquares) => ({
 	type: "FIGHT",
 	entities,
 	message,
-	gameEnd
+	gameEnd,
+	occupiedSquares
 })
+
+
 
 
 
