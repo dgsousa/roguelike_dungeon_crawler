@@ -19,11 +19,13 @@ const initialState = {
 	itemSquares: {},
 	message: [],
 	lightsOn: false,
-	gameEnd: false
+	gameEnd: false,
+	tester: 0
 }
 
 
 const store = createStore(Reducer, initialState);
+
 
 
 ReactDOM.render(

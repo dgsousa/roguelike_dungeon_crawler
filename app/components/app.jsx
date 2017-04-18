@@ -16,17 +16,29 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		const {world} = this.props;
-		this.restart(world);
-	}
-
-	restart(world) {
-		const {createWorld, fillFloor} = this.props;
+		const {world, createWorld, fillFloor} = this.props;
+		createWorld(world);
 		const entities = this.generateEntities();
 		const items = this.generateItems();
 		const message = [`Welcome to the Dungeon!`];
 		fillFloor(entities, items, 0, message);
-		createWorld(world);
+	}
+
+	componentWillUpdate(nextProps) {
+		if(this.props.world !== nextProps.world) {
+			const {fillFloor} = this.props;
+			const entities = this.generateEntities();
+			const items = this.generateItems();
+			const message = [`Welcome to the Dungeon!`];
+			fillFloor(entities, items, 0, message);
+		}
+	}
+
+
+
+	restart() {
+		const {width, height, depth, createWorld} = this.props;
+		createWorld(new World(width, height, depth));
 	}
 
 
@@ -248,7 +260,6 @@ class App extends Component {
 
 	render() {
 		const {entities, lightsOn, switchLights, message, gameEnd, height, width, depth} = this.props;
-		console.log(gameEnd);
 		const rows = this.setUpBoard();
 		return (
 			<div>
@@ -262,7 +273,7 @@ class App extends Component {
 					onKeyDown={this.scroll.bind(this)}>
 					<Restart 
 						gameEnd={gameEnd}
-						restart={() => {this.restart(new World(height, width, depth))}}/>			
+						restart={this.restart.bind(this)}/>			
 					<Stats player={entities[0]}/>
 					{rows}
 					<button 
@@ -287,7 +298,9 @@ const mapStateToProps = (state, ownProps) => ({
 	occupiedSquares: state.occupiedSquares,
 	itemSquares: state.itemSquares,
 	message: state.message,
-	lightsOn: state.lightsOn
+	lightsOn: state.lightsOn,
+	gameEnd: state.gameEnd,
+	tester: state.tester
 })
 
 

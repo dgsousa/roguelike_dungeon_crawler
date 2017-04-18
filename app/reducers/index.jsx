@@ -6,7 +6,9 @@ const Reducer = (state = {}, action) => {
 		case "CREATE_WORLD": {
 			return  {
 				...state,
-				world: action.world
+				world: action.world,
+				gameEnd: false,
+				tester: state.tester + 1
 			}
 		}
 
