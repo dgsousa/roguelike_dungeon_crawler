@@ -3,7 +3,7 @@
 const createWorld = (world) => ({
 	type: "CREATE_WORLD",
 	world
-})
+});
 
 const fillFloor = (entities, items, floor, message, occupiedSquares, itemSquares) => ({
 	type: "FILL_FLOOR",
@@ -13,12 +13,12 @@ const fillFloor = (entities, items, floor, message, occupiedSquares, itemSquares
 	message,
 	occupiedSquares,
 	itemSquares
-})
+});
 
 
 const switchLights = () => ({
 	type: "SWITCH_LIGHTS"
-})
+});
 
 
 const moveEntities = (entities, items, message, occupiedSquares) => ({
@@ -27,7 +27,7 @@ const moveEntities = (entities, items, message, occupiedSquares) => ({
 	items,
 	message,
 	occupiedSquares
-})
+});
 
 const fight = (entities, message, gameEnd, occupiedSquares) => ({
 	type: "FIGHT",
@@ -35,7 +35,7 @@ const fight = (entities, message, gameEnd, occupiedSquares) => ({
 	message,
 	gameEnd,
 	occupiedSquares
-})
+});
 
 
 
@@ -45,7 +45,7 @@ const ActionCreators = {createWorld, fillFloor, switchLights, moveEntities, figh
 
 
 
-export default ActionCreators
+export default ActionCreators;
 
 
 

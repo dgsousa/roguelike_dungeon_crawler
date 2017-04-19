@@ -1,23 +1,31 @@
-import React, {Component, PropTypes} from 'react';
+import React, { PropTypes} from "react";
 
 
-export default class Stats extends Component {
-	constructor(props) {
-		super(props);
-	}
+const Stats = ({player}) => {
+
+	return (
+		<div className="stats">
+			<div><p>{player._name}</p></div>
+			<div><p>Weapon: {player._weapon}</p></div>
+			<div><p>Attack: {player._attackValue}</p></div>
+			<div><p>HP: {player._hp}</p></div>
+			<div><p>XP: {player._experience}</p></div>
+			<div><p>Level: {player._level}</p></div>
+		</div>
+	);
+	
+};
+
+export default Stats;
 
 
-
-	render() {
-		return (
-			<div className="stats">
-				<div><p>{this.props.player._name}</p></div>
-				<div><p>Weapon: {this.props.player._weapon}</p></div>
-				<div><p>Attack: {this.props.player._attackValue}</p></div>
-				<div><p>HP: {this.props.player._hp}</p></div>
-				<div><p>XP: {this.props.player._experience}</p></div>
-				<div><p>Level: {this.props.player._level}</p></div>
-			</div>
-		)
-	}
-}
+React.propTypes = {
+	player: PropTypes.shape({
+		_name: PropTypes.string.isRequired,
+		_weapon: PropTypes.string.isRequired,
+		_attackValue: PropTypes.number.isRequired,
+		_hp: PropTypes.number.isRequired,
+		_experience: PropTypes.number.isRequired,
+		_level: PropTypes.number.isRequired
+	}),
+};

@@ -12,7 +12,7 @@ module.exports = {
 					{
 						test: /\.(jsx|js)$/,
 						exclude: '/node_modules/',
-						loader: 'babel-loader'
+						loaders: ['babel-loader', 'eslint-loader']
 					},
 					{
 						test: /\.scss$/,

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { PropTypes} from "react";
 
 const Restart = ({gameEnd, restart}) => {
 
@@ -11,9 +11,13 @@ const Restart = ({gameEnd, restart}) => {
 			<button onClick={restart}>Play Again?</button>
 
 		</div>
-	)
-}
+	);
+};
 
 export default Restart;
 
+React.propTypes = {
+	gameEnd: PropTypes.bool.isRequired,
+	restart: PropTypes.func.isRequired
+};
 

@@ -1,4 +1,4 @@
-import * as ROT from '../../bower_components/rot.js/rot.js';
+import * as ROT from "../../bower_components/rot.js/rot.js";
 
 
 export default class World {
@@ -42,8 +42,8 @@ export default class World {
 			generator.create();
 		}
 		generator.create((x, y, v) => {
-			v === 1 ? level[x][y] = 1 : level[x][y] = 0
-		})
+			v === 1 ? level[x][y] = 1 : level[x][y] = 0;
+		});
 		return level;
 	}
 
@@ -85,7 +85,7 @@ export default class World {
 			for(let dY = -1; dY < 2; dY++) {
 				if(dX === 0 && dY === 0) continue;
 				if(x + dX >= 0 && x + dX < this._width && y + dY >= 0 && y + dY < this._height)
-				tiles.push({x: x + dX, y: y + dY});
+					tiles.push({x: x + dX, y: y + dY});
 			}
 		}
 		return tiles.randomize();
@@ -125,7 +125,7 @@ export default class World {
 			for(let y = 0; y < this._height; y++) {
 				if(this._regions[z][x][y] && this._regions[z + 1][x][y] &&
 					this._regions[z][x][y] == r1 && this._regions[z][x][y] == r2) {
-					matches.push({x: x, y: y})
+					matches.push({x: x, y: y});
 				}
 			}
 		}
@@ -137,7 +137,6 @@ export default class World {
 		if(overlaps.length == 0) return false;
 		const point = overlaps[0];
 		this._regions[z][point.x][point.y] = 5;
-		//this._regions[z + 1][point.x][point.y] = 3;
 		return true;
 	}
 
@@ -147,9 +146,9 @@ export default class World {
 			let key;
 			for(let x = 0; x < this._width; x++) {
 				for(let y = 0; y < this._height; y++) {
-					key = this._regions[z][x][y] + ',' + this._regions[z + 1][x][y];
+					key = this._regions[z][x][y] + "," + this._regions[z + 1][x][y];
 					if(this._regions[z][x][y] && this._regions[z + 1][x][y] && !connected[key]) {
-						connected[key] = this.connectRegions(z, this._regions[z][x][y], this._regions[z + 1][x][y])
+						connected[key] = this.connectRegions(z, this._regions[z][x][y], this._regions[z + 1][x][y]);
 					}
 				}
 			}
@@ -162,12 +161,11 @@ export default class World {
 				if(x >= 0 && x < this._width && y >= 0 && y <= this._height) {
 					return this._regions[z][x][y] > 0;
 				}
-			}, {topology: 4}))
+			}, {topology: 4}));
 		}
 	}
 
 	findPaths() {
-		const self = this;
 		for(let i = 0; i < this._pathArray.length - 1; i++) {
 			if(this._pathArray[i][0] === this._pathArray[i + 1][0]) {
 				const z = this._pathArray[i][0];
