@@ -9,18 +9,7 @@ import "./scss/application.scss";
 const initialState = {
 	world: null,
 	floor: 0,
-	entities: [
-		{
-			coords: [0, 0]
-		}
-	],
-	items: [],
-	occupiedSquares: {},
-	itemSquares: {},
-	message: [],
-	lightsOn: false,
-	gameEnd: false,
-	tester: 0
+	occupiedSquares: {}
 };
 
 
