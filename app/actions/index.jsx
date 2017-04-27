@@ -37,6 +37,13 @@ const fight = (entities, message, gameEnd, occupiedSquares) => ({
 	occupiedSquares
 });
 
+const whateber = (THING) => {
+	return (dispatch, getState) => {
+		getState.thingThatIneed + 5
+		dispatch(fight(state.entities))
+	}
+}
+
 
 
 
