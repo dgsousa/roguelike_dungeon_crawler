@@ -16,7 +16,8 @@ class App extends Component {
 	componentWillMount() {
 		const {world, createWorld} = this.props;
 		createWorld(world);
-		const player = {...playerTemplate, coords: this.emptyCoords([])};
+		this.setup();
+		
 	}
 
 	// componentDidUpdate(prevProps) {
@@ -30,15 +31,15 @@ class App extends Component {
 	// 	createWorld(new World(width, height, depth));
 	// }
 
-	// setupBoard() {
-	// 	const {fillFloor} = this.props;
-	// 	const entities = this.generateEntities();
-	// 	const items = this.generateItems();
-	// 	const message = ["Welcome to the Dungeon!"];
-	// 	const occupiedSquares = this.getOccupiedSquares(entities);
-	// 	const itemSquares = this.getOccupiedSquares(items);
-	// 	fillFloor(entities, items, 0, message, occupiedSquares, itemSquares);
-	// }
+	setup() {
+		const {fillFloor} = this.props;
+		const player = {...playerTemplate, coords: this.emptyCoords([])};
+		const occupiedSquares = {
+			[`${entity.coords[0]}x${entity.coords[1]}`]: entity._type
+		}
+		console.log(occupiedSquares);
+		fillFloor(player, 0, occupiedSquares);
+	}
 
 
 	// generateItems(floor = this.props.floor) {
@@ -161,7 +162,9 @@ class App extends Component {
 	}
 
 	isEmptySquare([x, y], floor = this.props.floor) {
-		return this.inBounds([x, y]) && this.props.world._regions[floor][x][y] && !this.isStaircase([x, y]);
+		const { world } = this.props;
+		console.log(world);
+		return this.inBounds([x, y]) && world._regions[floor][x][y] && !this.isStaircase([x, y]);
 	}
 
 	inBounds([x, y]) {

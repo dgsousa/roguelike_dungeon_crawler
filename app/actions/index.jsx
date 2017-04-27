@@ -40,7 +40,7 @@ const fillFloor = (player, floor, occupiedSquares) => ({
 
 
 
-const ActionCreators = {createWorld, fillFloor, switchLights, moveEntities, fight};
+const ActionCreators = {createWorld, fillFloor};
 
 
 
