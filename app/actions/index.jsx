@@ -5,37 +5,34 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (entities, items, floor, message, occupiedSquares, itemSquares) => ({
+const fillFloor = (player, floor, occupiedSquares) => ({
 	type: "FILL_FLOOR",
-	entities,
-	items, 
+	player,
 	floor,
-	message,
-	occupiedSquares,
-	itemSquares
-});
-
-
-const switchLights = () => ({
-	type: "SWITCH_LIGHTS"
-});
-
-
-const moveEntities = (entities, items, message, occupiedSquares) => ({
-	type: "MOVE_ENTITIES",
-	entities,
-	items,
-	message,
 	occupiedSquares
 });
 
-const fight = (entities, message, gameEnd, occupiedSquares) => ({
-	type: "FIGHT",
-	entities,
-	message,
-	gameEnd,
-	occupiedSquares
-});
+
+// const switchLights = () => ({
+// 	type: "SWITCH_LIGHTS"
+// });
+
+
+// const moveEntities = (entities, items, message, occupiedSquares) => ({
+// 	type: "MOVE_ENTITIES",
+// 	entities,
+// 	items,
+// 	message,
+// 	occupiedSquares
+// });
+
+// const fight = (entities, message, gameEnd, occupiedSquares) => ({
+// 	type: "FIGHT",
+// 	entities,
+// 	message,
+// 	gameEnd,
+// 	occupiedSquares
+// });
 
 
 

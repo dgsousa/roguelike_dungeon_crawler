@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import * as ROT from "../../bower_components/rot.js/rot.js";
 import ActionCreators from "../actions/index.jsx";
 import World from "../scripts/world.js";
-import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
-import { foodTemplate, weaponTemplate} from "../scripts/item.js";
+import { playerTemplate} from "../scripts/entities.js";
+
 
 
 
@@ -16,6 +16,7 @@ class App extends Component {
 	componentWillMount() {
 		const {world, createWorld} = this.props;
 		createWorld(world);
+		const player = {...playerTemplate, coords: this.emptyCoords([])};
 	}
 
 	// componentDidUpdate(prevProps) {
@@ -67,15 +68,15 @@ class App extends Component {
 	// }
 
 
-	// emptyCoords(entities, floor = this.props.floor) {
-	// 	const {width, height} = this.props;
-	// 	let x, y;
-	// 	do {
-	// 		x = Math.floor(Math.random() * width);
-	// 		y = Math.floor(Math.random() * height);
-	// 	} while (!this.isEmptySquare([x, y], floor) || this.entityAt([x, y], entities));
-	// 	return [x, y];
-	// }
+	emptyCoords(entities, floor = this.props.floor) {
+		const {width, height} = this.props;
+		let x, y;
+		do {
+			x = Math.floor(Math.random() * width);
+			y = Math.floor(Math.random() * height);
+		} while (!this.isEmptySquare([x, y], floor));
+		return [x, y];
+	}
 
 
 	scroll(e) {
@@ -154,19 +155,19 @@ class App extends Component {
 	// 	return { player, message, items };
 	// }
 
-	// isStaircase([x, y]) {
-	// 	const { world, floor } = this.props;
-	// 	return world._regions[floor][x][y] == 5;
-	// }
+	isStaircase([x, y]) {
+		const { world, floor } = this.props;
+		return world._regions[floor][x][y] == 5;
+	}
 
-	// isEmptySquare([x, y], floor = this.props.floor) {
-	// 	return this.inBounds([x, y]) && this.props.world._regions[floor][x][y] && !this.isStaircase([x, y]);
-	// }
+	isEmptySquare([x, y], floor = this.props.floor) {
+		return this.inBounds([x, y]) && this.props.world._regions[floor][x][y] && !this.isStaircase([x, y]);
+	}
 
-	// inBounds([x, y]) {
-	// 	const {width, height} = this.props;
-	// 	return x >= 0 && x < width && y >= 0 && y < height;
-	// }
+	inBounds([x, y]) {
+		const {width, height} = this.props;
+		return x >= 0 && x < width && y >= 0 && y < height;
+	}
 
 	// entityAt([x, y], entities) {
 	// 	if(entities) {
@@ -209,8 +210,7 @@ class App extends Component {
 
 
 	setUpBoard() {
-		const { width, height } = this.props;
-		const player = {...playerTemplate, coords: [0, 0]};
+		const { width, height, player } = this.props;
 		const screenX = Math.max(0, Math.min(0 - 12, width - 25));
 		const screenY = Math.max(0, Math.min(0 - 7, height - 15));
 		const rows = [];
@@ -293,10 +293,7 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: ActionCreators.createWorld,
-		fillFloor: ActionCreators.fillFloor,
-		moveEntities: ActionCreators.moveEntities,
-		switchLights: ActionCreators.switchLights,
-		fight: ActionCreators.fight
+		fillFloor: ActionCreators.fillFloor
 	}
 )(App);
 

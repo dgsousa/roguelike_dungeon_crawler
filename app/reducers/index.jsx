@@ -10,17 +10,14 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	// case "FILL_FLOOR": {
-	// 	return { 
-	// 		...state, 
-	// 		entities: action.entities, 
-	// 		items: action.items,
-	// 		occupiedSquares: action.occupiedSquares,
-	// 		itemSquares: action.itemSquares,
-	// 		floor: action.floor,
-	// 		message: action.message 
-	// 	};
-	// }
+	case "FILL_FLOOR": {
+		return { 
+			...state, 
+			player: action.player, 
+			occupiedSquares: action.occupiedSquares,
+			floor: action.floor
+		};
+	}
 
 	// case "MOVE_ENTITIES": {
 	// 	return  {

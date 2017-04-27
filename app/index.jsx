@@ -8,7 +8,10 @@ import "./scss/application.scss";
 
 const initialState = {
 	world: null,
-	floor: 0,
+	floor: {
+		coords: [0, 0]
+	},
+	player: null,
 	occupiedSquares: {}
 };
 
