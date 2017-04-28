@@ -10,28 +10,21 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	case "FILL_FLOOR": {
+	case "SETUP_FLOOR": {
 		return { 
 			...state, 
 			player: action.player, 
-			occupiedSquares: action.occupiedSquares,
-			floor: action.floor
+			occupiedSquares: action.occupiedSquares
 		};
 	}
 
-	// case "MOVE_ENTITIES": {
-	// 	return  {
-	// 		...state,
-	// 		entities: action.entities,
-	// 		occupiedSquares: action.occupiedSquares,
-	// 		items: action.items,
-	// 		itemSquares: {
-	// 			...state.itemSquares,
-	// 			[`${action.entities[0].coords[0]}x${action.entities[0].coords[1]}`]: false
-	// 		},
-	// 		message: action.message
-	// 	};
-	// }
+	case "MOVE": {
+		return  {
+			...state,
+			player: action.player,
+			occupiedSquares: action.occupiedSquares,
+		};
+	}
 
 	// case "FIGHT": {
 	// 	return {

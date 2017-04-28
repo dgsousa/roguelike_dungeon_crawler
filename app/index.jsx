@@ -1,24 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
-import {createStore} from "redux";
+import {createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 import Reducer from "./reducers/index.jsx";
 import App from "./components/app.jsx";
+import World from "./scripts/world.js";
 import "./scss/application.scss";
 
 const initialState = {
-	world: null,
-	floor: {
+	world: new World(50, 50, 4),
+	floor: 0,
+	player: {
 		coords: [0, 0]
 	},
-	player: null,
-	occupiedSquares: {}
+	occupiedSquares: {},
+	width: 50,
+	height: 50,
+	depth: 4
 };
 
-
-const store = createStore(Reducer, initialState);
-
-
+const store = createStore(Reducer, initialState, applyMiddleware(thunk));
 
 
 ReactDOM.render(

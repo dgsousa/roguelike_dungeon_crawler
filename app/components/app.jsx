@@ -1,24 +1,20 @@
 import React, {Component, PropTypes, createElement} from "react";
 import {connect} from "react-redux";
-import * as ROT from "../../bower_components/rot.js/rot.js";
+//import * as ROT from "../../bower_components/rot.js/rot.js";
 import ActionCreators from "../actions/index.jsx";
-import World from "../scripts/world.js";
-import { playerTemplate} from "../scripts/entities.js";
+//import World from "../scripts/world.js";
+//import { playerTemplate} from "../scripts/entities.js";
 
 
 
 
 class App extends Component {		
-	constructor(props) {
-		super(props);
-	}
 
 	componentWillMount() {
-		const {world, createWorld} = this.props;
-		createWorld(world);
-		this.setup();
-		
+		const { setupFloor } = this.props;
+		setupFloor();
 	}
+
 
 	// componentDidUpdate(prevProps) {
 	// 	if(this.props.world !== prevProps.world) {
@@ -31,15 +27,7 @@ class App extends Component {
 	// 	createWorld(new World(width, height, depth));
 	// }
 
-	setup() {
-		const {fillFloor} = this.props;
-		const player = {...playerTemplate, coords: this.emptyCoords([])};
-		const occupiedSquares = {
-			[`${entity.coords[0]}x${entity.coords[1]}`]: entity._type
-		}
-		console.log(occupiedSquares);
-		fillFloor(player, 0, occupiedSquares);
-	}
+	
 
 
 	// generateItems(floor = this.props.floor) {
@@ -69,47 +57,12 @@ class App extends Component {
 	// }
 
 
-	emptyCoords(entities, floor = this.props.floor) {
-		const {width, height} = this.props;
-		let x, y;
-		do {
-			x = Math.floor(Math.random() * width);
-			y = Math.floor(Math.random() * height);
-		} while (!this.isEmptySquare([x, y], floor));
-		return [x, y];
-	}
+	
 
 
-	scroll(e) {
-		e.preventDefault();
-		e.keyCode === ROT.VK_I ? this.scrollScreen([0, -1]) :
-		e.keyCode === ROT.VK_M ? this.scrollScreen([0, 1]) :
-		e.keyCode === ROT.VK_J ? this.scrollScreen([-1, 0]) :
-		e.keyCode === ROT.VK_K ? this.scrollScreen([1, 0]) : false;
-	}
-
-	scrollScreen([x, y]) {
-		const {width, height, entities} = this.props;
-		const player = entities[0];
-		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
-		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
-		const playerCoords = [playerX, playerY];
-
-		this.move(playerCoords);
-	}
 
 
-	move(playerCoords) {
-		if(this.isEmptySquare(playerCoords) && !this.entityAt(playerCoords, this.props.entities) ) {
-			const { entities, moveEntities } = this.props;
-			const {player, message, items} = this.checkForItem({...entities[0], coords: playerCoords});
-			const enemies = this.moveEnemies(playerCoords);
-			const occupiedSquares = this.getOccupiedSquares([ player, ...enemies]);
-			moveEntities([ player, ...enemies], items, message, occupiedSquares);
-			return true;
-		}
-		return false;
-	}
+	// 
 
 	// nextFloor(playerCoords) {
 	// 	if(this.isStaircase(playerCoords)) {
@@ -156,21 +109,7 @@ class App extends Component {
 	// 	return { player, message, items };
 	// }
 
-	isStaircase([x, y]) {
-		const { world, floor } = this.props;
-		return world._regions[floor][x][y] == 5;
-	}
-
-	isEmptySquare([x, y], floor = this.props.floor) {
-		const { world } = this.props;
-		console.log(world);
-		return this.inBounds([x, y]) && world._regions[floor][x][y] && !this.isStaircase([x, y]);
-	}
-
-	inBounds([x, y]) {
-		const {width, height} = this.props;
-		return x >= 0 && x < width && y >= 0 && y < height;
-	}
+	
 
 	// entityAt([x, y], entities) {
 	// 	if(entities) {
@@ -198,7 +137,7 @@ class App extends Component {
 
 
 	getTileClass(x, y) {
-		const {world, floor} = this.props;
+		const {world, floor, occupiedSquares} = this.props;
 		const map = world._regions[floor];
 		const chars = {
 			"0": "wall",
@@ -208,14 +147,14 @@ class App extends Component {
 			"5": "stairs",
 			"6": "grey"
 		};
-		return 	chars[map[x][y]];
+		return 	occupiedSquares[`${x}x${y}`] || chars[map[x][y]];
 	}
 
 
 	setUpBoard() {
 		const { width, height, player } = this.props;
-		const screenX = Math.max(0, Math.min(0 - 12, width - 25));
-		const screenY = Math.max(0, Math.min(0 - 7, height - 15));
+		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const rows = [];
 		for(let y = screenY; y < screenY + 15; y++) {
 			let row = [];
@@ -260,23 +199,18 @@ class App extends Component {
 	// 	return newEntities;
 	// }
 
-	getOccupiedSquares(entities) {
-		const occupiedSquares = {};
-		entities.forEach((entity) => {
-			occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
-		});
-		return occupiedSquares;
-	}
+	
 
 
 	render() {
+		const { scroll } = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
 				<div
 					className="board"
 					tabIndex={"0"}
-					onKeyDown={this.scroll.bind(this)}>
+					onKeyDown={scroll}>
 					{rows}
 				</div>
 			</div>	
@@ -286,8 +220,10 @@ class App extends Component {
 
 
 const mapStateToProps = (state, ownProps) => ({
-	world: state.world || new World(ownProps.width, ownProps.height, ownProps.depth),
+	world: state.world,
 	floor: state.floor,
+	player: state.player,
+	occupiedSquares: state.occupiedSquares,
 	width: ownProps.width,
 	height: ownProps.height
 });
@@ -296,7 +232,8 @@ export default connect(
 	mapStateToProps,
 	{
 		createWorld: ActionCreators.createWorld,
-		fillFloor: ActionCreators.fillFloor
+		setupFloor: ActionCreators.setupFloor,
+		scroll: ActionCreators.scroll
 	}
 )(App);
 
