@@ -88,13 +88,9 @@ const nextFloor = (playerCoords) => {
 };
 
 
-
-
-
-
-// const switchLights = () => ({
-// 	type: "SWITCH_LIGHTS"
-// });
+const switchLights = () => ({
+	type: "SWITCH_LIGHTS"
+});
 
 
 
@@ -152,7 +148,7 @@ const emptyCoords = (entities, state) => {
 
 
 
-const ActionCreators = {createWorld, setupFloor, scroll};
+const ActionCreators = {createWorld, setupFloor, scroll, switchLights};
 
 
 

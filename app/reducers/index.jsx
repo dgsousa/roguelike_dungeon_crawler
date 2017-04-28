@@ -37,12 +37,12 @@ const Reducer = (state = {}, action) => {
 	// 	};
 	// }
 
-	// case "SWITCH_LIGHTS": {
-	// 	return {
-	// 		...state,
-	// 		lightsOn: !state.lightsOn
-	// 	};
-	// }
+	case "SWITCH_LIGHTS": {
+		return {
+			...state,
+			lightsOn: !state.lightsOn
+		};
+	}
 
 	default:
 		return state;

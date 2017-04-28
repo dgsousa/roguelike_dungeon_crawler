@@ -137,8 +137,9 @@ class App extends Component {
 
 
 	getTileClass(x, y) {
-		const {world, floor, occupiedSquares} = this.props;
+		const {world, floor, player, occupiedSquares, lightsOn } = this.props;
 		const map = world._regions[floor];
+		const visibleCells = this.getVisibleCells(player.coords);
 		const chars = {
 			"0": "wall",
 			"1": "floor",
@@ -147,7 +148,9 @@ class App extends Component {
 			"5": "stairs",
 			"6": "grey"
 		};
-		return 	occupiedSquares[`${x}x${y}`] || chars[map[x][y]];
+		return 	visibleCells[`${x},${y},${floor}`] || lightsOn ?
+					occupiedSquares[`${x}x${y}`] || chars[map[x][y]] :
+					chars["6"];
 	}
 
 
@@ -173,14 +176,14 @@ class App extends Component {
 		return rows;
 	}
 
-	// getVisibleCells(playerCoords) {
-	// 	const {world, floor} = this.props;
-	// 	const visibleCells = {};
-	// 	world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y) => {
-	// 		visibleCells[`${x},${y},${floor}`] = true;
-	// 	});
-	// 	return visibleCells;
-	// }
+	getVisibleCells(playerCoords) {
+		const {world, floor} = this.props;
+		const visibleCells = {};
+		world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y) => {
+			visibleCells[`${x},${y},${floor}`] = true;
+		});
+		return visibleCells;
+	}
 
 	// checkGameStatus(player) {
 	// 	return 	player._hp <= 0 ? "You Lose!" : 
@@ -203,7 +206,7 @@ class App extends Component {
 
 
 	render() {
-		const { scroll } = this.props;
+		const { scroll, lightsOn, switchLights } = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
@@ -212,6 +215,11 @@ class App extends Component {
 					tabIndex={"0"}
 					onKeyDown={scroll}>
 					{rows}
+					<button 
+						className="lights"
+						onClick={switchLights}>
+						{lightsOn ? "Turn Lights Off" : "Turn Lights On"}
+					</button>
 				</div>
 			</div>	
 		);
@@ -219,13 +227,15 @@ class App extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state) => ({
 	world: state.world,
 	floor: state.floor,
 	player: state.player,
 	occupiedSquares: state.occupiedSquares,
-	width: ownProps.width,
-	height: ownProps.height
+	width: state.width,
+	height: state.height,
+	depth: state.depth,
+	lightsOn: state.lightsOn
 });
 
 export default connect(
@@ -233,7 +243,8 @@ export default connect(
 	{
 		createWorld: ActionCreators.createWorld,
 		setupFloor: ActionCreators.setupFloor,
-		scroll: ActionCreators.scroll
+		scroll: ActionCreators.scroll,
+		switchLights: ActionCreators.switchLights
 	}
 )(App);
 

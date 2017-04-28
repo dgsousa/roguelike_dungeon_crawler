@@ -15,6 +15,7 @@ const initialState = {
 		coords: [0, 0]
 	},
 	occupiedSquares: {},
+	lightsOn: false,
 	width: 50,
 	height: 50,
 	depth: 4
