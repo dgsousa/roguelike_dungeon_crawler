@@ -12,9 +12,9 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (player, occupiedSquares, floor = 0) => ({
+const fillFloor = (entities, occupiedSquares, floor = 0) => ({
 	type: "FILL_FLOOR",
-	player,
+	entities,
 	occupiedSquares,
 	floor
 });
@@ -22,11 +22,9 @@ const fillFloor = (player, occupiedSquares, floor = 0) => ({
 
 const setupFloor = () => {
 	return function(dispatch, getState) {
-		const player = generateEntities(getState());
-		const occupiedSquares = {
-			[`${player.coords[0]}x${player.coords[1]}`]: player._type
-		};
-		dispatch(fillFloor(player, occupiedSquares));
+		const entities = generateEntities(getState());
+		const occupiedSquares = getOccupiedSquares(entities);
+		dispatch(fillFloor(entities, occupiedSquares));
 	};
 };
 
@@ -137,12 +135,17 @@ const emptyCoords = (entities, state) => {
 
 
 const generateEntities = (state, floor = 0) => {
+	//console.log({...playerTemplate});
 	const entities = [];
 	entityTemplateMenu.forEach((entityTemplate) => {
-		if(entityTemplate._type !== enemyTemplate._type) {
-			entities.push({...entityTemplate, coords: emptyCoords(entities, state)});
+		if(entityTemplate[0]._type !== enemyTemplate(0)._type) {
+			for(let i = 0; i < entityTemplate[1]; i++) {
+				entities.push({...entityTemplate[0], coords: emptyCoords(entities, state)});
+			}
 		} else {
-			entities.push({...entityTemplate(floor), coords: emptyCoords(entities, state)});
+			for(let i = 0; i < entityTemplate[1]; i++) {
+				entities.push({...entityTemplate(floor), coords: emptyCoords(entities, state)});
+			}
 		}
 	});
 	if(floor === 3) entities.push({...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)});
@@ -157,15 +160,13 @@ const entityTemplateMenu = [
 ];
 
 
-
-
-// getOccupiedSquares(entities) {
-// 	const occupiedSquares = {};
-// 	entities.forEach((entity) => {
-// 		occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
-// 	});
-// 	return occupiedSquares;
-// }
+const getOccupiedSquares = (entities) => {
+	const occupiedSquares = {};
+	entities.forEach((entity) => {
+		occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
+	});
+	return occupiedSquares;
+};
 
 
 

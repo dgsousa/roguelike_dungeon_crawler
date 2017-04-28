@@ -133,7 +133,8 @@ class App extends Component {
 
 
 	setUpBoard() {
-		const { width, height, player } = this.props;
+		const { width, height, entities } = this.props;
+		const player = entities[0];
 		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
 		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const rows = [];

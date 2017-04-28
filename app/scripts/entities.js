@@ -80,8 +80,7 @@ const bossTemplate = {
 	_experience: 1000
 };
 
-
-export default {playerTemplate, enemyTemplate, bossTemplate};
+export { playerTemplate, enemyTemplate, bossTemplate};
 
 
 

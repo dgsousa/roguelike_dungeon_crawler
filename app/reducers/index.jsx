@@ -13,7 +13,7 @@ const Reducer = (state = {}, action) => {
 	case "FILL_FLOOR": {
 		return { 
 			...state, 
-			player: action.player, 
+			entities: action.entities, 
 			occupiedSquares: action.occupiedSquares,
 			floor: action.floor
 		};
