@@ -47,7 +47,8 @@ const scrollScreen = ([x, y]) => {
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
 		
-		dispatch(move(playerCoords));
+		dispatch(move(playerCoords)) 		|| 
+		dispatch(nextFloor(playerCoords));
 	};
 };
 
@@ -73,13 +74,13 @@ const move = (playerCoords) => {
 
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
-		if(this.isStaircase(playerCoords, getState())) {
+		if(isStaircase(playerCoords, getState())) {
 			const {player, floor} = getState();
-			const player = Object.assign(player, {coords: playerCoords});
+			const newPlayer = Object.assign(player, {coords: playerCoords});
 			const occupiedSquares = {
 				[`${player.coords[0]}x${player.coords[1]}`]: player._type
 			};
-			dispatch(fillFloor(player, occupiedSquares, floor + 1));
+			dispatch(fillFloor(newPlayer, occupiedSquares, floor + 1));
 			return true;
 		}
 		return false;
