@@ -10,6 +10,12 @@ const createWorld = (world) => ({
 	world
 });
 
+const fillFloor = (player, occupiedSquares) => ({
+	type: "FILL_FLOOR",
+	player,
+	occupiedSquares
+});
+
 
 const setupFloor = () => {
 	return function(dispatch, getState) {
@@ -17,11 +23,7 @@ const setupFloor = () => {
 		const occupiedSquares = {
 			[`${player.coords[0]}x${player.coords[1]}`]: player._type
 		};
-		return dispatch({
-			type: "SETUP_FLOOR",
-			player,
-			occupiedSquares
-		});
+		dispatch(fillFloor(player, occupiedSquares));
 	};
 };
 
@@ -68,17 +70,19 @@ const move = (playerCoords) => {
 	};
 };
 
-nextFloor(playerCoords) {
-	if(this.isStaircase(playerCoords)) {
-		
-		const player = {...entities[0], coords: playerCoords};
-		const occupiedSquares = this.getOccupiedSquares([player, ...enemies]);
-		
-		fillFloor([player, ...enemies], items, floor + 1, message, occupiedSquares, itemSquares);
-		return true;
-	}
-	return false;
-}
+const nextFloor = (playerCoords) => {
+	return function(dispatch, getState) {
+		if(this.isStaircase(playerCoords, getState())) {
+			const player = Object.assign(getState().player, {coords: playerCoords});
+			const occupiedSquares = {
+				[`${player.coords[0]}x${player.coords[1]}`]: player._type
+			};
+			dispatch(fillFloor(player, occupiedSquares));
+			return true;
+		}
+		return false;
+	};	
+};
 
 
 

@@ -10,7 +10,7 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	case "SETUP_FLOOR": {
+	case "FILL_FLOOR": {
 		return { 
 			...state, 
 			player: action.player, 
