@@ -1,4 +1,6 @@
-import { playerTemplate} from "../scripts/entities.js";
+import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
+import { foodTemplate, weaponTemplate } from "../scripts/items.js";
+
 import * as ROT from "../../bower_components/rot.js/rot.js";
 
 
@@ -20,7 +22,7 @@ const fillFloor = (player, occupiedSquares, floor = 0) => ({
 
 const setupFloor = () => {
 	return function(dispatch, getState) {
-		const player = {...playerTemplate, coords: emptyCoords([], getState())};
+		const player = generateEntities(getState());
 		const occupiedSquares = {
 			[`${player.coords[0]}x${player.coords[1]}`]: player._type
 		};
@@ -132,6 +134,30 @@ const emptyCoords = (entities, state) => {
 	} while (!isEmptySquare([x, y], state));
 	return [x, y];
 };
+
+
+const generateEntities = (state, floor = 0) => {
+	const entities = [];
+	entityTemplateMenu.forEach((entityTemplate) => {
+		if(entityTemplate._type !== enemyTemplate._type) {
+			entities.push({...entityTemplate, coords: emptyCoords(entities, state)});
+		} else {
+			entities.push({...entityTemplate(floor), coords: emptyCoords(entities, state)});
+		}
+	});
+	if(floor === 3) entities.push({...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)});
+	return entities;
+};
+
+const entityTemplateMenu = [
+	[playerTemplate, 1],
+	[enemyTemplate, 10],
+	[foodTemplate, 5],
+	[weaponTemplate, 5]
+];
+
+
+
 
 // getOccupiedSquares(entities) {
 // 	const occupiedSquares = {};

@@ -1,5 +1,5 @@
 
-export const playerTemplate = {
+const playerTemplate = {
 	_name: "Astro",
 	_type: "astro",
 	_attackValue: 20,
@@ -45,7 +45,7 @@ export const playerTemplate = {
 };
 
 
-export const enemyTemplate = (num) => {
+const enemyTemplate = (num) => {
 	return {
 		_name: "Alien",
 		_type: "alien",
@@ -70,7 +70,7 @@ export const enemyTemplate = (num) => {
 	};
 };
 
-export const bossTemplate = {
+const bossTemplate = {
 	_name: "Clown",
 	_type: "clown",
 	_attackValue: 100,
@@ -81,6 +81,7 @@ export const bossTemplate = {
 };
 
 
+export default {playerTemplate, enemyTemplate, bossTemplate};
 
 
 

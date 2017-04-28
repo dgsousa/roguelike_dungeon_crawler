@@ -57,28 +57,6 @@ class App extends Component {
 	// }
 
 
-	
-
-
-
-
-	// 
-
-	// nextFloor(playerCoords) {
-	// 	if(this.isStaircase(playerCoords)) {
-	// 		const { entities, floor, fillFloor } = this.props;
-	// 		const player = {...entities[0], coords: playerCoords};
-	// 		const enemies = this.generateEntities(floor + 1).slice(1);
-	// 		const items = this.generateItems(floor + 1);
-	// 		const message = [`You are now on floor number ${floor + 2}`];
-	// 		const occupiedSquares = this.getOccupiedSquares([player, ...enemies]);
-	// 		const itemSquares = this.getOccupiedSquares(items);
-	// 		fillFloor([player, ...enemies], items, floor + 1, message, occupiedSquares, itemSquares);
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
 	// attackEntity(playerCoords) {
 	// 	const entity = this.entityAt(playerCoords, this.props.entities);
 	// 	if(entity) {
