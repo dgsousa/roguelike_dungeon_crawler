@@ -10,10 +10,11 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (player, occupiedSquares) => ({
+const fillFloor = (player, occupiedSquares, floor = 0) => ({
 	type: "FILL_FLOOR",
 	player,
-	occupiedSquares
+	occupiedSquares,
+	floor
 });
 
 
@@ -73,11 +74,12 @@ const move = (playerCoords) => {
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(this.isStaircase(playerCoords, getState())) {
-			const player = Object.assign(getState().player, {coords: playerCoords});
+			const {player, floor} = getState();
+			const player = Object.assign(player, {coords: playerCoords});
 			const occupiedSquares = {
 				[`${player.coords[0]}x${player.coords[1]}`]: player._type
 			};
-			dispatch(fillFloor(player, occupiedSquares));
+			dispatch(fillFloor(player, occupiedSquares, floor + 1));
 			return true;
 		}
 		return false;
