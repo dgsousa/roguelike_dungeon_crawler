@@ -101,17 +101,7 @@ class App extends Component {
 	// }
 
 
-	// moveEnemies(playerCoords) {
-	// 	const { floor, entities } = this.props;
-	// 	const newEntities = entities.splice(1).map((entity) => {
-	// 		const xOffset = Math.floor(Math.random() * 3) - 1;
-	// 		const yOffset = Math.floor(Math.random() * 3) - 1;
-	// 		const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-	// 		return 	this.isEmptySquare(coords, floor) 	&& !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
-	// 					{...entity, coords: coords} : entity;
-	// 	});
-	// 	return newEntities;
-	// }
+	
 
 
 	getTileClass(x, y) {
@@ -133,8 +123,7 @@ class App extends Component {
 
 
 	setUpBoard() {
-		const { width, height, entities } = this.props;
-		const player = entities[0];
+		const { width, height, entities: [player] } = this.props;
 		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
 		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
 		const rows = [];

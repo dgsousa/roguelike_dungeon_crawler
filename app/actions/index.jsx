@@ -57,13 +57,13 @@ const scrollScreen = ([x, y]) => {
 const move = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isEmptySquare(playerCoords, getState())) {
-			const player = Object.assign(getState().entities[0], {coords: playerCoords});
-			const occupiedSquares = {
-				[`${player.coords[0]}x${player.coords[1]}`]: player._type
-			};
+			const {entities} = getState();
+			const player = Object.assign(entities[0], {coords: playerCoords});
+			const newEntities = moveEntities(entities, getState()).slice(1);
+			const occupiedSquares = getOccupiedSquares([player, ...newEntities]);
 			dispatch({
 				type: "MOVE",
-				player, 
+				entities: [player, ...newEntities], 
 				occupiedSquares
 			});
 			return true;
@@ -75,7 +75,7 @@ const move = (playerCoords) => {
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
-			const {player, floor} = getState();
+			const {entities: [player], floor} = getState();
 			const newPlayer = Object.assign(player, {coords: playerCoords});
 			const occupiedSquares = {
 				[`${player.coords[0]}x${player.coords[1]}`]: player._type
@@ -160,6 +160,22 @@ const getOccupiedSquares = (entities) => {
 	});
 	return occupiedSquares;
 };
+
+const moveEntities = (entities, getState) => {
+	const playerCoords = entities[0].coords;
+	return entities.map((entity) => {
+		if(entity._type == enemyTemplate()._type) {
+			const xOffset = Math.floor(Math.random() * 3) - 1;
+			const yOffset = Math.floor(Math.random() * 3) - 1;
+			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
+			return 	isEmptySquare(coords, getState) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
+						{...entity, coords: coords} : 
+						entity;
+		} else {
+			return entity;
+		}
+	});
+}
 
 
 

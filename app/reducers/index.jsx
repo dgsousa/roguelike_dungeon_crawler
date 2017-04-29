@@ -22,7 +22,7 @@ const Reducer = (state = {}, action) => {
 	case "MOVE": {
 		return  {
 			...state,
-			player: action.player,
+			entities: action.entities,
 			occupiedSquares: action.occupiedSquares,
 		};
 	}
