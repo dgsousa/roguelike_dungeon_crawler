@@ -42,7 +42,7 @@ const scroll = (e) => {
 
 const scrollScreen = ([x, y]) => {
 	return function(dispatch, getState) {
-		const {width, height, player} = getState();
+		const {width, height, entities: [player]} = getState();
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
@@ -57,7 +57,7 @@ const scrollScreen = ([x, y]) => {
 const move = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isEmptySquare(playerCoords, getState())) {
-			const player = Object.assign(getState().player, {coords: playerCoords});
+			const player = Object.assign(getState().entities[0], {coords: playerCoords});
 			const occupiedSquares = {
 				[`${player.coords[0]}x${player.coords[1]}`]: player._type
 			};
@@ -135,25 +135,18 @@ const emptyCoords = (entities, state) => {
 
 
 const generateEntities = (state, floor = 0) => {
-	//console.log({...playerTemplate});
 	const entities = [];
-	entityTemplateMenu.forEach((entityTemplate) => {
-		if(entityTemplate[0]._type !== enemyTemplate(0)._type) {
-			for(let i = 0; i < entityTemplate[1]; i++) {
-				entities.push({...entityTemplate[0], coords: emptyCoords(entities, state)});
-			}
-		} else {
-			for(let i = 0; i < entityTemplate[1]; i++) {
-				entities.push({...entityTemplate(floor), coords: emptyCoords(entities, state)});
-			}
+	entities.push({...playerTemplate, coords: emptyCoords(entities, state)});
+	templateMenu.forEach((template) => {
+		for(let i = 0; i < template[1]; i++) {
+			entities.push({...template[0](floor), coords: emptyCoords(entities, state)});
 		}
 	});
 	if(floor === 3) entities.push({...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)});
 	return entities;
 };
 
-const entityTemplateMenu = [
-	[playerTemplate, 1],
+const templateMenu = [
 	[enemyTemplate, 10],
 	[foodTemplate, 5],
 	[weaponTemplate, 5]

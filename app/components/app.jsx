@@ -115,7 +115,7 @@ class App extends Component {
 
 
 	getTileClass(x, y) {
-		const {world, floor, player, occupiedSquares, lightsOn } = this.props;
+		const {world, floor, entities: [player], occupiedSquares, lightsOn } = this.props;
 		const map = world._regions[floor];
 		const visibleCells = this.getVisibleCells(player.coords);
 		const chars = {
@@ -134,7 +134,6 @@ class App extends Component {
 
 	setUpBoard() {
 		const { width, height, entities } = this.props;
-		console.log(entities);
 		const player = entities[0];
 		const screenX = Math.max(0, Math.min(player.coords[0] - 12, width - 25));
 		const screenY = Math.max(0, Math.min(player.coords[1] - 7, height - 15));
