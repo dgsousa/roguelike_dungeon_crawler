@@ -1,6 +1,5 @@
 import React, {Component, PropTypes, createElement} from "react";
 import {connect} from "react-redux";
-//import * as ROT from "../../bower_components/rot.js/rot.js";
 import ActionCreators from "../actions/index.jsx";
 import Stats from "./stats.jsx";
 import Restart from "./restart.jsx";
@@ -28,49 +27,9 @@ class App extends Component {
 	// 	createWorld(new World(width, height, depth));
 	// }
 
+
 	
 
-
-	// generateItems(floor = this.props.floor) {
-	// 	const items = [];
-	// 	const weapon = {...weaponTemplate(floor), coords: this.emptyCoords(items, floor)};
-	// 	items.push(weapon);
-	// 	for(let i = 0; i < 5; i++) {
-	// 		const food = {...foodTemplate(floor), coords: this.emptyCoords(items, floor)};
-	// 		items.push(food);
-	// 	}
-	// 	return items;
-	// }
-
-	// generateEntities(floor = this.props.floor) {
-	// 	const entities = [];
-	// 	const player = {...playerTemplate, coords: this.emptyCoords(entities, floor)};
-	// 	entities.push(player);
-	// 	for(let i = 0; i < 10; i++) {
-	// 		const enemy = {...enemyTemplate(floor), coords: this.emptyCoords(entities, floor)};
-	// 		entities.push(enemy);
-	// 	}
-	// 	if(floor == 3) {
-	// 		const boss = {...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)};
-	// 		entities.push(boss);
-	// 	}
-	// 	return entities;
-	// }
-
-
-	// attackEntity(playerCoords) {
-	// 	const entity = this.entityAt(playerCoords, this.props.entities);
-	// 	if(entity) {
-	// 		const { entities, fight } = this.props;
-	// 		const player = {...entities[0] };
-	// 		player.attack(entity); 
-	// 		const newEnemies = this.damageOrRemoveEntity(entity, [...entities.splice(1)]);
-	// 		const gameEnd = this.checkGameStatus(player);
-	// 		const occupiedSquares = this.getOccupiedSquares([player, ...newEnemies]);
-	// 		fight([player, ...newEnemies], player._message, gameEnd, occupiedSquares);
-	// 	}
-	// 	return false;
-	// }
 
 	// checkForItem(player) {
 	// 	const { items } = this.props;
@@ -90,17 +49,7 @@ class App extends Component {
 
 	
 
-	// entityAt([x, y], entities) {
-	// 	if(entities) {
-	// 		for(let i = 0; i < entities.length; i++) {
-	// 			if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
-	// 				return { ...entities[i] };
-	// 			}
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
+	
 
 	
 
@@ -159,18 +108,7 @@ class App extends Component {
 	// 			player._experience > 1000 ? "You Win!" : false;
 	// }
 
-	// damageOrRemoveEntity(enemy, entities) {
-	// 	const newEntities = [];
-	// 	entities.forEach((entity) => {
-	// 		if(entity.coords[0] != enemy.coords[0] || entity.coords[1] != enemy.coords[1]) {
-	// 			newEntities.push(entity);
-	// 		} else if(enemy._hp > 0) {
-	// 			newEntities.push(enemy);
-	// 		}
-	// 	});
-	// 	return newEntities;
-	// }
-
+	
 	
 
 
