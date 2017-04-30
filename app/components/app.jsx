@@ -2,8 +2,8 @@ import React, {Component, PropTypes, createElement} from "react";
 import {connect} from "react-redux";
 //import * as ROT from "../../bower_components/rot.js/rot.js";
 import ActionCreators from "../actions/index.jsx";
-//import World from "../scripts/world.js";
-//import { playerTemplate} from "../scripts/entities.js";
+import Stats from "./stats.jsx";
+import Restart from "./restart.jsx";
 
 
 
@@ -174,7 +174,7 @@ class App extends Component {
 
 
 	render() {
-		const { scroll, lightsOn, switchLights } = this.props;
+		const { scroll, lightsOn, switchLights, entities, gameEnd } = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
@@ -182,6 +182,9 @@ class App extends Component {
 					className="board"
 					tabIndex={"0"}
 					onKeyDown={scroll}>
+					<Restart 
+						gameEnd={gameEnd}/>			
+					<Stats player={entities[0]}/>
 					{rows}
 					<button 
 						className="lights"
@@ -203,7 +206,8 @@ const mapStateToProps = (state) => ({
 	width: state.width,
 	height: state.height,
 	depth: state.depth,
-	lightsOn: state.lightsOn
+	lightsOn: state.lightsOn,
+	gameEnd: state.gameEnd
 });
 
 export default connect(

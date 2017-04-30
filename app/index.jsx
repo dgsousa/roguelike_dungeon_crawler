@@ -21,6 +21,7 @@ const initialState = {
 	],
 	occupiedSquares: {},
 	lightsOn: false,
+	gameEnd: false,
 	width: 50,
 	height: 50,
 	depth: 4
