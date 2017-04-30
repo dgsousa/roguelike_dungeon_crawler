@@ -52,8 +52,8 @@ const scrollScreen = ([x, y]) => {
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
 		
-		dispatch(move(playerCoords)) 		||
-		dispatch(nextFloor(playerCoords))	||
+		dispatch(move(playerCoords)) 			||
+		dispatch(nextFloor(playerCoords))		||
 		dispatch(encounterEntity(playerCoords));
 	};
 };
@@ -63,9 +63,9 @@ const scrollScreen = ([x, y]) => {
 const move = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isEmptySquare(playerCoords, getState())) {
-			const {entities} = getState();
-			const player = {...entities[0], coords: playerCoords};
-			const newEntities = [player, ...moveEntities(playerCoords, getState()).slice(1)];
+			const {entities: [player]} = getState();
+			const newPlayer = {...player, coords: playerCoords};
+			const newEntities = [newPlayer, ...moveEntities(playerCoords, getState()).slice(1)];
 			const occupiedSquares = getOccupiedSquares(newEntities);
 			dispatch(fillFloor(newEntities, occupiedSquares, [""]));
 			return true;
@@ -187,16 +187,16 @@ const getOccupiedSquares = (entities) => {
 
 const moveEntities = (playerCoords, state) => {
 	const { entities } = state;
+	const enemyType = enemyTemplate()._type;
 	return entities.map((entity) => {
-		if(entity._type == enemyTemplate()._type) {
+		if(entity._type !== enemyType) return entity;
+		else {
 			const xOffset = Math.floor(Math.random() * 3) - 1;
 			const yOffset = Math.floor(Math.random() * 3) - 1;
 			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-			return 	isEmptySquare(coords, state) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
+			return 	isEmptySquare(coords, state) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ?
 						{...entity, coords: coords} : 
 						entity;
-		} else {
-			return entity;
 		}
 	});
 };
@@ -256,9 +256,11 @@ const getDamage = (entity1, entity2) => {
 };
 
 const getAttackMessage = (player, enemy, enemyDamage, playerDamage) => {
-	return 	enemy._hp > 0 ?	
-		[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You were attacked by the ${enemy._type} for ${playerDamage} damage`] :
-		[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You defeated the ${enemy._type}`];
+	return 	player._hp < 0 ? 
+				[`You were defeated by the ${enemy._type}`] :
+				enemy._hp < 0 ?	
+					[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You defeated the ${enemy._type}`] :
+					[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You were attacked by the ${enemy._type} for ${playerDamage} damage`]; 
 };
 
 
