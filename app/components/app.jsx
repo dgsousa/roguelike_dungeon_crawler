@@ -26,27 +26,6 @@ class App extends Component {
 	// 	const {width, height, depth, createWorld} = this.props;
 	// 	createWorld(new World(width, height, depth));
 	// }
-
-
-	
-
-
-	// checkForItem(player) {
-	// 	const { items } = this.props;
-	// 	const message = [];
-	// 	items.filter((item) => {
-	// 		if(item.coords[0] == player.coords[0] && item.coords[1] == player.coords[1]) {
-	// 			player._hp += item._hp || 0;
-	// 			player._weapon = item._weapon || player._weapon;
-	// 			player._attackValue += item._attackValue || 0;
-	// 			message.push(`You picked up a ${item._type}`);
-	// 		} else {
-	// 			return item;
-	// 		}
-	// 	});
-	// 	return { player, message, items };
-	// }
-
 	
 
 	
@@ -113,13 +92,13 @@ class App extends Component {
 
 
 	render() {
-		const { scroll, lightsOn, switchLights, entities, gameEnd } = this.props;
+		const { scroll, lightsOn, switchLights, entities, gameEnd, message } = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
 				<Message 
 					className={"message"} 
-					message={["Placeholder"]}/>
+					message={ message }/>
 				<div
 					className="board"
 					tabIndex={"0"}

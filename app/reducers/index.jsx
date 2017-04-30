@@ -14,7 +14,8 @@ const Reducer = (state = {}, action) => {
 		return { 
 			...state, 
 			entities: action.entities, 
-			occupiedSquares: action.occupiedSquares
+			occupiedSquares: action.occupiedSquares,
+			message: action.message
 		};
 	}
 

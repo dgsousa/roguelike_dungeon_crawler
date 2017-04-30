@@ -12,10 +12,11 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (entities, occupiedSquares) => ({
+const fillFloor = (entities, occupiedSquares, message) => ({
 	type: "FILL_FLOOR",
 	entities,
-	occupiedSquares
+	occupiedSquares,
+	message
 });
 
 
@@ -29,7 +30,8 @@ const setupFloor = () => {
 	return function(dispatch, getState) {
 		const entities = generateEntities(getState());
 		const occupiedSquares = getOccupiedSquares(entities);
-		dispatch(fillFloor(entities, occupiedSquares));
+		const message = ["Welcome to the the Dungeon!"];
+		dispatch(fillFloor(entities, occupiedSquares, message));
 	};
 };
 
