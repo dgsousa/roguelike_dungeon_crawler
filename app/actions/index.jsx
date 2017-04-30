@@ -12,11 +12,16 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (entities, occupiedSquares, floor = 0) => ({
+const fillFloor = (entities, occupiedSquares) => ({
 	type: "FILL_FLOOR",
 	entities,
-	occupiedSquares,
-	floor
+	occupiedSquares
+});
+
+
+
+const goUpstairs = () => ({
+	type: "GO_UPSTAIRS"
 });
 
 
@@ -47,8 +52,9 @@ const scrollScreen = ([x, y]) => {
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
 		
-		dispatch(move(playerCoords)) 		|| 
-		dispatch(nextFloor(playerCoords));
+		dispatch(move(playerCoords)) 		||
+		dispatch(nextFloor(playerCoords))	||
+		dispatch(encounterEntity(playerCoords));
 	};
 };
 
@@ -58,12 +64,12 @@ const move = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isEmptySquare(playerCoords, getState())) {
 			const {entities} = getState();
-			const player = Object.assign(entities[0], {coords: playerCoords});
-			const newEntities = moveEntities(entities, getState()).slice(1);
-			const occupiedSquares = getOccupiedSquares([player, ...newEntities]);
+			const player = {...entities[0], coords: playerCoords};
+			const newEntities = [player, ...moveEntities(playerCoords, getState()).slice(1)];
+			const occupiedSquares = getOccupiedSquares(newEntities);
 			dispatch({
 				type: "MOVE",
-				entities: [player, ...newEntities], 
+				entities: newEntities, 
 				occupiedSquares
 			});
 			return true;
@@ -75,37 +81,42 @@ const move = (playerCoords) => {
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
-			const {entities: [player], floor} = getState();
-			const newPlayer = Object.assign(player, {coords: playerCoords});
-			const occupiedSquares = {
-				[`${player.coords[0]}x${player.coords[1]}`]: player._type
-			};
-			dispatch(fillFloor(newPlayer, occupiedSquares, floor + 1));
+			const { entities: [player] } = getState();
+			let newPlayer, newEntities, occupiedSquares;
+			
+			dispatch(goUpstairs());
+			newPlayer = {...player, coords: playerCoords};
+			newEntities = [newPlayer, ...generateEntities(getState()).slice(1)];
+			occupiedSquares = getOccupiedSquares(newEntities);
+			dispatch(fillFloor(newEntities, occupiedSquares));
 			return true;
 		}
 		return false;
 	};	
 };
 
+const encounterEntity = (playerCoords) => {
+	return function(dispatch, getState) {
+		const entity = entityAt(playerCoords, getState());
+		const { floor, entities } = getState();
+		if(entity) {
+			if(entity._type == enemyTemplate(floor)._type || entity._type == bossTemplate._type) {
+				const newEntities = fightEnemy(entity, entities);
+				const occupiedSquares = getOccupiedSquares(newEntities);
+				dispatch(fillFloor(newEntities, occupiedSquares));
+			} else if(entity._type == weaponTemplate(floor)._type || entity._type == foodTemplate(floor)._type) {
+				const newEntities = pickUpItem(entity, entities);
+				const occupiedSquares = getOccupiedSquares(newEntities);
+				dispatch(fillFloor(newEntities, occupiedSquares));
+			}
+		}
+	};
+};
+
 
 const switchLights = () => ({
 	type: "SWITCH_LIGHTS"
 });
-
-
-
-
-// const fight = (entities, message, gameEnd, occupiedSquares) => ({
-// 	type: "FIGHT",
-// 	entities,
-// 	message,
-// 	gameEnd,
-// 	occupiedSquares
-// });
-
-
-
-//helper functions
 
 
 const isStaircase = ([x, y], state) => {
@@ -115,7 +126,10 @@ const isStaircase = ([x, y], state) => {
 
 const isEmptySquare = ([x, y], state) => {
 	const { world, floor } = state;
-	return inBounds([x, y], state) && world._regions[floor][x][y] && !isStaircase([x, y], state);
+	return 	inBounds([x, y], state) && 
+			world._regions[floor][x][y] && 
+			!isStaircase([x, y], state) &&
+			!entityAt([x, y], state);
 };
 
 const inBounds = ([x, y], state) => {
@@ -134,22 +148,36 @@ const emptyCoords = (entities, state) => {
 };
 
 
-const generateEntities = (state, floor = 0) => {
+const generateEntities = (state) => {
 	const entities = [];
+	const {floor} = state;
 	entities.push({...playerTemplate, coords: emptyCoords(entities, state)});
 	templateMenu.forEach((template) => {
 		for(let i = 0; i < template[1]; i++) {
 			entities.push({...template[0](floor), coords: emptyCoords(entities, state)});
 		}
 	});
-	if(floor === 3) entities.push({...enemyTemplate(0), ...bossTemplate, coords: this.emptyCoords(entities, floor)});
+	if(floor === 3) entities.push({...bossTemplate, coords: emptyCoords(entities, state)});
 	return entities;
 };
+
+const entityAt = ([x, y], state) => {
+	const { entities } = state;
+	if(entities) {
+		for(let i = 0; i < entities.length; i++) {
+			if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
+				return { ...entities[i] };
+			}
+		}
+	}
+	return false;
+};
+
 
 const templateMenu = [
 	[enemyTemplate, 10],
 	[foodTemplate, 5],
-	[weaponTemplate, 5]
+	[weaponTemplate, 1]
 ];
 
 
@@ -161,25 +189,61 @@ const getOccupiedSquares = (entities) => {
 	return occupiedSquares;
 };
 
-const moveEntities = (entities, getState) => {
-	const playerCoords = entities[0].coords;
+const moveEntities = (playerCoords, state) => {
+	const { entities } = state;
 	return entities.map((entity) => {
 		if(entity._type == enemyTemplate()._type) {
 			const xOffset = Math.floor(Math.random() * 3) - 1;
 			const yOffset = Math.floor(Math.random() * 3) - 1;
 			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-			return 	isEmptySquare(coords, getState) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
+			return 	isEmptySquare(coords, state) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) 	?
 						{...entity, coords: coords} : 
 						entity;
 		} else {
 			return entity;
 		}
 	});
-}
+};
 
+const pickUpItem = (entity, entities) => { 
+	const newEntities = [];
+	const newPlayer = {
+		...entities[0],
+		_hp: entities[0]._hp + (entity._hp || 0),
+		_weapon: entity._weapon || entities[0]._weapon,
+		_attackValue: entities[0]._attackValue + (entity._attackValue || 0),
+	};
+	newEntities.push(newPlayer);
+	entities.slice(1).forEach((member) => {
+		if(entity.coords[0] != member.coords[0] || entity.coords[1] != member.coords[1]) {
+			newEntities.push({...member});
+		}
+	});
+	return newEntities;
+};
 
-
-
+const fightEnemy = (entity, entities) => {
+	const newEntities = [];
+	const enemy = {
+		...entity,
+		_hp: entity._hp - (1 + Math.floor(Math.random() * Math.max(0, entities[0]._attackValue - entity._defenseValue)))
+	};
+	const newPlayer = {
+		...entities[0],
+		_hp: entities[0]._hp - (1 + Math.floor(Math.random() * Math.max(0, entity._attackValue - entities[0]._defenseValue))),
+		_experience: enemy._hp > 0 ? entities[0]._experience : entities[0]._experience + enemy._experience
+	};
+	newPlayer.levelUp();
+	newEntities.push(newPlayer);
+	entities.slice(1).forEach((member) => {
+		if(enemy.coords[0] == member.coords[0] && enemy.coords[1] == member.coords[1]) {
+			if(enemy._hp > 0) newEntities.push(enemy);
+		} else {
+			newEntities.push(member);
+		}
+	});
+	return newEntities;
+};
 
 
 

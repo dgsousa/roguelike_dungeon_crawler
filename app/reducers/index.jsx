@@ -14,8 +14,7 @@ const Reducer = (state = {}, action) => {
 		return { 
 			...state, 
 			entities: action.entities, 
-			occupiedSquares: action.occupiedSquares,
-			floor: action.floor
+			occupiedSquares: action.occupiedSquares
 		};
 	}
 
@@ -27,15 +26,20 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	// case "FIGHT": {
-	// 	return {
-	// 		...state,
-	// 		entities: action.entities,
-	// 		message: action.message,
-	// 		gameEnd: action.gameEnd,
-	// 		occupiedSquares: action.occupiedSquares
-	// 	};
-	// }
+	case "GO_UPSTAIRS": {
+		return {
+			...state,
+			floor: state.floor + 1
+		};
+	}
+
+	case "FIGHT": {
+		return {
+			...state,
+			entities: action.entities,
+			occupiedSquares: action.occupiedSquares
+		};
+	}
 
 	case "SWITCH_LIGHTS": {
 		return {
