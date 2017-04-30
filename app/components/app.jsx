@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import ActionCreators from "../actions/index.jsx";
 import Stats from "./stats.jsx";
 import Restart from "./restart.jsx";
+import Message from "./message.jsx";
 
 
 
@@ -178,6 +179,9 @@ class App extends Component {
 		const rows = this.setUpBoard();
 		return (
 			<div>
+				<Message 
+					className={"message"} 
+					message={["Placeholder"]}/>
 				<div
 					className="board"
 					tabIndex={"0"}
