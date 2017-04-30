@@ -19,26 +19,10 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	case "MOVE": {
-		return  {
-			...state,
-			entities: action.entities,
-			occupiedSquares: action.occupiedSquares,
-		};
-	}
-
 	case "GO_UPSTAIRS": {
 		return {
 			...state,
 			floor: state.floor + 1
-		};
-	}
-
-	case "FIGHT": {
-		return {
-			...state,
-			entities: action.entities,
-			occupiedSquares: action.occupiedSquares
 		};
 	}
 

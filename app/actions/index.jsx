@@ -19,8 +19,6 @@ const fillFloor = (entities, occupiedSquares, message) => ({
 	message
 });
 
-
-
 const goUpstairs = () => ({
 	type: "GO_UPSTAIRS"
 });
@@ -69,11 +67,7 @@ const move = (playerCoords) => {
 			const player = {...entities[0], coords: playerCoords};
 			const newEntities = [player, ...moveEntities(playerCoords, getState()).slice(1)];
 			const occupiedSquares = getOccupiedSquares(newEntities);
-			dispatch({
-				type: "MOVE",
-				entities: newEntities, 
-				occupiedSquares
-			});
+			dispatch(fillFloor(newEntities, occupiedSquares, [""]));
 			return true;
 		}
 		return false;
@@ -84,13 +78,14 @@ const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
 			const { entities: [player] } = getState();
-			let newPlayer, newEntities, occupiedSquares;
+			let newPlayer, newEntities, occupiedSquares, message;
 			
 			dispatch(goUpstairs());
 			newPlayer = {...player, coords: playerCoords};
 			newEntities = [newPlayer, ...generateEntities(getState()).slice(1)];
 			occupiedSquares = getOccupiedSquares(newEntities);
-			dispatch(fillFloor(newEntities, occupiedSquares));
+			message = [`You have entered floor ${getState().floor + 1}`];
+			dispatch(fillFloor(newEntities, occupiedSquares, message));
 			return true;
 		}
 		return false;
@@ -103,13 +98,13 @@ const encounterEntity = (playerCoords) => {
 		const { floor, entities } = getState();
 		if(entity) {
 			if(entity._type == enemyTemplate(floor)._type || entity._type == bossTemplate._type) {
-				const newEntities = fightEnemy(entity, entities);
+				const { newEntities, message } = fightEnemy(entity, entities);
 				const occupiedSquares = getOccupiedSquares(newEntities);
-				dispatch(fillFloor(newEntities, occupiedSquares));
+				dispatch(fillFloor(newEntities, occupiedSquares, message));
 			} else if(entity._type == weaponTemplate(floor)._type || entity._type == foodTemplate(floor)._type) {
 				const newEntities = pickUpItem(entity, entities);
 				const occupiedSquares = getOccupiedSquares(newEntities);
-				dispatch(fillFloor(newEntities, occupiedSquares));
+				dispatch(fillFloor(newEntities, occupiedSquares, []));
 			}
 		}
 	};
@@ -226,26 +221,47 @@ const pickUpItem = (entity, entities) => {
 
 const fightEnemy = (entity, entities) => {
 	const newEntities = [];
+	const damage1 = getDamage(entities[0], entity);
+	const damage2 = getDamage(entity, entities[0]);
+	
 	const enemy = {
 		...entity,
-		_hp: entity._hp - (1 + Math.floor(Math.random() * Math.max(0, entities[0]._attackValue - entity._defenseValue)))
+		_hp: entity._hp - damage1
 	};
+	
 	const newPlayer = {
 		...entities[0],
-		_hp: entities[0]._hp - (1 + Math.floor(Math.random() * Math.max(0, entity._attackValue - entities[0]._defenseValue))),
+		_hp: enemy._hp > 0 ? (entities[0]._hp - damage2) : entities[0]._hp,
 		_experience: enemy._hp > 0 ? entities[0]._experience : entities[0]._experience + enemy._experience
 	};
+	
+	const message = getAttackMessage(newPlayer, enemy, damage1, damage2);
 	newPlayer.levelUp();
 	newEntities.push(newPlayer);
-	entities.slice(1).forEach((member) => {
-		if(enemy.coords[0] == member.coords[0] && enemy.coords[1] == member.coords[1]) {
-			if(enemy._hp > 0) newEntities.push(enemy);
-		} else {
-			newEntities.push(member);
-		}
-	});
-	return newEntities;
+	
+	// entities.slice(1).forEach((member) => {
+	// 	if(enemy.coords[0] == member.coords[0] && enemy.coords[1] == member.coords[1]) {
+	// 		if(enemy._hp > 0) newEntities.push(enemy);
+	// 	} else {
+	// 		newEntities.push(member);
+	// 	}
+	// });
+
+	
+	return { newEntities, message };
 };
+
+
+const getDamage = (entity1, entity2) => {
+	return (1 + Math.floor(Math.random() * Math.max(0, entity1._attackValue - entity2._defenseValue)));
+};
+
+const getAttackMessage = (player, enemy, enemyDamage, playerDamage) => {
+	return 	enemy._hp > 0 ?	
+		[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You were attacked by the ${enemy._type} for ${playerDamage} damage`] :
+		[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You defeated the ${enemy._type}`];
+};
+
 
 
 

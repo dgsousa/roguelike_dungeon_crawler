@@ -124,6 +124,7 @@ const mapStateToProps = (state) => ({
 	floor: state.floor,
 	entities: state.entities,
 	occupiedSquares: state.occupiedSquares,
+	message: state.message,
 	width: state.width,
 	height: state.height,
 	depth: state.depth,
