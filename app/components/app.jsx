@@ -104,7 +104,8 @@ class App extends Component {
 					tabIndex={"0"}
 					onKeyDown={scroll}>
 					<Restart 
-						gameEnd={gameEnd}/>			
+						gameEnd={gameEnd}
+						/*restart={this.restart.bind(this)}*//>			
 					<Stats player={entities[0]}/>
 					{rows}
 					<button 
