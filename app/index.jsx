@@ -14,9 +14,6 @@ const initialState = {
 	entities: [
 		{
 			coords: [0, 0]
-		},
-		{
-			coords: [1, 0]
 		}
 	],
 	occupiedSquares: {},
