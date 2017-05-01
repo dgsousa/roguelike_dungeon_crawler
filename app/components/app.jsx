@@ -90,7 +90,7 @@ class App extends Component {
 const mapStateToProps = (state) => ({
 	world: state.world,
 	floor: state.floor,
-	entities: state.entities,
+	player: state.entities[0],
 	occupiedSquares: state.occupiedSquares,
 	lightsOn: state.lightsOn,
 	width: state.width,
