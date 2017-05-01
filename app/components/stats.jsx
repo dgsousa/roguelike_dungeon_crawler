@@ -1,7 +1,8 @@
 import React, { PropTypes} from "react";
+import { connect } from "react-redux";
 
 
-const Stats = ({player}) => {
+const Stats = ({entities: [player]}) => {
 
 	return (
 		<div className="stats">
@@ -16,7 +17,12 @@ const Stats = ({player}) => {
 	
 };
 
-export default Stats;
+const mapStateToProps = (state) => ({
+	entities: state.entities
+});
+
+
+export default connect(mapStateToProps)(Stats);
 
 
 React.propTypes = {

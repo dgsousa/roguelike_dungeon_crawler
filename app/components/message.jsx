@@ -1,5 +1,5 @@
 import React, { PropTypes} from "react";
-
+import {connect} from "react-redux";
 
 
 const Message = ({message}) => {
@@ -19,7 +19,11 @@ const Message = ({message}) => {
 	);	
 };
 
-export default Message;
+const mapStateToProps = (state) => ({
+	message: state.message
+});
+
+export default connect(mapStateToProps)(Message);
 
 
 React.propTypes = {

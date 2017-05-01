@@ -1,9 +1,7 @@
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate } from "../scripts/items.js";
-
+import World from "../scripts/world.js";
 import * as ROT from "../../bower_components/rot.js/rot.js";
-
-
 
 
 //ActionCreators
@@ -23,6 +21,19 @@ const goUpstairs = () => ({
 	type: "GO_UPSTAIRS"
 });
 
+const gameOver = (gameEnd) => ({
+	type: "GAME_OVER",
+	gameEnd
+});
+
+const restart = () => {
+	return function(dispatch, getState) {
+		const { width, height, depth } = getState();
+		const world = new World(width, height, depth);
+		dispatch(createWorld(world));
+		dispatch(setupFloor());
+	};
+};
 
 const setupFloor = () => {
 	return function(dispatch, getState) {
@@ -36,11 +47,15 @@ const setupFloor = () => {
 const scroll = (e) => {
 	return function(dispatch) {
 		e.preventDefault();
-		const coords = 	e.keyCode === ROT.VK_I ?	[0, -1]	:
-						e.keyCode === ROT.VK_M ?	[0, 1]	:
-						e.keyCode === ROT.VK_J ?	[-1, 0]	:
-						e.keyCode === ROT.VK_K ?	[1, 0]	: false;
-		if(coords !== false) dispatch(scrollScreen(coords));
+		const coords = 	e.keyCode === ROT.VK_W ?	[0, -1]	:
+						e.keyCode === ROT.VK_S ?	[0, 1]	:
+						e.keyCode === ROT.VK_A ?	[-1, 0]	:
+						e.keyCode === ROT.VK_D ?	[1, 0]	:
+						e.keyCode === ROT.VK_Q ?	[-1, -1]:
+						e.keyCode === ROT.VK_E ?	[1, -1] :
+						e.keyCode === ROT.VK_Z ?	[-1, 1] :
+						e.keyCode === ROT.VK_X ?	[1, 1]	: false;
+		if(coords) dispatch(scrollScreen(coords));
 	};
 };
 
@@ -55,6 +70,7 @@ const scrollScreen = ([x, y]) => {
 		dispatch(move(playerCoords)) 			||
 		dispatch(nextFloor(playerCoords))		||
 		dispatch(encounterEntity(playerCoords));
+		dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
 
@@ -105,7 +121,9 @@ const encounterEntity = (playerCoords) => {
 				const occupiedSquares = getOccupiedSquares(newEntities);
 				dispatch(fillFloor(newEntities, occupiedSquares, message));
 			}
+			return true;
 		}
+		return false;
 	};
 };
 
@@ -115,6 +133,9 @@ const switchLights = () => ({
 });
 
 
+
+
+//Helper Functions
 const isStaircase = ([x, y], state) => {
 	const { world, floor } = state;
 	return world._regions[floor][x][y] == 5;
@@ -263,15 +284,15 @@ const getAttackMessage = (player, enemy, enemyDamage, playerDamage) => {
 					[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You were attacked by the ${enemy._type} for ${playerDamage} damage`]; 
 };
 
+const checkGameStatus = (state) => {
+	const {entities: [player]} = state;
+	return 	player._hp <= 0 ? "You Lose!" : 
+			player._experience > 1000 ? "You Win!" : false;
+};
 
 
 
-
-const ActionCreators = {createWorld, setupFloor, scroll, switchLights};
-
-
-
-export default ActionCreators;
+export { createWorld, setupFloor, scroll, switchLights, restart };
 
 
 

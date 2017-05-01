@@ -1,4 +1,6 @@
 import React, { PropTypes} from "react";
+import { connect } from "react-redux";
+import { restart } from "../actions/index.jsx";
 
 const Restart = ({gameEnd, restart}) => {
 
@@ -14,10 +16,18 @@ const Restart = ({gameEnd, restart}) => {
 	);
 };
 
-export default Restart;
+
+const mapStateToProps = (state) => ({
+	gameEnd: state.gameEnd
+});
+
+export default connect(
+	mapStateToProps,
+	{restart: restart}
+)(Restart);
 
 React.propTypes = {
-	gameEnd: PropTypes.bool.isRequired,
+	gameEnd: PropTypes.string.isRequired,
 	restart: PropTypes.func.isRequired
 };
 

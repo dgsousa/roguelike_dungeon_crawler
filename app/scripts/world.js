@@ -28,7 +28,6 @@ export default class World {
 		}
 		this.connectAllRegions();
 		this.findPaths();
-
 	}
 
 	generateLevel(width, height) {
@@ -134,10 +133,7 @@ export default class World {
 
 	connectRegions(z, r1, r2) {
 		const overlaps = this.findRegionOverlaps(z, r1, r2);
-		if(overlaps.length == 0) return false;
-		const point = overlaps[0];
-		this._regions[z][point.x][point.y] = 5;
-		return true;
+		return overlaps.length;
 	}
 
 	connectAllRegions() {
@@ -167,22 +163,28 @@ export default class World {
 
 	findPaths() {
 		for(let i = 0; i < this._pathArray.length - 1; i++) {
-			if(this._pathArray[i][0] === this._pathArray[i + 1][0]) {
-				const z = this._pathArray[i][0];
-				const x1 = this._pathArray[i][1];
-				const y1 = this._pathArray[i][2];
-				const x2 = this._pathArray[i + 1][1];
-				const y2 = this._pathArray[i + 1][2]; 
-				
-				for(let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {	
-					this._regions[z][x][y1] = 3;
-				}
-				for(let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {	
-					this._regions[z][x2][y] = 3;
-				}
+			
+			const z = this._pathArray[i][0];
+			const x1 = this._pathArray[i][1];
+			const y1 = this._pathArray[i][2];
+			const x2 = this._pathArray[i + 1][1];
+			const y2 = this._pathArray[i + 1][2]; 
+			
+			for(let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {	
+				this._regions[z][x][y1] = 3;
+			}
+			
+			for(let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {	
+				this._regions[z][x2][y] = 3;
+			}
+			
+			if(this._pathArray[i][0] !== this._pathArray[i + 1][0]) {
+				this._regions[z][x2][y2] = 5;
 			}
 		}
 	}
+
+	
 
 	get fov() {
 		return this._fov;
@@ -195,6 +197,9 @@ export default class World {
 	get regions() {
 		return this._regions;
 	}
-
-
 }
+
+
+
+
+

@@ -3,9 +3,9 @@ import ReactDOM from "react-dom";
 import {Provider} from "react-redux";
 import {createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
+import World from "./scripts/world.js";
 import Reducer from "./reducers/index.jsx";
 import App from "./components/app.jsx";
-import World from "./scripts/world.js";
 import "./scss/application.scss";
 
 const initialState = {

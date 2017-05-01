@@ -1,9 +1,10 @@
 import React, {Component, PropTypes, createElement} from "react";
 import {connect} from "react-redux";
-import ActionCreators from "../actions/index.jsx";
+import { createWorld, setupFloor, scroll } from "../actions/index.jsx";
 import Stats from "./stats.jsx";
 import Restart from "./restart.jsx";
 import Message from "./message.jsx";
+import Lights from "./lights.jsx";
 
 
 
@@ -14,42 +15,6 @@ class App extends Component {
 		const { setupFloor } = this.props;
 		setupFloor();
 	}
-
-
-	// componentDidUpdate(prevProps) {
-	// 	if(this.props.world !== prevProps.world) {
-	// 		this.setupBoard();
-	// 	}
-	// }
-
-	// restart() {
-	// 	const {width, height, depth, createWorld} = this.props;
-	// 	createWorld(new World(width, height, depth));
-	// }
-	
-
-	
-
-	
-
-
-	getTileClass(x, y) {
-		const {world, floor, entities: [player], occupiedSquares, lightsOn } = this.props;
-		const map = world._regions[floor];
-		const visibleCells = this.getVisibleCells(player.coords);
-		const chars = {
-			"0": "wall",
-			"1": "floor",
-			"2": "floor",
-			"3": "floor",
-			"5": "stairs",
-			"6": "grey"
-		};
-		return 	visibleCells[`${x},${y},${floor}`] || lightsOn ?
-					occupiedSquares[`${x}x${y}`] || chars[map[x][y]] :
-					chars["6"];
-	}
-
 
 	setUpBoard() {
 		const { width, height, entities: [player] } = this.props;
@@ -82,37 +47,39 @@ class App extends Component {
 		return visibleCells;
 	}
 
-	// checkGameStatus(player) {
-	// 	return 	player._hp <= 0 ? "You Lose!" : 
-	// 			player._experience > 1000 ? "You Win!" : false;
-	// }
+	getTileClass(x, y) {
+		const {world, floor, entities: [player], occupiedSquares, lightsOn } = this.props;
+		const map = world._regions[floor];
+		const visibleCells = this.getVisibleCells(player.coords);
+		const chars = {
+			"0": "wall",
+			"1": "floor",
+			"2": "floor",
+			"3": "floor",
+			"5": "stairs",
+			"6": "grey"
+		};
+		return 	visibleCells[`${x},${y},${floor}`] || lightsOn ?
+					occupiedSquares[`${x}x${y}`] || chars[map[x][y]] :
+					chars["6"];
+	}
+
 
 	
-	
-
-
 	render() {
-		const { scroll, lightsOn, switchLights, entities, gameEnd, message } = this.props;
+		const { scroll } = this.props;
 		const rows = this.setUpBoard();
 		return (
 			<div>
-				<Message 
-					className={"message"} 
-					message={ message }/>
+				<Message />
 				<div
 					className="board"
 					tabIndex={"0"}
 					onKeyDown={scroll}>
-					<Restart 
-						gameEnd={gameEnd}
-						/*restart={this.restart.bind(this)}*//>			
-					<Stats player={entities[0]}/>
+					<Restart />			
+					<Stats />
 					{rows}
-					<button 
-						className="lights"
-						onClick={switchLights}>
-						{lightsOn ? "Turn Lights Off" : "Turn Lights On"}
-					</button>
+					<Lights />
 				</div>
 			</div>	
 		);
@@ -125,28 +92,34 @@ const mapStateToProps = (state) => ({
 	floor: state.floor,
 	entities: state.entities,
 	occupiedSquares: state.occupiedSquares,
-	message: state.message,
+	lightsOn: state.lightsOn,
 	width: state.width,
 	height: state.height,
 	depth: state.depth,
-	lightsOn: state.lightsOn,
-	gameEnd: state.gameEnd
+	
 });
+
+
 
 export default connect(
 	mapStateToProps,
 	{
-		createWorld: ActionCreators.createWorld,
-		setupFloor: ActionCreators.setupFloor,
-		scroll: ActionCreators.scroll,
-		switchLights: ActionCreators.switchLights
+		createWorld: createWorld,
+		setupFloor: setupFloor,
+		scroll: scroll
 	}
 )(App);
 
 React.propTypes = {
+	world: PropTypes.array.isRequired,
+	floor: PropTypes.number.isRequired,
+	entities: PropTypes.array.isRequired,
+	occupiedSquares: PropTypes.array.isRequired,
+	lightsOn: PropTypes.bool.isRequired,
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
-	depth: PropTypes.number.isRequired
+	depth: PropTypes.number.isRequired,
+
 };
 
 
