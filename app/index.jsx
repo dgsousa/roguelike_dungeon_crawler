@@ -30,7 +30,7 @@ const store = createStore(Reducer, initialState, applyMiddleware(thunk));
 
 ReactDOM.render(
 	<Provider store={store}>
-		<App width = {50} height = {50} depth = {4}/>
+		<App/>
 	</Provider>, 
 	document.getElementById("app")
 );
