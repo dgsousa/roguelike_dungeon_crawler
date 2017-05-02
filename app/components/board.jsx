@@ -10,8 +10,7 @@ import { getBoard } from "../selectors/index.jsx";
 class Board extends Component {
 
 	componentWillMount() {
-		const { setupFloor } = this.props;
-		setupFloor();
+		this.props.setupFloor();
 	}
 
 	render() {

@@ -47,10 +47,10 @@ const setupFloor = () => {
 const scroll = (e) => {
 	return function(dispatch) {
 		e.preventDefault();
-		const coords = 	e.keyCode === ROT.VK_W ?	[0, -1]	:
-						e.keyCode === ROT.VK_S ?	[0, 1]	:
-						e.keyCode === ROT.VK_A ?	[-1, 0]	:
-						e.keyCode === ROT.VK_D ?	[1, 0]	:
+		const coords = 	e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP	?	[0, -1]	:
+						e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ?	[0, 1]	:
+						e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ?	[-1, 0]	:
+						e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT?	[1, 0]	:
 						e.keyCode === ROT.VK_Q ?	[-1, -1]:
 						e.keyCode === ROT.VK_E ?	[1, -1] :
 						e.keyCode === ROT.VK_Z ?	[-1, 1] :
