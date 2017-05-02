@@ -22,6 +22,8 @@ const initialState = {
 	message: [],
 	width: 50,
 	height: 50,
+	viewWidth: 25,
+	viewHeight: 15,
 	depth: 4
 };
 
