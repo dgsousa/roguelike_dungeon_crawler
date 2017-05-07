@@ -16941,6 +16941,18 @@ var _board = __webpack_require__(106);
 
 var _board2 = _interopRequireDefault(_board);
 
+var _restart = __webpack_require__(109);
+
+var _restart2 = _interopRequireDefault(_restart);
+
+var _stats = __webpack_require__(110);
+
+var _stats2 = _interopRequireDefault(_stats);
+
+var _lights = __webpack_require__(107);
+
+var _lights2 = _interopRequireDefault(_lights);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
@@ -16949,7 +16961,13 @@ var App = function App() {
 		"div",
 		null,
 		_react2.default.createElement(_message2.default, null),
-		_react2.default.createElement(_board2.default, null)
+		_react2.default.createElement(
+			_board2.default,
+			null,
+			_react2.default.createElement(_restart2.default, null),
+			_react2.default.createElement(_stats2.default, null),
+			_react2.default.createElement(_lights2.default, null)
+		)
 	);
 };
 
@@ -17078,18 +17096,6 @@ var _reactRedux = __webpack_require__(18);
 
 var _index = __webpack_require__(33);
 
-var _restart = __webpack_require__(109);
-
-var _restart2 = _interopRequireDefault(_restart);
-
-var _stats = __webpack_require__(110);
-
-var _stats2 = _interopRequireDefault(_stats);
-
-var _lights = __webpack_require__(107);
-
-var _lights2 = _interopRequireDefault(_lights);
-
 var _index2 = __webpack_require__(114);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -17128,9 +17134,7 @@ var Board = function (_Component) {
 					className: "board",
 					tabIndex: "0",
 					onKeyDown: scroll },
-				_react2.default.createElement(_restart2.default, null),
-				_react2.default.createElement(_stats2.default, null),
-				_react2.default.createElement(_lights2.default, null),
+				this.props.children,
 				board
 			);
 		}
