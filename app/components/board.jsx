@@ -1,9 +1,6 @@
 import React, {Component, /*createElement*/} from "react";
 import {connect} from "react-redux";
 import { scroll, setupFloor } from "../actions/index.jsx";
-import Restart from "./restart.jsx";
-import Stats from "./stats.jsx";
-import Lights from "./lights.jsx";
 import { getBoard } from "../selectors/index.jsx";
 
 
@@ -21,10 +18,8 @@ class Board extends Component {
 				className="board"
 				tabIndex={"0"}
 				onKeyDown={scroll}>
-				<Restart />			
-				<Stats />
-				<Lights />
-				{ board }
+				{this.props.children}
+				{board}
 			</div>
 		);
 	}
