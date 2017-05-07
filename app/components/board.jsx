@@ -11,14 +11,14 @@ class Board extends Component {
 	}
 
 	render() {
-		const { scroll, board } = this.props;
+		const { scroll, board, children } = this.props;
 
 		return (
 			<div
 				className="board"
 				tabIndex={"0"}
 				onKeyDown={scroll}>
-				{this.props.children}
+				{children}
 				{board}
 			</div>
 		);
