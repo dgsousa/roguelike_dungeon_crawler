@@ -4959,7 +4959,7 @@ var checkGameStatus = function checkGameStatus(state) {
 	var _state$entities = _slicedToArray(state.entities, 1),
 	    player = _state$entities[0];
 
-	return player._hp <= 0 ? "You Lose!" : player._experience > 1000 ? "You Win!" : false;
+	return player._hp <= 0 ? "You Lose!" : player._experience > 1000 ? "You Win!" : "";
 };
 
 exports.createWorld = createWorld;
@@ -17125,8 +17125,8 @@ var Board = function (_Component) {
 		value: function render() {
 			var _props = this.props,
 			    scroll = _props.scroll,
-			    board = _props.board;
-
+			    board = _props.board,
+			    children = _props.children;
 
 			return _react2.default.createElement(
 				"div",
@@ -17134,7 +17134,7 @@ var Board = function (_Component) {
 					className: "board",
 					tabIndex: "0",
 					onKeyDown: scroll },
-				this.props.children,
+				children,
 				board
 			);
 		}
@@ -17153,6 +17153,11 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, {
 	scroll: _index.scroll,
 	setupFloor: _index.setupFloor
 })(Board);
+
+
+Board.propTypes = {
+	board: _react.PropTypes.array.isRequired
+};
 
 /***/ }),
 /* 107 */
@@ -17195,8 +17200,8 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { switchLights: _index.switchLights })(Lights);
 
 
-_react2.default.propTypes = {
-	LightsOn: _react.PropTypes.bool.isRequired,
+Lights.propTypes = {
+	lightsOn: _react.PropTypes.bool.isRequired,
 	switchLights: _react.PropTypes.func.isRequired
 };
 
@@ -17246,8 +17251,8 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Message);
 
 
-_react2.default.propTypes = {
-	player: _react.PropTypes.array.isRequired
+Message.propTypes = {
+	message: _react.PropTypes.arrayOf(_react.PropTypes.string.isRequired).isRequired
 };
 
 /***/ }),
@@ -17301,7 +17306,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { restart: _index.restart })(Restart);
 
 
-_react2.default.propTypes = {
+Restart.propTypes = {
 	gameEnd: _react.PropTypes.string.isRequired,
 	restart: _react.PropTypes.func.isRequired
 };
@@ -17402,7 +17407,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Stats);
 
 
-_react2.default.propTypes = {
+Stats.propTypes = {
 	player: _react.PropTypes.shape({
 		_name: _react.PropTypes.string.isRequired,
 		_weapon: _react.PropTypes.string.isRequired,
@@ -17457,7 +17462,7 @@ var initialState = {
 	}],
 	occupiedSquares: {},
 	lightsOn: false,
-	gameEnd: false,
+	gameEnd: "",
 	message: [],
 	width: 50,
 	height: 50,

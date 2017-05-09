@@ -1,4 +1,4 @@
-import React, {Component, /*createElement*/} from "react";
+import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import { scroll, setupFloor } from "../actions/index.jsx";
 import { getBoard } from "../selectors/index.jsx";
@@ -12,7 +12,6 @@ class Board extends Component {
 
 	render() {
 		const { scroll, board, children } = this.props;
-
 		return (
 			<div
 				className="board"
@@ -38,6 +37,10 @@ export default connect(
 	}
 )(Board);
 
+
+Board.propTypes = {
+	board: PropTypes.array.isRequired
+};
 
 
 

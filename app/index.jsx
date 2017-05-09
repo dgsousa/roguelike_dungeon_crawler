@@ -18,7 +18,7 @@ const initialState = {
 	],
 	occupiedSquares: {},
 	lightsOn: false,
-	gameEnd: false,
+	gameEnd: "",
 	message: [],
 	width: 50,
 	height: 50,

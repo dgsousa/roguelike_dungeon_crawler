@@ -287,7 +287,7 @@ const getAttackMessage = (player, enemy, enemyDamage, playerDamage) => {
 const checkGameStatus = (state) => {
 	const {entities: [player]} = state;
 	return 	player._hp <= 0 ? "You Lose!" : 
-			player._experience > 1000 ? "You Win!" : false;
+			player._experience > 1000 ? "You Win!" : "";
 };
 
 

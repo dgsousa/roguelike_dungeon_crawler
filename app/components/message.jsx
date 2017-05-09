@@ -26,6 +26,6 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(Message);
 
 
-React.propTypes = {
-	player: PropTypes.array.isRequired,
+Message.propTypes = {
+	message: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
 };

@@ -25,7 +25,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(Stats);
 
 
-React.propTypes = {
+Stats.propTypes = {
 	player: PropTypes.shape({
 		_name: PropTypes.string.isRequired,
 		_weapon: PropTypes.string.isRequired,

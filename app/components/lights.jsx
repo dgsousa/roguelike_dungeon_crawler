@@ -23,7 +23,8 @@ export default connect(
 	{ switchLights: switchLights }
 )(Lights);
 
-React.propTypes = {
-	LightsOn: PropTypes.bool.isRequired,
+
+Lights.propTypes = {
+	lightsOn: PropTypes.bool.isRequired,
 	switchLights: PropTypes.func.isRequired
 };

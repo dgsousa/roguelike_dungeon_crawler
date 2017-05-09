@@ -26,7 +26,7 @@ export default connect(
 	{restart: restart}
 )(Restart);
 
-React.propTypes = {
+Restart.propTypes = {
 	gameEnd: PropTypes.string.isRequired,
 	restart: PropTypes.func.isRequired
 };
