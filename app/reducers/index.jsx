@@ -58,9 +58,9 @@ const Reducer = (state = {}, action) => {
 	case "GO_UPSTAIRS": {
 		return {
 			...state,
-			entities: [state.entities[0]],
+			entities: [{...state.entities[0], coords: action.coords}],
 			occupiedSquares: {
-				[`${state.entities[0].coords[0]}x${state.entities[0].coords[1]}`]: state.entities[0]._type
+				[`${action.coords[0]}x${action.coords[1]}`]: state.entities[0]._type
 			},
 			floor: state.floor + 1
 		};

@@ -17,8 +17,9 @@ const fillFloor = (entities, occupiedSquares, message) => ({
 	message
 });
 
-const goUpstairs = () => ({
-	type: "GO_UPSTAIRS"
+const goUpstairs = (coords) => ({
+	type: "GO_UPSTAIRS",
+	coords
 });
 
 const gameOver = (gameEnd) => ({
@@ -42,6 +43,10 @@ const updateMessage = (message) => ({
 	type: "UPDATE_MESSAGE",
 	message
 });
+
+const damageEntity = (damage) => ({
+
+})
 
 const restart = () => {
 	return function(dispatch, getState) {
@@ -83,8 +88,8 @@ const scrollScreen = ([x, y]) => {
 		const playerCoords = [playerX, playerY];
 		
 		dispatch(move(playerCoords)) 				||
-		dispatch(nextFloor(playerCoords))			//||
-		// dispatch(encounterEntity(playerCoords));
+		dispatch(nextFloor(playerCoords))			||
+		dispatch(encounterEntity(playerCoords));
 		// dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
@@ -121,10 +126,10 @@ const getNewCoords = (coords, state) => {
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
-			const { entities: [player], floor } = getState();
-			dispatch(goUpstairs());
-			//dispatch(generateEntities());
-			//dispatch(updateMessage([`You have entered floor ${floor + 1}`]));
+			const { floor } = getState();
+			dispatch(goUpstairs(playerCoords));
+			dispatch(generateEntities());
+			dispatch(updateMessage([`You have entered floor ${floor + 1}`]));
 			return true;
 		}
 		return false;
@@ -137,9 +142,14 @@ const encounterEntity = (playerCoords) => {
 		const { floor, entities: [player, ...entities] } = getState();
 		if(entity) {
 			if(entity._type == enemyTemplate(floor)._type || entity._type == bossTemplate._type) {
-				const { newEntities, message } = fightEnemy(player, entity, entities);
-				const occupiedSquares = getOccupiedSquares(newEntities);
-				dispatch(fillFloor(newEntities, occupiedSquares, message));
+				const damageToEntity = getDamage(player, entity);
+				const damageToPlayer = getDamage(entity, player);
+				dispatch(damageEntity(entity));
+				//dispatch(damagePlayer(player));
+				// const { newEntities, message } = fightEnemy(player, entity, entities);
+				// const occupiedSquares = getOccupiedSquares(newEntities);
+				// dispatch(fillFloor(newEntities, occupiedSquares, message));
+			
 			} else if(entity._type == weaponTemplate(floor)._type || entity._type == foodTemplate(floor)._type) {
 				const { newEntities, message } = pickUpItem(player, entity, entities);
 				const occupiedSquares = getOccupiedSquares(newEntities);
@@ -264,36 +274,27 @@ const pickUpItem = (player, entity, entities) => {
 	return { newEntities, message };
 };
 
-const fightEnemy = (player, entity, entities) => {
-	const newEntities = [];
-	const damage1 = getDamage(player, entity);
-	const damage2 = getDamage(entity, player);
+// const fightEnemy = (player, entity, entities) => {
+// 	const damage1 = getDamage(player, entity);
+// 	const damage2 = getDamage(entity, player);
 	
-	const enemy = {
-		...entity,
-		_hp: entity._hp - damage1
-	};
+// 	const enemy = {
+// 		...entity,
+// 		_hp: entity._hp - damage1
+// 	};
 	
-	const newPlayer = {
-		...player,
-		_hp: enemy._hp > 0 ? (player._hp - damage2) : player._hp,
-		_experience: enemy._hp > 0 ? player._experience : player._experience + enemy._experience
-	};
+// 	const newPlayer = {
+// 		...player,
+// 		_hp: enemy._hp > 0 ? (player._hp - damage2) : player._hp,
+// 		_experience: enemy._hp > 0 ? player._experience : player._experience + enemy._experience
+// 	};
 	
-	const message = getAttackMessage(newPlayer, enemy, damage1, damage2);
-	newPlayer.levelUp();
-	newEntities.push(newPlayer);
+// 	newPlayer.levelUp();
+// 	newEntities.push(newPlayer);
 	
-	entities.forEach((member) => {
-		if(enemy.coords[0] !== member.coords[0] || enemy.coords[1] !== member.coords[1]) {
-			newEntities.push(member);
-		} else if(enemy._hp > 0) {
-			newEntities.push(enemy);
-		}
-	});
 
-	return { newEntities, message };
-};
+// 	return { newEntities, message };
+// };
 
 
 const getDamage = (entity1, entity2) => {
