@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import { createElement } from "react";
 
 
-const getPlayer = (state) => state.entities[0];
+const getPlayer = (state) => state.entities[0] || ({coords: [0, 0]});
 const getHeight = (state) => state.height;
 const getWidth = (state) => state.width;
 const getViewHeight = (state) => state.viewHeight;
@@ -13,15 +13,16 @@ const getOccupiedSquares = (state) => state.occupiedSquares;
 const getLightsOn = (state) => state.lightsOn;
 
 
-export const getScreenY = createSelector(
-	[getPlayer, getHeight],
-	(player, height) => Math.max(0, Math.min(player.coords[1] - 7, height - 15))
+export const getScreenCoords = createSelector(
+	[getPlayer, getWidth, getHeight],
+	(player, width, height) => {
+		return [
+			Math.max(0, Math.min((player.coords[0]) - 12, width - 25)),
+			Math.max(0, Math.min((player.coords[1]) - 7, height - 15))
+		];
+	}
 );
 
-export const getScreenX = createSelector(
-	[getPlayer, getWidth],
-	(player, width) => Math.max(0, Math.min(player.coords[0] - 12, width - 25))
-);
 
 const getVisibleCellsFunction = createSelector(
 	[getWorld, getFloor],
@@ -57,17 +58,17 @@ const getTileClassFunction = createSelector(
 );
 
 export const getBoard = createSelector(
-	[getScreenX, getScreenY, getViewWidth, getViewHeight, getTileClassFunction],
-	(screenX, screenY, viewWidth, viewHeight, getTileClass) => {
+	[getScreenCoords, getViewWidth, getViewHeight, getTileClassFunction],
+	(screenCoords, viewWidth, viewHeight, getTileClass) => {
 		const rows = [];
-		for(let y = screenY; y < screenY + viewHeight; y++) {
+		for(let y = screenCoords[1]; y < screenCoords[1] + viewHeight; y++) {
 			let row = [];
-			for(let x = screenX; x < screenX + viewWidth; x++) {
+			for(let x = screenCoords[0]; x < screenCoords[0] + viewWidth; x++) {
 				const tileClass = getTileClass(x, y);
 				row.push(createElement("div", {	
 					className: `tile ${tileClass}`, 
 					key: x+"x"+y, 
-					style: {left: 30 * (x - screenX)}}, " "));
+					style: {left: 30 * (x - screenCoords[0])}}, " "));
 			}
 			rows.push(createElement("div", {
 				className: "row", 

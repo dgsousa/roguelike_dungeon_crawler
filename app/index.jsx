@@ -11,11 +11,7 @@ import "./scss/application.scss";
 const initialState = {
 	world: new World(50, 50, 4),
 	floor: 0,
-	entities: [
-		{
-			coords: [0, 0]
-		}
-	],
+	entities: [],
 	occupiedSquares: {},
 	lightsOn: false,
 	gameEnd: "",

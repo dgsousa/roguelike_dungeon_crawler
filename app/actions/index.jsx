@@ -26,6 +26,23 @@ const gameOver = (gameEnd) => ({
 	gameEnd
 });
 
+
+const createEntity = (entity) => ({
+	type: "CREATE_ENTITY",
+	entity
+});
+
+const moveEntity = (coords, index) => ({
+	type: "MOVE_ENTITY",
+	coords,
+	index
+});
+
+const updateMessage = (message) => ({
+	type: "UPDATE_MESSAGE",
+	message
+});
+
 const restart = () => {
 	return function(dispatch, getState) {
 		const { width, height, depth } = getState();
@@ -36,11 +53,9 @@ const restart = () => {
 };
 
 const setupFloor = () => {
-	return function(dispatch, getState) {
-		const entities = generateEntities(getState());
-		const occupiedSquares = getOccupiedSquares(entities);
-		const message = ["Welcome to the the Dungeon!"];
-		dispatch(fillFloor(entities, occupiedSquares, message));
+	return function(dispatch) {
+		dispatch(generateEntities());
+		dispatch(updateMessage(["Welcome to the Dungeon!"]));
 	};
 };
 
@@ -67,10 +82,10 @@ const scrollScreen = ([x, y]) => {
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
 		
-		dispatch(move(playerCoords)) 			||
-		dispatch(nextFloor(playerCoords))		||
-		dispatch(encounterEntity(playerCoords));
-		dispatch(gameOver(checkGameStatus(getState())));
+		dispatch(move(playerCoords)) 				||
+		dispatch(nextFloor(playerCoords))			//||
+		// dispatch(encounterEntity(playerCoords));
+		// dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
 
@@ -79,28 +94,37 @@ const scrollScreen = ([x, y]) => {
 const move = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isEmptySquare(playerCoords, getState())) {
-			const {entities: [player]} = getState();
-			const newPlayer = {...player, coords: playerCoords};
-			const newEntities = [newPlayer, ...moveEntities(playerCoords, getState()).slice(1)];
-			const occupiedSquares = getOccupiedSquares(newEntities);
-			dispatch(fillFloor(newEntities, occupiedSquares, [""]));
+			const { entities } = getState();
+			entities.forEach((entity, index) => {
+				if(entity._type === playerTemplate._type) {
+					dispatch(moveEntity(playerCoords, index));
+				} else if(entity._type === enemyTemplate()._type) {
+					const newCoords = getNewCoords(entity.coords, getState());
+					dispatch(moveEntity(newCoords, index));
+				}
+			});
+			dispatch(updateMessage([""]));
 			return true;
 		}
 		return false;
 	};
 };
 
+const getNewCoords = (coords, state) => {
+	const xOffset = Math.floor(Math.random() * 3) - 1;
+	const yOffset = Math.floor(Math.random() * 3) - 1;
+	const newCoords = [coords[0] + xOffset, coords[1] + yOffset];
+	return 	isEmptySquare(newCoords, state) && !(newCoords[0] == coords[0] && newCoords[1] == coords[1]) ?
+				newCoords : coords;
+};
+
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
-			const { entities: [player] } = getState();
-			let newPlayer, newEntities, occupiedSquares, message;
+			const { entities: [player], floor } = getState();
 			dispatch(goUpstairs());
-			newPlayer = {...player, coords: playerCoords};
-			newEntities = [newPlayer, ...generateEntities(getState()).slice(1)];
-			occupiedSquares = getOccupiedSquares(newEntities);
-			message = [`You have entered floor ${getState().floor + 1}`];
-			dispatch(fillFloor(newEntities, occupiedSquares, message));
+			//dispatch(generateEntities());
+			//dispatch(updateMessage([`You have entered floor ${floor + 1}`]));
 			return true;
 		}
 		return false;
@@ -165,17 +189,17 @@ const emptyCoords = (entities, state) => {
 };
 
 
-const generateEntities = (state) => {
-	const entities = [];
-	const {floor} = state;
-	entities.push({...playerTemplate, coords: emptyCoords(entities, state)});
-	templateMenu.forEach((template) => {
-		for(let i = 0; i < template[1]; i++) {
-			entities.push({...template[0](floor), coords: emptyCoords(entities, state)});
-		}
-	});
-	if(floor === 3) entities.push({...bossTemplate, coords: emptyCoords(entities, state)});
-	return entities;
+const generateEntities = () => {
+	return function(dispatch, getState) {
+		const {floor, entities} = getState();
+		if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
+		templateMenu.forEach((template) => {
+			for(let i = 0; i < template[1]; i++) {
+				dispatch(createEntity({...template[0](floor), coords: emptyCoords(entities, getState())}));
+			}
+		});
+		if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
+	};
 };
 
 const entityAt = ([x, y], state) => {

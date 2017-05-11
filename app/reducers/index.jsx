@@ -21,9 +21,47 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
+	case "CREATE_ENTITY": {
+		return {
+			...state,
+			entities: [...state.entities, action.entity],
+			occupiedSquares: {
+				...state.occupiedSquares,
+				[`${action.entity.coords[0]}x${action.entity.coords[1]}`]: action.entity._type 
+			}
+		};
+	}
+
+	case "MOVE_ENTITY": {
+		return {
+			...state,
+			entities: [	
+				...state.entities.slice(0, action.index), 
+				{ ...state.entities[action.index], coords: action.coords}, 
+				...state.entities.slice(action.index + 1)
+			],
+			occupiedSquares: {
+				...state.occupiedSquares,
+				[`${state.entities[action.index].coords[0]}x${state.entities[action.index].coords[1]}`]: false,
+				[`${action.coords[0]}x${action.coords[1]}`]: state.entities[action.index]._type
+			}
+		};
+	}
+
+	case "UPDATE_MESSAGE": {
+		return {
+			...state,
+			message: action.message
+		};
+	}
+
 	case "GO_UPSTAIRS": {
 		return {
 			...state,
+			entities: [state.entities[0]],
+			occupiedSquares: {
+				[`${state.entities[0].coords[0]}x${state.entities[0].coords[1]}`]: state.entities[0]._type
+			},
 			floor: state.floor + 1
 		};
 	}
