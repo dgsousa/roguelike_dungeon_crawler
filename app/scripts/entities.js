@@ -6,21 +6,9 @@ const playerTemplate = {
 	_defenseValue: 10,
 	_hp: 100,
 	_experience: 0,
-	_level: 0,
+	_level: 1,
 	_message: [],
-	_weapon: "Fists",
-
-	levelUp() {
-		const sumRange = (min, max) => {
-			return min !== max ? sumRange(min, max - 1) + max : 0;
-		};
-		if (this._experience >= (sumRange(0, this._level + 1)) * 100) {
-			this._level += 1;
-			this._attackValue += 10 * this._level;
-			this._defenseValue += 5 * this._level;
-			this._hp += 20 * this._level;
-		}
-	}
+	_weapon: "Fists"
 };
 
 

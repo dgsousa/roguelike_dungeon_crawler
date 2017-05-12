@@ -10,11 +10,8 @@ const createWorld = (world) => ({
 	world
 });
 
-const fillFloor = (entities, occupiedSquares, message) => ({
-	type: "FILL_FLOOR",
-	entities,
-	occupiedSquares,
-	message
+const switchLights = () => ({
+	type: "SWITCH_LIGHTS"
 });
 
 const goUpstairs = (coords) => ({
@@ -26,7 +23,6 @@ const gameOver = (gameEnd) => ({
 	type: "GAME_OVER",
 	gameEnd
 });
-
 
 const createEntity = (entity) => ({
 	type: "CREATE_ENTITY",
@@ -44,9 +40,30 @@ const updateMessage = (message) => ({
 	message
 });
 
-const damageEntity = (damage) => ({
+const damageEntity = (index, damage) => ({
+	type: "DAMAGE_ENTITY",
+	index,
+	damage
+});
 
-})
+const removeEntity = (index) => ({
+	type: "REMOVE_ENTITY",
+	index
+});
+
+const increaseExperience = (experience) => ({
+	type: "INCREASE_EXPERIENCE",
+	experience
+});
+
+const increaseLevel = () => ({
+	type: "INCREASE_LEVEL"
+});
+
+const updateWeaponOrHealth = (index) => ({
+	type: "UPDATE_WEAPON_OR_HEALTH",
+	index
+});
 
 const restart = () => {
 	return function(dispatch, getState) {
@@ -89,8 +106,9 @@ const scrollScreen = ([x, y]) => {
 		
 		dispatch(move(playerCoords)) 				||
 		dispatch(nextFloor(playerCoords))			||
-		dispatch(encounterEntity(playerCoords));
-		// dispatch(gameOver(checkGameStatus(getState())));
+		dispatch(encounterEnemy(playerCoords))		||
+		dispatch(encounterItem(playerCoords));
+		dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
 
@@ -115,14 +133,6 @@ const move = (playerCoords) => {
 	};
 };
 
-const getNewCoords = (coords, state) => {
-	const xOffset = Math.floor(Math.random() * 3) - 1;
-	const yOffset = Math.floor(Math.random() * 3) - 1;
-	const newCoords = [coords[0] + xOffset, coords[1] + yOffset];
-	return 	isEmptySquare(newCoords, state) && !(newCoords[0] == coords[0] && newCoords[1] == coords[1]) ?
-				newCoords : coords;
-};
-
 const nextFloor = (playerCoords) => {
 	return function(dispatch, getState) {
 		if(isStaircase(playerCoords, getState())) {
@@ -136,36 +146,70 @@ const nextFloor = (playerCoords) => {
 	};	
 };
 
-const encounterEntity = (playerCoords) => {
+const encounterEnemy = (playerCoords) => {
 	return function(dispatch, getState) {
-		const entity = entityAt(playerCoords, getState());
-		const { floor, entities: [player, ...entities] } = getState();
-		if(entity) {
-			if(entity._type == enemyTemplate(floor)._type || entity._type == bossTemplate._type) {
-				const damageToEntity = getDamage(player, entity);
-				const damageToPlayer = getDamage(entity, player);
-				dispatch(damageEntity(entity));
-				//dispatch(damagePlayer(player));
-				// const { newEntities, message } = fightEnemy(player, entity, entities);
-				// const occupiedSquares = getOccupiedSquares(newEntities);
-				// dispatch(fillFloor(newEntities, occupiedSquares, message));
-			
-			} else if(entity._type == weaponTemplate(floor)._type || entity._type == foodTemplate(floor)._type) {
-				const { newEntities, message } = pickUpItem(player, entity, entities);
-				const occupiedSquares = getOccupiedSquares(newEntities);
-				dispatch(fillFloor(newEntities, occupiedSquares, message));
+		const entityIndex = entityAt(playerCoords, getState());
+		const { floor, entities } = getState();
+		if(typeof entityIndex == "number") {
+			if(entities[entityIndex]._type == enemyTemplate(floor)._type || entities[entityIndex]._type == bossTemplate._type) {
+				const player = entities[0];
+				const damageToEntity = getDamage(player, entities[entityIndex]);
+				const damageToPlayer = getDamage(entities[entityIndex], player);
+				const experience = entities[entityIndex]._experience;
+				if(damageToEntity < entities[entityIndex]._hp) {
+					dispatch(damageEntity(entityIndex, damageToEntity));
+					dispatch(damageEntity(0, damageToPlayer));
+					dispatch(updateMessage([`You attacked the ${entities[entityIndex]._type} for ${damageToEntity} damage`,`You were attacked by the ${entities[entityIndex]._type} for ${damageToPlayer} damage`]));
+				} else if(damageToEntity >= entities[entityIndex]._hp) {
+					dispatch(removeEntity(entityIndex));
+					dispatch(increaseExperience(experience));
+					dispatch(levelUp());
+					dispatch(updateMessage([`You defeated the ${entities[entityIndex]._type}`]));
+				}
+				return true;
 			}
-			return true;
+			return false;
 		}
-		return false;
 	};
 };
 
 
-const switchLights = () => ({
-	type: "SWITCH_LIGHTS"
-});
+const encounterItem = (playerCoords) => {
+	return function(dispatch, getState) {
+		const entityIndex = entityAt(playerCoords, getState());
+		const { floor, entities } = getState();
+		if(typeof entityIndex == "number") {
+			if(entities[entityIndex]._type == weaponTemplate(floor)._type || entities[entityIndex]._type == foodTemplate(floor)._type) {
+				dispatch(updateWeaponOrHealth(entityIndex));
+				dispatch(removeEntity(entityIndex));
+				dispatch(updateMessage([`You picked up a ${entities[entityIndex]._type}!`]));
+				return true;
+			}
+			return false; 
+		}
+	};
+};
 
+const levelUp = () => {
+	return function(dispatch, getState) {
+		const {entities: [player]} = getState();
+		const sumRange = (min, max) => min !== max ? sumRange(min, max - 1) + max : 0;
+		if(player._experience >= (sumRange(0, player._level)) * 100) dispatch(increaseLevel());
+	};
+};
+
+const generateEntities = () => {
+	return function(dispatch, getState) {
+		const {floor, entities} = getState();
+		if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
+		templateMenu.forEach((template) => {
+			for(let i = 0; i < template[1]; i++) {
+				dispatch(createEntity({...template[0](floor), coords: emptyCoords(entities, getState())}));
+			}
+		});
+		if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
+	};
+};
 
 
 
@@ -199,25 +243,12 @@ const emptyCoords = (entities, state) => {
 };
 
 
-const generateEntities = () => {
-	return function(dispatch, getState) {
-		const {floor, entities} = getState();
-		if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
-		templateMenu.forEach((template) => {
-			for(let i = 0; i < template[1]; i++) {
-				dispatch(createEntity({...template[0](floor), coords: emptyCoords(entities, getState())}));
-			}
-		});
-		if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
-	};
-};
-
 const entityAt = ([x, y], state) => {
 	const { entities } = state;
 	if(entities) {
 		for(let i = 0; i < entities.length; i++) {
 			if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
-				return { ...entities[i] };
+				return i || true;
 			}
 		}
 	}
@@ -232,82 +263,18 @@ const templateMenu = [
 ];
 
 
-const getOccupiedSquares = (entities) => {
-	const occupiedSquares = {};
-	entities.forEach((entity) => {
-		occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
-	});
-	return occupiedSquares;
-};
-
-const moveEntities = (playerCoords, state) => {
-	const { entities } = state;
-	const enemyType = enemyTemplate()._type;
-	return entities.map((entity) => {
-		if(entity._type !== enemyType) return entity;
-		else {
-			const xOffset = Math.floor(Math.random() * 3) - 1;
-			const yOffset = Math.floor(Math.random() * 3) - 1;
-			const coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-			return 	isEmptySquare(coords, state) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ?
-						{...entity, coords: coords} : 
-						entity;
-		}
-	});
-};
-
-const pickUpItem = (player, entity, entities) => { 
-	const newEntities = [];
-	const message = [`You picked a ${entity._type}`];
-	const newPlayer = {
-		...player,
-		_hp: player._hp + (entity._hp || 0),
-		_weapon: entity._weapon || player._weapon,
-		_attackValue: player._attackValue + (entity._attackValue || 0),
-	};
-	newEntities.push(newPlayer);
-	entities.forEach((member) => {
-		if(entity.coords[0] != member.coords[0] || entity.coords[1] != member.coords[1]) {
-			newEntities.push({...member});
-		}
-	});
-	return { newEntities, message };
-};
-
-// const fightEnemy = (player, entity, entities) => {
-// 	const damage1 = getDamage(player, entity);
-// 	const damage2 = getDamage(entity, player);
-	
-// 	const enemy = {
-// 		...entity,
-// 		_hp: entity._hp - damage1
-// 	};
-	
-// 	const newPlayer = {
-// 		...player,
-// 		_hp: enemy._hp > 0 ? (player._hp - damage2) : player._hp,
-// 		_experience: enemy._hp > 0 ? player._experience : player._experience + enemy._experience
-// 	};
-	
-// 	newPlayer.levelUp();
-// 	newEntities.push(newPlayer);
-	
-
-// 	return { newEntities, message };
-// };
-
-
 const getDamage = (entity1, entity2) => {
 	return (1 + Math.floor(Math.random() * Math.max(0, entity1._attackValue - entity2._defenseValue)));
 };
 
-const getAttackMessage = (player, enemy, enemyDamage, playerDamage) => {
-	return 	player._hp < 0 ? 
-				[`You were defeated by the ${enemy._type}`] :
-				enemy._hp < 0 ?	
-					[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You defeated the ${enemy._type}`] :
-					[`You attacked the ${enemy._type} for ${enemyDamage} damage`, `You were attacked by the ${enemy._type} for ${playerDamage} damage`]; 
+const getNewCoords = (coords, state) => {
+	const xOffset = Math.floor(Math.random() * 3) - 1;
+	const yOffset = Math.floor(Math.random() * 3) - 1;
+	const newCoords = [coords[0] + xOffset, coords[1] + yOffset];
+	return 	isEmptySquare(newCoords, state) && !(newCoords[0] == coords[0] && newCoords[1] == coords[1]) ?
+				newCoords : coords;
 };
+
 
 const checkGameStatus = (state) => {
 	const {entities: [player]} = state;

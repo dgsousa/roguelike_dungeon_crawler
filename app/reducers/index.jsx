@@ -12,15 +12,6 @@ const Reducer = (state = {}, action) => {
 		};
 	}
 
-	case "FILL_FLOOR": {
-		return { 
-			...state, 
-			entities: action.entities, 
-			occupiedSquares: action.occupiedSquares,
-			message: action.message
-		};
-	}
-
 	case "CREATE_ENTITY": {
 		return {
 			...state,
@@ -37,7 +28,9 @@ const Reducer = (state = {}, action) => {
 			...state,
 			entities: [	
 				...state.entities.slice(0, action.index), 
-				{ ...state.entities[action.index], coords: action.coords}, 
+				{ 
+					...state.entities[action.index], coords: action.coords
+				}, 
 				...state.entities.slice(action.index + 1)
 			],
 			occupiedSquares: {
@@ -79,6 +72,77 @@ const Reducer = (state = {}, action) => {
 			gameEnd: action.gameEnd
 		};
 	}
+
+	case "DAMAGE_ENTITY": {
+		return {
+			...state,
+			entities: [
+				...state.entities.slice(0, action.index),
+				{
+					...state.entities[action.index], _hp: state.entities[action.index]._hp - action.damage
+				},
+				...state.entities.slice(action.index + 1)
+			]
+		};
+	}
+
+	case "REMOVE_ENTITY": {
+		return {
+			...state,
+			entities: [
+				...state.entities.slice(0, action.index),
+				...state.entities.slice(action.index + 1)
+			],
+			occupiedSquares: {
+				...state.occupiedSquares,
+				[`${state.entities[action.index].coords[0]}x${state.entities[action.index].coords[1]}`]: false
+			}
+		};
+	}
+
+	case "INCREASE_EXPERIENCE": {
+		return {
+			...state,
+			entities: [
+				{
+					...state.entities[0], _experience: state.entities[0]._experience + action.experience
+				},
+				...state.entities.slice(1)
+			]
+		};
+	}
+
+	case "INCREASE_LEVEL": {
+		return {
+			...state,
+			entities: [
+				{
+					...state.entities[0], 
+					_attackValue: state.entities[0]._attackValue + state.entities[0]._level * 10,
+					_defenseValue: state.entities[0]._defenseValue + state.entities[0]._level * 5,
+					_hp: state.entities[0]._hp + state.entities[0]._level * 20,
+					_level: state.entities[0]._level + 1
+				},
+				...state.entities.slice(1)
+			]
+		};
+	}
+
+	case "UPDATE_WEAPON_OR_HEALTH": {
+		return {
+			...state,
+			entities: [
+				{
+					...state.entities[0],
+					_weapon: state.entities[action.index]._weapon || state.entities[0]._weapon,
+					_attackValue: state.entities[0]._attackValue + state.entities[action.index]._attackValue || state.entities[0]._attackValue,
+					_hp: state.entities[0]._hp + state.entities[action.index]._hp || state.entities[0]._hp
+				},
+				...state.entities.slice(1)
+			]
+		};
+	}
+
 
 	default:
 		return state;
