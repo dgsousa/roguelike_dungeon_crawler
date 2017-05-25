@@ -2117,7 +2117,7 @@ var _assign = __webpack_require__(4);
 var ReactCurrentOwner = __webpack_require__(12);
 
 var warning = __webpack_require__(2);
-var canDefineProperty = __webpack_require__(57);
+var canDefineProperty = __webpack_require__(58);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var REACT_ELEMENT_TYPE = __webpack_require__(94);
@@ -2530,10 +2530,10 @@ exports.connect = _connect2.default;
 
 
 
-var DOMNamespaces = __webpack_require__(39);
+var DOMNamespaces = __webpack_require__(40);
 var setInnerHTML = __webpack_require__(32);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(46);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(47);
 var setTextContent = __webpack_require__(88);
 
 var ELEMENT_NODE_TYPE = 1;
@@ -2830,7 +2830,7 @@ module.exports = ReactReconciler;
 var _assign = __webpack_require__(4);
 
 var ReactChildren = __webpack_require__(224);
-var ReactComponent = __webpack_require__(54);
+var ReactComponent = __webpack_require__(55);
 var ReactPureComponent = __webpack_require__(228);
 var ReactClass = __webpack_require__(225);
 var ReactDOMFactories = __webpack_require__(226);
@@ -2953,8 +2953,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _prodInvariant = __webpack_require__(3);
 
 var EventPluginRegistry = __webpack_require__(27);
-var EventPluginUtils = __webpack_require__(40);
-var ReactErrorUtils = __webpack_require__(44);
+var EventPluginUtils = __webpack_require__(41);
+var ReactErrorUtils = __webpack_require__(45);
 
 var accumulateInto = __webpack_require__(82);
 var forEachAccumulated = __webpack_require__(83);
@@ -3235,7 +3235,7 @@ module.exports = EventPluginHub;
 
 
 var EventPluginHub = __webpack_require__(23);
-var EventPluginUtils = __webpack_require__(40);
+var EventPluginUtils = __webpack_require__(41);
 
 var accumulateInto = __webpack_require__(82);
 var forEachAccumulated = __webpack_require__(83);
@@ -3429,7 +3429,7 @@ module.exports = ReactInstanceMap;
 
 var SyntheticEvent = __webpack_require__(13);
 
-var getEventTarget = __webpack_require__(49);
+var getEventTarget = __webpack_require__(50);
 
 /**
  * @interface UIEvent
@@ -3759,7 +3759,7 @@ var ReactEventEmitterMixin = __webpack_require__(174);
 var ViewportMetrics = __webpack_require__(81);
 
 var getVendorPrefixedEventName = __webpack_require__(210);
-var isEventSupported = __webpack_require__(50);
+var isEventSupported = __webpack_require__(51);
 
 /**
  * Summary of `ReactBrowserEventEmitter` event handling:
@@ -4088,7 +4088,7 @@ module.exports = ReactBrowserEventEmitter;
 var SyntheticUIEvent = __webpack_require__(26);
 var ViewportMetrics = __webpack_require__(81);
 
-var getEventModifierState = __webpack_require__(48);
+var getEventModifierState = __webpack_require__(49);
 
 /**
  * @interface MouseEvent
@@ -4522,12 +4522,12 @@ module.exports = escapeTextContentForBrowser;
 
 
 var ExecutionEnvironment = __webpack_require__(6);
-var DOMNamespaces = __webpack_require__(39);
+var DOMNamespaces = __webpack_require__(40);
 
 var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(46);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(47);
 
 // SVG temp container for IE lacking innerHTML
 var reusableSVGContainer;
@@ -4611,6 +4611,58 @@ module.exports = setInnerHTML;
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(process) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+
+var _createStore = __webpack_require__(98);
+
+var _createStore2 = _interopRequireDefault(_createStore);
+
+var _combineReducers = __webpack_require__(235);
+
+var _combineReducers2 = _interopRequireDefault(_combineReducers);
+
+var _bindActionCreators = __webpack_require__(234);
+
+var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+
+var _applyMiddleware = __webpack_require__(233);
+
+var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+
+var _compose = __webpack_require__(97);
+
+var _compose2 = _interopRequireDefault(_compose);
+
+var _warning = __webpack_require__(99);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+
+if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  (0, _warning2.default)('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+}
+
+exports.createStore = _createStore2.default;
+exports.combineReducers = _combineReducers2.default;
+exports.bindActionCreators = _bindActionCreators2.default;
+exports.applyMiddleware = _applyMiddleware2.default;
+exports.compose = _compose2.default;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
@@ -4624,7 +4676,7 @@ var _entities = __webpack_require__(112);
 
 var _items = __webpack_require__(113);
 
-var _world = __webpack_require__(59);
+var _world = __webpack_require__(60);
 
 var _world2 = _interopRequireDefault(_world);
 
@@ -4636,10 +4688,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 //ActionCreators
 var createWorld = function createWorld(world) {
 	return {
@@ -4648,18 +4696,16 @@ var createWorld = function createWorld(world) {
 	};
 };
 
-var fillFloor = function fillFloor(entities, occupiedSquares, message) {
+var switchLights = function switchLights() {
 	return {
-		type: "FILL_FLOOR",
-		entities: entities,
-		occupiedSquares: occupiedSquares,
-		message: message
+		type: "SWITCH_LIGHTS"
 	};
 };
 
-var goUpstairs = function goUpstairs() {
+var goUpstairs = function goUpstairs(coords) {
 	return {
-		type: "GO_UPSTAIRS"
+		type: "GO_UPSTAIRS",
+		coords: coords
 	};
 };
 
@@ -4667,6 +4713,63 @@ var gameOver = function gameOver(gameEnd) {
 	return {
 		type: "GAME_OVER",
 		gameEnd: gameEnd
+	};
+};
+
+var createEntity = function createEntity(entity) {
+	return {
+		type: "CREATE_ENTITY",
+		entity: entity
+	};
+};
+
+var moveEntity = function moveEntity(coords, index) {
+	return {
+		type: "MOVE_ENTITY",
+		coords: coords,
+		index: index
+	};
+};
+
+var updateMessage = function updateMessage(message) {
+	return {
+		type: "UPDATE_MESSAGE",
+		message: message
+	};
+};
+
+var damageEntity = function damageEntity(index, damage) {
+	return {
+		type: "DAMAGE_ENTITY",
+		index: index,
+		damage: damage
+	};
+};
+
+var removeEntity = function removeEntity(index) {
+	return {
+		type: "REMOVE_ENTITY",
+		index: index
+	};
+};
+
+var increaseExperience = function increaseExperience(experience) {
+	return {
+		type: "INCREASE_EXPERIENCE",
+		experience: experience
+	};
+};
+
+var increaseLevel = function increaseLevel() {
+	return {
+		type: "INCREASE_LEVEL"
+	};
+};
+
+var updateWeaponOrHealth = function updateWeaponOrHealth(index) {
+	return {
+		type: "UPDATE_WEAPON_OR_HEALTH",
+		index: index
 	};
 };
 
@@ -4684,11 +4787,9 @@ var restart = function restart() {
 };
 
 var setupFloor = function setupFloor() {
-	return function (dispatch, getState) {
-		var entities = generateEntities(getState());
-		var occupiedSquares = getOccupiedSquares(entities);
-		var message = ["Welcome to the the Dungeon!"];
-		dispatch(fillFloor(entities, occupiedSquares, message));
+	return function (dispatch) {
+		dispatch(generateEntities());
+		dispatch(updateMessage(["Welcome to the Dungeon!"]));
 	};
 };
 
@@ -4716,7 +4817,7 @@ var scrollScreen = function scrollScreen(_ref) {
 		var playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		var playerCoords = [playerX, playerY];
 
-		dispatch(move(playerCoords)) || dispatch(nextFloor(playerCoords)) || dispatch(encounterEntity(playerCoords));
+		dispatch(move(playerCoords)) || dispatch(nextFloor(playerCoords)) || dispatch(encounterEnemy(playerCoords)) || dispatch(encounterItem(playerCoords));
 		dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
@@ -4725,13 +4826,17 @@ var move = function move(playerCoords) {
 	return function (dispatch, getState) {
 		if (isEmptySquare(playerCoords, getState())) {
 			var _getState3 = getState(),
-			    _getState3$entities = _slicedToArray(_getState3.entities, 1),
-			    player = _getState3$entities[0];
+			    entities = _getState3.entities;
 
-			var newPlayer = _extends({}, player, { coords: playerCoords });
-			var newEntities = [newPlayer].concat(_toConsumableArray(moveEntities(playerCoords, getState()).slice(1)));
-			var occupiedSquares = getOccupiedSquares(newEntities);
-			dispatch(fillFloor(newEntities, occupiedSquares, [""]));
+			entities.forEach(function (entity, index) {
+				if (entity._type === _entities.playerTemplate._type) {
+					dispatch(moveEntity(playerCoords, index));
+				} else if (entity._type === (0, _entities.enemyTemplate)()._type) {
+					var newCoords = getNewCoords(entity.coords, getState());
+					dispatch(moveEntity(newCoords, index));
+				}
+			});
+			dispatch(updateMessage([""]));
 			return true;
 		}
 		return false;
@@ -4742,60 +4847,94 @@ var nextFloor = function nextFloor(playerCoords) {
 	return function (dispatch, getState) {
 		if (isStaircase(playerCoords, getState())) {
 			var _getState4 = getState(),
-			    _getState4$entities = _slicedToArray(_getState4.entities, 1),
-			    player = _getState4$entities[0];
+			    floor = _getState4.floor;
 
-			var newPlayer = void 0,
-			    newEntities = void 0,
-			    occupiedSquares = void 0,
-			    message = void 0;
-			dispatch(goUpstairs());
-			newPlayer = _extends({}, player, { coords: playerCoords });
-			newEntities = [newPlayer].concat(_toConsumableArray(generateEntities(getState()).slice(1)));
-			occupiedSquares = getOccupiedSquares(newEntities);
-			message = ["You have entered floor " + (getState().floor + 1)];
-			dispatch(fillFloor(newEntities, occupiedSquares, message));
+			dispatch(goUpstairs(playerCoords));
+			dispatch(generateEntities());
+			dispatch(updateMessage(["You have entered floor " + (floor + 1)]));
 			return true;
 		}
 		return false;
 	};
 };
 
-var encounterEntity = function encounterEntity(playerCoords) {
+var encounterEnemy = function encounterEnemy(playerCoords) {
 	return function (dispatch, getState) {
-		var entity = entityAt(playerCoords, getState());
+		var entityIndex = entityAt(playerCoords, getState());
 
 		var _getState5 = getState(),
 		    floor = _getState5.floor,
-		    _getState5$entities = _toArray(_getState5.entities),
-		    player = _getState5$entities[0],
-		    entities = _getState5$entities.slice(1);
+		    entities = _getState5.entities;
 
-		if (entity) {
-			if (entity._type == (0, _entities.enemyTemplate)(floor)._type || entity._type == _entities.bossTemplate._type) {
-				var _fightEnemy = fightEnemy(player, entity, entities),
-				    newEntities = _fightEnemy.newEntities,
-				    message = _fightEnemy.message;
-
-				var occupiedSquares = getOccupiedSquares(newEntities);
-				dispatch(fillFloor(newEntities, occupiedSquares, message));
-			} else if (entity._type == (0, _items.weaponTemplate)(floor)._type || entity._type == (0, _items.foodTemplate)(floor)._type) {
-				var _pickUpItem = pickUpItem(player, entity, entities),
-				    _newEntities = _pickUpItem.newEntities,
-				    _message = _pickUpItem.message;
-
-				var _occupiedSquares = getOccupiedSquares(_newEntities);
-				dispatch(fillFloor(_newEntities, _occupiedSquares, _message));
+		if (typeof entityIndex == "number") {
+			if (entities[entityIndex]._type == (0, _entities.enemyTemplate)(floor)._type || entities[entityIndex]._type == _entities.bossTemplate._type) {
+				var player = entities[0];
+				var damageToEntity = getDamage(player, entities[entityIndex]);
+				var damageToPlayer = getDamage(entities[entityIndex], player);
+				var experience = entities[entityIndex]._experience;
+				if (damageToEntity < entities[entityIndex]._hp) {
+					dispatch(damageEntity(entityIndex, damageToEntity));
+					dispatch(damageEntity(0, damageToPlayer));
+					dispatch(updateMessage(["You attacked the " + entities[entityIndex]._type + " for " + damageToEntity + " damage", "You were attacked by the " + entities[entityIndex]._type + " for " + damageToPlayer + " damage"]));
+				} else if (damageToEntity >= entities[entityIndex]._hp) {
+					dispatch(removeEntity(entityIndex));
+					dispatch(increaseExperience(experience));
+					dispatch(levelUp());
+					dispatch(updateMessage(["You defeated the " + entities[entityIndex]._type]));
+				}
+				return true;
 			}
-			return true;
+			return false;
 		}
-		return false;
 	};
 };
 
-var switchLights = function switchLights() {
-	return {
-		type: "SWITCH_LIGHTS"
+var encounterItem = function encounterItem(playerCoords) {
+	return function (dispatch, getState) {
+		var entityIndex = entityAt(playerCoords, getState());
+
+		var _getState6 = getState(),
+		    floor = _getState6.floor,
+		    entities = _getState6.entities;
+
+		if (typeof entityIndex == "number") {
+			if (entities[entityIndex]._type == (0, _items.weaponTemplate)(floor)._type || entities[entityIndex]._type == (0, _items.foodTemplate)(floor)._type) {
+				dispatch(updateWeaponOrHealth(entityIndex));
+				dispatch(removeEntity(entityIndex));
+				dispatch(updateMessage(["You picked up a " + entities[entityIndex]._type + "!"]));
+				return true;
+			}
+			return false;
+		}
+	};
+};
+
+var levelUp = function levelUp() {
+	return function (dispatch, getState) {
+		var _getState7 = getState(),
+		    _getState7$entities = _slicedToArray(_getState7.entities, 1),
+		    player = _getState7$entities[0];
+
+		var sumRange = function sumRange(min, max) {
+			return min !== max ? sumRange(min, max - 1) + max : 0;
+		};
+		if (player._experience >= sumRange(0, player._level) * 100) dispatch(increaseLevel());
+	};
+};
+
+var generateEntities = function generateEntities() {
+	return function (dispatch, getState) {
+		var _getState8 = getState(),
+		    floor = _getState8.floor,
+		    entities = _getState8.entities;
+
+		if (floor === 0) dispatch(createEntity(_extends({}, _entities.playerTemplate, { coords: emptyCoords(entities, getState()) })));
+		templateMenu.forEach(function (template) {
+			for (var i = 0; i < template[1]; i++) {
+				dispatch(createEntity(_extends({}, template[0](floor), { coords: emptyCoords(entities, getState()) })));
+			}
+		});
+		if (floor === 3) dispatch(createEntity(_extends({}, _entities.bossTemplate, { coords: emptyCoords(entities, getState()) })));
 	};
 };
 
@@ -4811,7 +4950,7 @@ var isStaircase = function isStaircase(_ref3, state) {
 	return world._regions[floor][x][y] == 5;
 };
 
-var isEmptySquare = function isEmptySquare(_ref5, state) {
+var isWall = function isWall(_ref5, state) {
 	var _ref6 = _slicedToArray(_ref5, 2),
 	    x = _ref6[0],
 	    y = _ref6[1];
@@ -4819,13 +4958,21 @@ var isEmptySquare = function isEmptySquare(_ref5, state) {
 	var world = state.world,
 	    floor = state.floor;
 
-	return inBounds([x, y], state) && world._regions[floor][x][y] && !isStaircase([x, y], state) && !entityAt([x, y], state);
+	return world._regions[floor][x][y] == 0;
 };
 
-var inBounds = function inBounds(_ref7, state) {
+var isEmptySquare = function isEmptySquare(_ref7, state) {
 	var _ref8 = _slicedToArray(_ref7, 2),
 	    x = _ref8[0],
 	    y = _ref8[1];
+
+	return inBounds([x, y], state) && !isWall([x, y], state) && !isStaircase([x, y], state) && !entityAt([x, y], state);
+};
+
+var inBounds = function inBounds(_ref9, state) {
+	var _ref10 = _slicedToArray(_ref9, 2),
+	    x = _ref10[0],
+	    y = _ref10[1];
 
 	var width = state.width,
 	    height = state.height;
@@ -4846,31 +4993,17 @@ var emptyCoords = function emptyCoords(entities, state) {
 	return [x, y];
 };
 
-var generateEntities = function generateEntities(state) {
-	var entities = [];
-	var floor = state.floor;
-
-	entities.push(_extends({}, _entities.playerTemplate, { coords: emptyCoords(entities, state) }));
-	templateMenu.forEach(function (template) {
-		for (var i = 0; i < template[1]; i++) {
-			entities.push(_extends({}, template[0](floor), { coords: emptyCoords(entities, state) }));
-		}
-	});
-	if (floor === 3) entities.push(_extends({}, _entities.bossTemplate, { coords: emptyCoords(entities, state) }));
-	return entities;
-};
-
-var entityAt = function entityAt(_ref9, state) {
-	var _ref10 = _slicedToArray(_ref9, 2),
-	    x = _ref10[0],
-	    y = _ref10[1];
+var entityAt = function entityAt(_ref11, state) {
+	var _ref12 = _slicedToArray(_ref11, 2),
+	    x = _ref12[0],
+	    y = _ref12[1];
 
 	var entities = state.entities;
 
 	if (entities) {
 		for (var i = 0; i < entities.length; i++) {
 			if (entities[i].coords[0] === x && entities[i].coords[1] === y) {
-				return _extends({}, entities[i]);
+				return i || true;
 			}
 		}
 	}
@@ -4879,80 +5012,15 @@ var entityAt = function entityAt(_ref9, state) {
 
 var templateMenu = [[_entities.enemyTemplate, 10], [_items.foodTemplate, 5], [_items.weaponTemplate, 1]];
 
-var getOccupiedSquares = function getOccupiedSquares(entities) {
-	var occupiedSquares = {};
-	entities.forEach(function (entity) {
-		occupiedSquares[entity.coords[0] + "x" + entity.coords[1]] = entity._type;
-	});
-	return occupiedSquares;
-};
-
-var moveEntities = function moveEntities(playerCoords, state) {
-	var entities = state.entities;
-
-	var enemyType = (0, _entities.enemyTemplate)()._type;
-	return entities.map(function (entity) {
-		if (entity._type !== enemyType) return entity;else {
-			var xOffset = Math.floor(Math.random() * 3) - 1;
-			var yOffset = Math.floor(Math.random() * 3) - 1;
-			var coords = [entity.coords[0] + xOffset, entity.coords[1] + yOffset];
-			return isEmptySquare(coords, state) && !(coords[0] == playerCoords[0] && coords[1] == playerCoords[1]) ? _extends({}, entity, { coords: coords }) : entity;
-		}
-	});
-};
-
-var pickUpItem = function pickUpItem(player, entity, entities) {
-	var newEntities = [];
-	var message = ["You picked a " + entity._type];
-	var newPlayer = _extends({}, player, {
-		_hp: player._hp + (entity._hp || 0),
-		_weapon: entity._weapon || player._weapon,
-		_attackValue: player._attackValue + (entity._attackValue || 0)
-	});
-	newEntities.push(newPlayer);
-	entities.forEach(function (member) {
-		if (entity.coords[0] != member.coords[0] || entity.coords[1] != member.coords[1]) {
-			newEntities.push(_extends({}, member));
-		}
-	});
-	return { newEntities: newEntities, message: message };
-};
-
-var fightEnemy = function fightEnemy(player, entity, entities) {
-	var newEntities = [];
-	var damage1 = getDamage(player, entity);
-	var damage2 = getDamage(entity, player);
-
-	var enemy = _extends({}, entity, {
-		_hp: entity._hp - damage1
-	});
-
-	var newPlayer = _extends({}, player, {
-		_hp: enemy._hp > 0 ? player._hp - damage2 : player._hp,
-		_experience: enemy._hp > 0 ? player._experience : player._experience + enemy._experience
-	});
-
-	var message = getAttackMessage(newPlayer, enemy, damage1, damage2);
-	newPlayer.levelUp();
-	newEntities.push(newPlayer);
-
-	entities.forEach(function (member) {
-		if (enemy.coords[0] !== member.coords[0] || enemy.coords[1] !== member.coords[1]) {
-			newEntities.push(member);
-		} else if (enemy._hp > 0) {
-			newEntities.push(enemy);
-		}
-	});
-
-	return { newEntities: newEntities, message: message };
-};
-
 var getDamage = function getDamage(entity1, entity2) {
 	return 1 + Math.floor(Math.random() * Math.max(0, entity1._attackValue - entity2._defenseValue));
 };
 
-var getAttackMessage = function getAttackMessage(player, enemy, enemyDamage, playerDamage) {
-	return player._hp < 0 ? ["You were defeated by the " + enemy._type] : enemy._hp < 0 ? ["You attacked the " + enemy._type + " for " + enemyDamage + " damage", "You defeated the " + enemy._type] : ["You attacked the " + enemy._type + " for " + enemyDamage + " damage", "You were attacked by the " + enemy._type + " for " + playerDamage + " damage"];
+var getNewCoords = function getNewCoords(coords, state) {
+	var xOffset = Math.floor(Math.random() * 3) - 1;
+	var yOffset = Math.floor(Math.random() * 3) - 1;
+	var newCoords = [coords[0] + xOffset, coords[1] + yOffset];
+	return isEmptySquare(newCoords, state) && !(newCoords[0] == coords[0] && newCoords[1] == coords[1]) ? newCoords : coords;
 };
 
 var checkGameStatus = function checkGameStatus(state) {
@@ -4969,7 +5037,7 @@ exports.switchLights = switchLights;
 exports.restart = restart;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5044,7 +5112,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -5124,7 +5192,7 @@ function isPlainObject(value) {
 exports.default = isPlainObject;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5168,7 +5236,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5230,7 +5298,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5251,7 +5319,7 @@ var Danger = __webpack_require__(147);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInstrumentation = __webpack_require__(8);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(46);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(47);
 var setInnerHTML = __webpack_require__(32);
 var setTextContent = __webpack_require__(88);
 
@@ -5461,7 +5529,7 @@ module.exports = DOMChildrenOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5486,7 +5554,7 @@ var DOMNamespaces = {
 module.exports = DOMNamespaces;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5504,7 +5572,7 @@ module.exports = DOMNamespaces;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactErrorUtils = __webpack_require__(44);
+var ReactErrorUtils = __webpack_require__(45);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -5718,7 +5786,7 @@ module.exports = EventPluginUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5782,7 +5850,7 @@ var KeyEscapeUtils = {
 module.exports = KeyEscapeUtils;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5923,7 +5991,7 @@ module.exports = LinkedValueUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5975,7 +6043,7 @@ module.exports = ReactComponentEnvironment;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6058,7 +6126,7 @@ module.exports = ReactErrorUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6292,7 +6360,7 @@ module.exports = ReactUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6329,7 +6397,7 @@ var createMicrosoftUnsafeLocalFunction = function createMicrosoftUnsafeLocalFunc
 module.exports = createMicrosoftUnsafeLocalFunction;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6384,7 +6452,7 @@ function getEventCharCode(nativeEvent) {
 module.exports = getEventCharCode;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6432,7 +6500,7 @@ function getEventModifierState(nativeEvent) {
 module.exports = getEventModifierState;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6472,7 +6540,7 @@ function getEventTarget(nativeEvent) {
 module.exports = getEventTarget;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6537,7 +6605,7 @@ function isEventSupported(eventNameSuffix, capture) {
 module.exports = isEventSupported;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6586,7 +6654,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 module.exports = shouldUpdateReactComponent;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6974,7 +7042,7 @@ module.exports = validateDOMNesting;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -7004,7 +7072,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7024,9 +7092,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _prodInvariant = __webpack_require__(17);
 
-var ReactNoopUpdateQueue = __webpack_require__(55);
+var ReactNoopUpdateQueue = __webpack_require__(56);
 
-var canDefineProperty = __webpack_require__(57);
+var canDefineProperty = __webpack_require__(58);
 var emptyObject = __webpack_require__(22);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -7130,7 +7198,7 @@ module.exports = ReactComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7232,7 +7300,7 @@ module.exports = ReactNoopUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7263,7 +7331,7 @@ module.exports = ReactPropTypeLocationNames;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7295,7 +7363,7 @@ module.exports = canDefineProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7341,7 +7409,7 @@ function getIteratorFn(maybeIterable) {
 module.exports = getIteratorFn;
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -7578,58 +7646,6 @@ var World = function () {
 }();
 
 exports.default = World;
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
-
-var _createStore = __webpack_require__(98);
-
-var _createStore2 = _interopRequireDefault(_createStore);
-
-var _combineReducers = __webpack_require__(235);
-
-var _combineReducers2 = _interopRequireDefault(_combineReducers);
-
-var _bindActionCreators = __webpack_require__(234);
-
-var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-
-var _applyMiddleware = __webpack_require__(233);
-
-var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-
-var _compose = __webpack_require__(97);
-
-var _compose2 = _interopRequireDefault(_compose);
-
-var _warning = __webpack_require__(99);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
-* This is a dummy function to check if the function name has been altered by minification.
-* If the function has been minified and NODE_ENV !== 'production', warn the user.
-*/
-function isCrushed() {}
-
-if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  (0, _warning2.default)('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-}
-
-exports.createStore = _createStore2.default;
-exports.combineReducers = _combineReducers2.default;
-exports.bindActionCreators = _bindActionCreators2.default;
-exports.applyMiddleware = _applyMiddleware2.default;
-exports.compose = _compose2.default;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 61 */
@@ -13484,7 +13500,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var emptyFunction = __webpack_require__(36);
+var emptyFunction = __webpack_require__(37);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -14103,7 +14119,7 @@ module.exports = ReactDOMComponentFlags;
 
 var _assign = __webpack_require__(4);
 
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -14587,14 +14603,14 @@ var ReactInstanceMap = __webpack_require__(25);
 var ReactInstrumentation = __webpack_require__(8);
 var ReactMarkupChecksum = __webpack_require__(179);
 var ReactReconciler = __webpack_require__(20);
-var ReactUpdateQueue = __webpack_require__(45);
+var ReactUpdateQueue = __webpack_require__(46);
 var ReactUpdates = __webpack_require__(11);
 
 var emptyObject = __webpack_require__(22);
 var instantiateReactComponent = __webpack_require__(86);
 var invariant = __webpack_require__(1);
 var setInnerHTML = __webpack_require__(32);
-var shouldUpdateReactComponent = __webpack_require__(51);
+var shouldUpdateReactComponent = __webpack_require__(52);
 var warning = __webpack_require__(2);
 
 var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
@@ -15647,7 +15663,7 @@ var REACT_ELEMENT_TYPE = __webpack_require__(173);
 
 var getIteratorFn = __webpack_require__(207);
 var invariant = __webpack_require__(1);
-var KeyEscapeUtils = __webpack_require__(41);
+var KeyEscapeUtils = __webpack_require__(42);
 var warning = __webpack_require__(2);
 
 var SEPARATOR = '.';
@@ -16247,11 +16263,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = verifyPlainObject;
 
-var _isPlainObject = __webpack_require__(35);
+var _isPlainObject = __webpack_require__(36);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-var _warning = __webpack_require__(53);
+var _warning = __webpack_require__(54);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -16320,8 +16336,8 @@ var ReactElement = __webpack_require__(16);
 
 var checkReactTypeSpec = __webpack_require__(230);
 
-var canDefineProperty = __webpack_require__(57);
-var getIteratorFn = __webpack_require__(58);
+var canDefineProperty = __webpack_require__(58);
+var getIteratorFn = __webpack_require__(59);
 var warning = __webpack_require__(2);
 
 function getDeclarationErrorAddendum() {
@@ -16608,7 +16624,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = createStore;
 
-var _isPlainObject = __webpack_require__(35);
+var _isPlainObject = __webpack_require__(36);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
@@ -16975,7 +16991,7 @@ exports.default = App;
 
 /***/ }),
 /* 102 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -16983,56 +16999,159 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var Reducer = function Reducer() {
-	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+var _redux = __webpack_require__(33);
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var world = function world() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 	var action = arguments[1];
 
 	switch (action.type) {
 		case "CREATE_WORLD":
-			{
-				return _extends({}, state, {
-					world: action.world,
-					gameEnd: false,
-					floor: 0
-				});
-			}
-
-		case "FILL_FLOOR":
-			{
-				return _extends({}, state, {
-					entities: action.entities,
-					occupiedSquares: action.occupiedSquares,
-					message: action.message
-				});
-			}
-
-		case "GO_UPSTAIRS":
-			{
-				return _extends({}, state, {
-					floor: state.floor + 1
-				});
-			}
-
-		case "SWITCH_LIGHTS":
-			{
-				return _extends({}, state, {
-					lightsOn: !state.lightsOn
-				});
-			}
-
-		case "GAME_OVER":
-			{
-				return _extends({}, state, {
-					gameEnd: action.gameEnd
-				});
-			}
+			return action.world;
 
 		default:
 			return state;
 	}
 };
 
-exports.default = Reducer;
+var floor = function floor() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	var action = arguments[1];
+
+	switch (action.type) {
+		case "CREATE_WORLD":
+			return 0;
+
+		case "GO_UPSTAIRS":
+			return state + 1;
+
+		default:
+			return state;
+	}
+};
+
+var entities = function entities() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	var action = arguments[1];
+
+	switch (action.type) {
+		case "CREATE_ENTITY":
+			return [].concat(_toConsumableArray(state), [action.entity]);
+
+		case "MOVE_ENTITY":
+			return [].concat(_toConsumableArray(state.slice(0, action.index)), [_extends({}, state[action.index], { coords: action.coords
+			})], _toConsumableArray(state.slice(action.index + 1)));
+
+		case "GO_UPSTAIRS":
+			return [_extends({}, state[0], {
+				coords: action.coords
+			})];
+
+		case "DAMAGE_ENTITY":
+			return [].concat(_toConsumableArray(state.slice(0, action.index)), [_extends({}, state[action.index], { _hp: state[action.index]._hp - action.damage
+			})], _toConsumableArray(state.slice(action.index + 1)));
+
+		case "REMOVE_ENTITY":
+			return [].concat(_toConsumableArray(state.slice(0, action.index)), _toConsumableArray(state.slice(action.index + 1)));
+
+		case "INCREASE_EXPERIENCE":
+			return [_extends({}, state[0], { _experience: state[0]._experience + action.experience
+			})].concat(_toConsumableArray(state.slice(1)));
+
+		case "INCREASE_LEVEL":
+			return [_extends({}, state[0], {
+				_attackValue: state[0]._attackValue + state[0]._level * 10,
+				_defenseValue: state[0]._defenseValue + state[0]._level * 5,
+				_hp: state[0]._hp + state[0]._level * 20,
+				_level: state[0]._level + 1
+			})].concat(_toConsumableArray(state.slice(1)));
+
+		case "UPDATE_WEAPON_OR_HEALTH":
+			return [_extends({}, state[0], {
+				_weapon: state[action.index]._weapon || state[0]._weapon,
+				_attackValue: state[0]._attackValue + state[action.index]._attackValue || state[0]._attackValue,
+				_hp: state[0]._hp + state[action.index]._hp || state[0]._hp
+			})].concat(_toConsumableArray(state.slice(1)));
+
+		default:
+			return state;
+	}
+};
+
+var lightsOn = function lightsOn() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+	var action = arguments[1];
+
+	switch (action.type) {
+		case "SWITCH_LIGHTS":
+			return !state;
+
+		default:
+			return state;
+	}
+};
+
+var gameEnd = function gameEnd() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+	var action = arguments[1];
+
+	switch (action.type) {
+		case "CREATE_WORLD":
+			return "";
+
+		case "GAME_OVER":
+			return action.gameEnd;
+
+		default:
+			return state;
+	}
+};
+
+var message = function message() {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	var action = arguments[1];
+
+	switch (action.type) {
+		case "UDPATE_MESSAGE":
+			return action.message;
+
+		default:
+			return state;
+	}
+};
+
+var AppReducer = (0, _redux.combineReducers)({
+	width: function width() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		return state;
+	},
+	height: function height() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		return state;
+	},
+	viewWidth: function viewWidth() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		return state;
+	},
+	viewHeight: function viewHeight() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		return state;
+	},
+	depth: function depth() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		return state;
+	},
+	world: world,
+	floor: floor,
+	entities: entities,
+	lightsOn: lightsOn,
+	gameEnd: gameEnd,
+	message: message
+});
+
+exports.default = AppReducer;
 
 /***/ }),
 /* 103 */
@@ -17094,7 +17213,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(18);
 
-var _index = __webpack_require__(33);
+var _index = __webpack_require__(34);
 
 var _index2 = __webpack_require__(114);
 
@@ -17173,7 +17292,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(18);
 
-var _index = __webpack_require__(33);
+var _index = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17269,7 +17388,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(18);
 
-var _index = __webpack_require__(33);
+var _index = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17432,13 +17551,13 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRedux = __webpack_require__(18);
 
-var _redux = __webpack_require__(60);
+var _redux = __webpack_require__(33);
 
 var _reduxThunk = __webpack_require__(104);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _world = __webpack_require__(59);
+var _world = __webpack_require__(60);
 
 var _world2 = _interopRequireDefault(_world);
 
@@ -17457,10 +17576,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var initialState = {
 	world: new _world2.default(50, 50, 4),
 	floor: 0,
-	entities: [{
-		coords: [0, 0]
-	}],
-	occupiedSquares: {},
+	entities: [],
 	lightsOn: false,
 	gameEnd: "",
 	message: [],
@@ -17494,21 +17610,9 @@ var playerTemplate = {
 	_defenseValue: 10,
 	_hp: 100,
 	_experience: 0,
-	_level: 0,
+	_level: 1,
 	_message: [],
-	_weapon: "Fists",
-
-	levelUp: function levelUp() {
-		var sumRange = function sumRange(min, max) {
-			return min !== max ? sumRange(min, max - 1) + max : 0;
-		};
-		if (this._experience >= sumRange(0, this._level + 1) * 100) {
-			this._level += 1;
-			this._attackValue += 10 * this._level;
-			this._defenseValue += 5 * this._level;
-			this._hp += 20 * this._level;
-		}
-	}
+	_weapon: "Fists"
 };
 
 var enemyTemplate = function enemyTemplate(num) {
@@ -17585,14 +17689,21 @@ exports.weaponTemplate = weaponTemplate;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.getBoard = exports.getScreenX = exports.getScreenY = undefined;
+exports.getBoard = exports.getScreenCoords = undefined;
 
 var _reselect = __webpack_require__(236);
 
 var _react = __webpack_require__(10);
 
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var getPlayer = function getPlayer(state) {
-	return state.entities[0];
+	return state.entities[0] || { coords: [0, 0] };
+};
+var getEntities = function getEntities(state) {
+	return state.entities;
 };
 var getHeight = function getHeight(state) {
 	return state.height;
@@ -17612,19 +17723,20 @@ var getWorld = function getWorld(state) {
 var getFloor = function getFloor(state) {
 	return state.floor;
 };
-var getOccupiedSquares = function getOccupiedSquares(state) {
-	return state.occupiedSquares;
-};
 var getLightsOn = function getLightsOn(state) {
 	return state.lightsOn;
 };
 
-var getScreenY = exports.getScreenY = (0, _reselect.createSelector)([getPlayer, getHeight], function (player, height) {
-	return Math.max(0, Math.min(player.coords[1] - 7, height - 15));
+var getScreenCoords = exports.getScreenCoords = (0, _reselect.createSelector)([getPlayer, getWidth, getHeight], function (player, width, height) {
+	return [Math.max(0, Math.min(player.coords[0] - 12, width - 25)), Math.max(0, Math.min(player.coords[1] - 7, height - 15))];
 });
 
-var getScreenX = exports.getScreenX = (0, _reselect.createSelector)([getPlayer, getWidth], function (player, width) {
-	return Math.max(0, Math.min(player.coords[0] - 12, width - 25));
+var getOccupiedSquares = (0, _reselect.createSelector)([getEntities], function (entities) {
+	var occupiedSquares = {};
+	entities.forEach(function (entity) {
+		occupiedSquares[entity.coords[0] + "x" + entity.coords[1]] = entity._type;
+	});
+	return occupiedSquares;
 });
 
 var getVisibleCellsFunction = (0, _reselect.createSelector)([getWorld, getFloor], function (world, floor) {
@@ -17653,21 +17765,24 @@ var getTileClassFunction = (0, _reselect.createSelector)([getWorld, getFloor, ge
 	};
 });
 
-var getBoard = exports.getBoard = (0, _reselect.createSelector)([getScreenX, getScreenY, getViewWidth, getViewHeight, getTileClassFunction], function (screenX, screenY, viewWidth, viewHeight, getTileClass) {
+var getBoard = exports.getBoard = (0, _reselect.createSelector)([getScreenCoords, getViewWidth, getViewHeight, getTileClassFunction], function (screenCoords, viewWidth, viewHeight, getTileClass) {
 	var rows = [];
-	for (var y = screenY; y < screenY + viewHeight; y++) {
+	for (var y = screenCoords[1]; y < screenCoords[1] + viewHeight; y++) {
 		var row = [];
-		for (var x = screenX; x < screenX + viewWidth; x++) {
+		for (var x = screenCoords[0]; x < screenCoords[0] + viewWidth; x++) {
 			var tileClass = getTileClass(x, y);
-			row.push((0, _react.createElement)("div", {
+			row.push(_react2.default.createElement("div", {
 				className: "tile " + tileClass,
 				key: x + "x" + y,
-				style: { left: 30 * (x - screenX) } }, " "));
+				style: { left: 30 * (x - screenCoords[0]) } }));
 		}
-		rows.push((0, _react.createElement)("div", {
-			className: "row",
-			key: y
-		}, row));
+		rows.push(_react2.default.createElement(
+			"div",
+			{
+				className: "row",
+				key: y },
+			row
+		));
 	}
 	return rows;
 });
@@ -18799,7 +18914,7 @@ exports.default = isObjectLike;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(37);
+  var invariant = __webpack_require__(38);
   var warning = __webpack_require__(68);
   var ReactPropTypesSecret = __webpack_require__(67);
   var loggedTypeFailures = {};
@@ -18866,8 +18981,8 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(36);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(37);
+var invariant = __webpack_require__(38);
 
 module.exports = function () {
   // Important!
@@ -18923,8 +19038,8 @@ module.exports = function () {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var emptyFunction = __webpack_require__(36);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(37);
+var invariant = __webpack_require__(38);
 var warning = __webpack_require__(68);
 
 var ReactPropTypesSecret = __webpack_require__(67);
@@ -20115,8 +20230,8 @@ var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 var SyntheticEvent = __webpack_require__(13);
 
-var getEventTarget = __webpack_require__(49);
-var isEventSupported = __webpack_require__(50);
+var getEventTarget = __webpack_require__(50);
+var isEventSupported = __webpack_require__(51);
 var isTextInputElement = __webpack_require__(87);
 
 var eventTypes = {
@@ -20944,8 +21059,8 @@ module.exports = HTMLDOMPropertyConfig;
 var ReactReconciler = __webpack_require__(20);
 
 var instantiateReactComponent = __webpack_require__(86);
-var KeyEscapeUtils = __webpack_require__(41);
-var shouldUpdateReactComponent = __webpack_require__(51);
+var KeyEscapeUtils = __webpack_require__(42);
+var shouldUpdateReactComponent = __webpack_require__(52);
 var traverseAllChildren = __webpack_require__(89);
 var warning = __webpack_require__(2);
 
@@ -21101,7 +21216,7 @@ module.exports = ReactChildReconciler;
 
 
 
-var DOMChildrenOperations = __webpack_require__(38);
+var DOMChildrenOperations = __webpack_require__(39);
 var ReactDOMIDOperations = __webpack_require__(160);
 
 /**
@@ -21142,9 +21257,9 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var React = __webpack_require__(21);
-var ReactComponentEnvironment = __webpack_require__(43);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactCurrentOwner = __webpack_require__(12);
-var ReactErrorUtils = __webpack_require__(44);
+var ReactErrorUtils = __webpack_require__(45);
 var ReactInstanceMap = __webpack_require__(25);
 var ReactInstrumentation = __webpack_require__(8);
 var ReactNodeTypes = __webpack_require__(79);
@@ -21156,8 +21271,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 var emptyObject = __webpack_require__(22);
 var invariant = __webpack_require__(1);
-var shallowEqual = __webpack_require__(34);
-var shouldUpdateReactComponent = __webpack_require__(51);
+var shallowEqual = __webpack_require__(35);
+var shouldUpdateReactComponent = __webpack_require__(52);
 var warning = __webpack_require__(2);
 
 var CompositeTypes = {
@@ -22173,7 +22288,7 @@ var _prodInvariant = __webpack_require__(3),
 var AutoFocusUtils = __webpack_require__(143);
 var CSSPropertyOperations = __webpack_require__(145);
 var DOMLazyTree = __webpack_require__(19);
-var DOMNamespaces = __webpack_require__(39);
+var DOMNamespaces = __webpack_require__(40);
 var DOMProperty = __webpack_require__(14);
 var DOMPropertyOperations = __webpack_require__(71);
 var EventPluginHub = __webpack_require__(23);
@@ -22192,9 +22307,9 @@ var ReactServerRenderingTransaction = __webpack_require__(185);
 var emptyFunction = __webpack_require__(9);
 var escapeTextContentForBrowser = __webpack_require__(31);
 var invariant = __webpack_require__(1);
-var isEventSupported = __webpack_require__(50);
-var shallowEqual = __webpack_require__(34);
-var validateDOMNesting = __webpack_require__(52);
+var isEventSupported = __webpack_require__(51);
+var shallowEqual = __webpack_require__(35);
+var validateDOMNesting = __webpack_require__(53);
 var warning = __webpack_require__(2);
 
 var Flags = ReactDOMComponentFlags;
@@ -23172,7 +23287,7 @@ module.exports = ReactDOMComponent;
 
 
 
-var validateDOMNesting = __webpack_require__(52);
+var validateDOMNesting = __webpack_require__(53);
 
 var DOC_NODE_TYPE = 9;
 
@@ -23300,7 +23415,7 @@ module.exports = ReactDOMFeatureFlags;
 
 
 
-var DOMChildrenOperations = __webpack_require__(38);
+var DOMChildrenOperations = __webpack_require__(39);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 /**
@@ -23343,7 +23458,7 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var DOMPropertyOperations = __webpack_require__(71);
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -24120,13 +24235,13 @@ module.exports = ReactDOMSelection;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
-var DOMChildrenOperations = __webpack_require__(38);
+var DOMChildrenOperations = __webpack_require__(39);
 var DOMLazyTree = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 var escapeTextContentForBrowser = __webpack_require__(31);
 var invariant = __webpack_require__(1);
-var validateDOMNesting = __webpack_require__(52);
+var validateDOMNesting = __webpack_require__(53);
 
 /**
  * Text nodes violate a couple assumptions that React makes about components:
@@ -24290,7 +24405,7 @@ module.exports = ReactDOMTextComponent;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
-var LinkedValueUtils = __webpack_require__(42);
+var LinkedValueUtils = __webpack_require__(43);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -25317,7 +25432,7 @@ var PooledClass = __webpack_require__(15);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
-var getEventTarget = __webpack_require__(49);
+var getEventTarget = __webpack_require__(50);
 var getUnboundedScrollPosition = __webpack_require__(121);
 
 /**
@@ -25510,8 +25625,8 @@ module.exports = ReactHostOperationHistoryHook;
 
 var DOMProperty = __webpack_require__(14);
 var EventPluginHub = __webpack_require__(23);
-var EventPluginUtils = __webpack_require__(40);
-var ReactComponentEnvironment = __webpack_require__(43);
+var EventPluginUtils = __webpack_require__(41);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactEmptyComponent = __webpack_require__(74);
 var ReactBrowserEventEmitter = __webpack_require__(28);
 var ReactHostComponent = __webpack_require__(76);
@@ -25647,7 +25762,7 @@ module.exports = ReactMarkupChecksum;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactComponentEnvironment = __webpack_require__(43);
+var ReactComponentEnvironment = __webpack_require__(44);
 var ReactInstanceMap = __webpack_require__(25);
 var ReactInstrumentation = __webpack_require__(8);
 
@@ -26240,7 +26355,7 @@ var ReactBrowserEventEmitter = __webpack_require__(28);
 var ReactInputSelection = __webpack_require__(77);
 var ReactInstrumentation = __webpack_require__(8);
 var Transaction = __webpack_require__(30);
-var ReactUpdateQueue = __webpack_require__(45);
+var ReactUpdateQueue = __webpack_require__(46);
 
 /**
  * Ensures that, when possible, the selection range (currently selected text
@@ -26615,7 +26730,7 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
-var ReactUpdateQueue = __webpack_require__(45);
+var ReactUpdateQueue = __webpack_require__(46);
 
 var warning = __webpack_require__(2);
 
@@ -27086,7 +27201,7 @@ var SyntheticEvent = __webpack_require__(13);
 
 var getActiveElement = __webpack_require__(64);
 var isTextInputElement = __webpack_require__(87);
-var shallowEqual = __webpack_require__(34);
+var shallowEqual = __webpack_require__(35);
 
 var skipSelectionChangeEvent = ExecutionEnvironment.canUseDOM && 'documentMode' in document && document.documentMode <= 11;
 
@@ -27293,7 +27408,7 @@ var SyntheticUIEvent = __webpack_require__(26);
 var SyntheticWheelEvent = __webpack_require__(200);
 
 var emptyFunction = __webpack_require__(9);
-var getEventCharCode = __webpack_require__(47);
+var getEventCharCode = __webpack_require__(48);
 var invariant = __webpack_require__(1);
 
 /**
@@ -27762,9 +27877,9 @@ module.exports = SyntheticInputEvent;
 
 var SyntheticUIEvent = __webpack_require__(26);
 
-var getEventCharCode = __webpack_require__(47);
+var getEventCharCode = __webpack_require__(48);
 var getEventKey = __webpack_require__(206);
-var getEventModifierState = __webpack_require__(48);
+var getEventModifierState = __webpack_require__(49);
 
 /**
  * @interface KeyboardEvent
@@ -27851,7 +27966,7 @@ module.exports = SyntheticKeyboardEvent;
 
 var SyntheticUIEvent = __webpack_require__(26);
 
-var getEventModifierState = __webpack_require__(48);
+var getEventModifierState = __webpack_require__(49);
 
 /**
  * @interface TouchEvent
@@ -28300,7 +28415,7 @@ module.exports = findDOMNode;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var KeyEscapeUtils = __webpack_require__(41);
+var KeyEscapeUtils = __webpack_require__(42);
 var traverseAllChildren = __webpack_require__(89);
 var warning = __webpack_require__(2);
 
@@ -28381,7 +28496,7 @@ module.exports = flattenChildren;
 
 
 
-var getEventCharCode = __webpack_require__(47);
+var getEventCharCode = __webpack_require__(48);
 
 /**
  * Normalization of deprecated HTML5 `key` values
@@ -28799,7 +28914,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _PropTypes = __webpack_require__(92);
 
-var _warning = __webpack_require__(53);
+var _warning = __webpack_require__(54);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -29042,7 +29157,7 @@ exports.whenMapDispatchToPropsIsFunction = whenMapDispatchToPropsIsFunction;
 exports.whenMapDispatchToPropsIsMissing = whenMapDispatchToPropsIsMissing;
 exports.whenMapDispatchToPropsIsObject = whenMapDispatchToPropsIsObject;
 
-var _redux = __webpack_require__(60);
+var _redux = __webpack_require__(33);
 
 var _wrapMapToProps = __webpack_require__(91);
 
@@ -29291,7 +29406,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = verifySubselectors;
 
-var _warning = __webpack_require__(53);
+var _warning = __webpack_require__(54);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -29855,10 +29970,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _prodInvariant = __webpack_require__(17),
     _assign = __webpack_require__(4);
 
-var ReactComponent = __webpack_require__(54);
+var ReactComponent = __webpack_require__(55);
 var ReactElement = __webpack_require__(16);
-var ReactPropTypeLocationNames = __webpack_require__(56);
-var ReactNoopUpdateQueue = __webpack_require__(55);
+var ReactPropTypeLocationNames = __webpack_require__(57);
+var ReactNoopUpdateQueue = __webpack_require__(56);
 
 var emptyObject = __webpack_require__(22);
 var invariant = __webpack_require__(1);
@@ -30753,11 +30868,11 @@ module.exports = ReactDOMFactories;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var ReactElement = __webpack_require__(16);
-var ReactPropTypeLocationNames = __webpack_require__(56);
+var ReactPropTypeLocationNames = __webpack_require__(57);
 var ReactPropTypesSecret = __webpack_require__(96);
 
 var emptyFunction = __webpack_require__(9);
-var getIteratorFn = __webpack_require__(58);
+var getIteratorFn = __webpack_require__(59);
 var warning = __webpack_require__(2);
 
 /**
@@ -31194,8 +31309,8 @@ module.exports = ReactPropTypes;
 
 var _assign = __webpack_require__(4);
 
-var ReactComponent = __webpack_require__(54);
-var ReactNoopUpdateQueue = __webpack_require__(55);
+var ReactComponent = __webpack_require__(55);
+var ReactNoopUpdateQueue = __webpack_require__(56);
 
 var emptyObject = __webpack_require__(22);
 
@@ -31262,7 +31377,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _prodInvariant = __webpack_require__(17);
 
-var ReactPropTypeLocationNames = __webpack_require__(56);
+var ReactPropTypeLocationNames = __webpack_require__(57);
 var ReactPropTypesSecret = __webpack_require__(96);
 
 var invariant = __webpack_require__(1);
@@ -31404,7 +31519,7 @@ var _prodInvariant = __webpack_require__(17);
 var ReactCurrentOwner = __webpack_require__(12);
 var REACT_ELEMENT_TYPE = __webpack_require__(94);
 
-var getIteratorFn = __webpack_require__(58);
+var getIteratorFn = __webpack_require__(59);
 var invariant = __webpack_require__(1);
 var KeyEscapeUtils = __webpack_require__(222);
 var warning = __webpack_require__(2);
@@ -31704,7 +31819,7 @@ exports.default = combineReducers;
 
 var _createStore = __webpack_require__(98);
 
-var _isPlainObject = __webpack_require__(35);
+var _isPlainObject = __webpack_require__(36);
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
