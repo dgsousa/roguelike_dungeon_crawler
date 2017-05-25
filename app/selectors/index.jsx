@@ -1,15 +1,15 @@
 import { createSelector } from "reselect";
-import { createElement } from "react";
+import React from "react";
 
 
 const getPlayer = (state) => state.entities[0] || ({coords: [0, 0]});
+const getEntities = (state) => state.entities;
 const getHeight = (state) => state.height;
 const getWidth = (state) => state.width;
 const getViewHeight = (state) => state.viewHeight;
 const getViewWidth = (state) => state.viewWidth;
 const getWorld = (state) => state.world;
 const getFloor = (state) => state.floor;
-const getOccupiedSquares = (state) => state.occupiedSquares;
 const getLightsOn = (state) => state.lightsOn;
 
 
@@ -21,6 +21,18 @@ export const getScreenCoords = createSelector(
 			Math.max(0, Math.min((player.coords[1]) - 7, height - 15))
 		];
 	}
+);
+
+const getOccupiedSquares = createSelector(
+	[getEntities],
+	entities => {
+		const occupiedSquares = {};
+		entities.forEach((entity) => {
+			occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
+		});
+		return occupiedSquares;
+	}
+		
 );
 
 
@@ -65,15 +77,21 @@ export const getBoard = createSelector(
 			let row = [];
 			for(let x = screenCoords[0]; x < screenCoords[0] + viewWidth; x++) {
 				const tileClass = getTileClass(x, y);
-				row.push(createElement("div", {	
-					className: `tile ${tileClass}`, 
-					key: x+"x"+y, 
-					style: {left: 30 * (x - screenCoords[0])}}, " "));
+				row.push(
+					<div	
+						className={`tile ${tileClass}`} 
+						key={x+"x"+y} 
+						style={{left: 30 * (x - screenCoords[0])}}>
+					</div>
+				);
 			}
-			rows.push(createElement("div", {
-				className: "row", 
-				key: y
-			}, row));
+			rows.push(
+				<div
+					className={"row"} 
+					key={y}>
+					{row}
+				</div>
+			);
 		}
 		return rows;
 	}

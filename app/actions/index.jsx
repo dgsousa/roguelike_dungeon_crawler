@@ -219,10 +219,14 @@ const isStaircase = ([x, y], state) => {
 	return world._regions[floor][x][y] == 5;
 };
 
-const isEmptySquare = ([x, y], state) => {
+const isWall = ([x, y], state) => {
 	const { world, floor } = state;
+	return world._regions[floor][x][y] == 0;
+};
+
+const isEmptySquare = ([x, y], state) => {
 	return 	inBounds([x, y], state) && 
-			world._regions[floor][x][y] && 
+			!isWall([x, y], state) && 
 			!isStaircase([x, y], state) &&
 			!entityAt([x, y], state);
 };

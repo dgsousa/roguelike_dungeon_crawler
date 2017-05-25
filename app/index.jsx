@@ -4,7 +4,7 @@ import {Provider} from "react-redux";
 import {createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import World from "./scripts/world.js";
-import Reducer from "./reducers/index.jsx";
+import AppReducer from "./reducers/index.jsx";
 import App from "./components/app.jsx";
 import "./scss/application.scss";
 
@@ -12,7 +12,6 @@ const initialState = {
 	world: new World(50, 50, 4),
 	floor: 0,
 	entities: [],
-	occupiedSquares: {},
 	lightsOn: false,
 	gameEnd: "",
 	message: [],
@@ -23,7 +22,7 @@ const initialState = {
 	depth: 4
 };
 
-const store = createStore(Reducer, initialState, applyMiddleware(thunk));
+const store = createStore(AppReducer, initialState, applyMiddleware(thunk));
 
 
 ReactDOM.render(
