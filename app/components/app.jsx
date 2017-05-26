@@ -7,19 +7,16 @@ import Lights from "./lights.jsx";
 
 
 
-const App = () => {		
-
-	return (
-		<div>
-			<Message />
-			<Board>
-				<Restart />			
-				<Stats />
-				<Lights />
-			</Board>
-		</div>	
-	);
-};
+const App = () => (
+	<div>
+		<Message />
+		<Board>
+			<Restart />			
+			<Stats />
+			<Lights />
+		</Board>
+	</div>
+);		
 
 export default App;
 
