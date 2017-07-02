@@ -16972,7 +16972,6 @@ var _lights2 = _interopRequireDefault(_lights);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
-
 	return _react2.default.createElement(
 		"div",
 		null,
@@ -17299,8 +17298,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Lights = function Lights(_ref) {
 	var lightsOn = _ref.lightsOn,
 	    switchLights = _ref.switchLights;
-
-
 	return _react2.default.createElement(
 		"button",
 		{
@@ -17342,8 +17339,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Message = function Message(_ref) {
 	var message = _ref.message;
-
-
 	return _react2.default.createElement(
 		"div",
 		{
@@ -17395,8 +17390,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Restart = function Restart(_ref) {
 	var gameEnd = _ref.gameEnd,
 	    restart = _ref.restart;
-
-
 	return _react2.default.createElement(
 		"div",
 		{
