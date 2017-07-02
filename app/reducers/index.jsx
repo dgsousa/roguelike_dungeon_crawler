@@ -130,21 +130,20 @@ const gameEnd = (state = "", action) => {
 
 const message = (state=[], action) => {
 	switch(action.type) {
-	case "UDPATE_MESSAGE": 
+	case "UPDATE_MESSAGE":
 		return action.message;
 	
-
 	default:
 		return state;
 	}
 };
 
 const AppReducer = combineReducers({
-	width: (state = {}) => state,
-	height: (state = {}) => state,
-	viewWidth: (state = {}) => state,
-	viewHeight: (state = {}) => state,
-	depth: (state = {}) => state,
+	width: (state = 50) => state,
+	height: (state = 50) => state,
+	viewWidth: (state = 25) => state,
+	viewHeight: (state = 15) => state,
+	depth: (state = 4) => state,
 	world,
 	floor,
 	entities,
