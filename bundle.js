@@ -4794,9 +4794,9 @@ var setupFloor = function setupFloor() {
 };
 
 var scroll = function scroll(e) {
+	e.preventDefault();
+	var coords = e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP ? [0, -1] : e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ? [0, 1] : e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ? [-1, 0] : e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT ? [1, 0] : e.keyCode === ROT.VK_Q ? [-1, -1] : e.keyCode === ROT.VK_E ? [1, -1] : e.keyCode === ROT.VK_Z ? [-1, 1] : e.keyCode === ROT.VK_X ? [1, 1] : false;
 	return function (dispatch) {
-		e.preventDefault();
-		var coords = e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP ? [0, -1] : e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ? [0, 1] : e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ? [-1, 0] : e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT ? [1, 0] : e.keyCode === ROT.VK_Q ? [-1, -1] : e.keyCode === ROT.VK_E ? [1, -1] : e.keyCode === ROT.VK_Z ? [-1, 1] : e.keyCode === ROT.VK_X ? [1, 1] : false;
 		if (coords) dispatch(scrollScreen(coords));
 	};
 };
@@ -17113,7 +17113,7 @@ var message = function message() {
 	var action = arguments[1];
 
 	switch (action.type) {
-		case "UDPATE_MESSAGE":
+		case "UPDATE_MESSAGE":
 			return action.message;
 
 		default:
@@ -17123,23 +17123,23 @@ var message = function message() {
 
 var AppReducer = (0, _redux.combineReducers)({
 	width: function width() {
-		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 50;
 		return state;
 	},
 	height: function height() {
-		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 50;
 		return state;
 	},
 	viewWidth: function viewWidth() {
-		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 25;
 		return state;
 	},
 	viewHeight: function viewHeight() {
-		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
 		return state;
 	},
 	depth: function depth() {
-		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 4;
 		return state;
 	},
 	world: world,
