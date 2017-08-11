@@ -4666,7 +4666,7 @@ exports.compose = _compose2.default;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.restart = exports.switchLights = exports.scroll = exports.setupFloor = exports.createWorld = undefined;
+exports.restart = exports.switchLights = exports.scrollScreen = exports.setupFloor = exports.createWorld = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -4793,18 +4793,13 @@ var setupFloor = function setupFloor() {
 	};
 };
 
-var scroll = function scroll(e) {
+var scrollScreen = function scrollScreen(e) {
 	e.preventDefault();
-	var coords = e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP ? [0, -1] : e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ? [0, 1] : e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ? [-1, 0] : e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT ? [1, 0] : e.keyCode === ROT.VK_Q ? [-1, -1] : e.keyCode === ROT.VK_E ? [1, -1] : e.keyCode === ROT.VK_Z ? [-1, 1] : e.keyCode === ROT.VK_X ? [1, 1] : false;
-	return function (dispatch) {
-		if (coords) dispatch(scrollScreen(coords));
-	};
-};
 
-var scrollScreen = function scrollScreen(_ref) {
-	var _ref2 = _slicedToArray(_ref, 2),
-	    x = _ref2[0],
-	    y = _ref2[1];
+	var _getDirection = getDirection(e),
+	    _getDirection2 = _slicedToArray(_getDirection, 2),
+	    x = _getDirection2[0],
+	    y = _getDirection2[1];
 
 	return function (dispatch, getState) {
 		var _getState2 = getState(),
@@ -4939,10 +4934,10 @@ var generateEntities = function generateEntities() {
 };
 
 //Helper Functions
-var isStaircase = function isStaircase(_ref3, state) {
-	var _ref4 = _slicedToArray(_ref3, 2),
-	    x = _ref4[0],
-	    y = _ref4[1];
+var isStaircase = function isStaircase(_ref, state) {
+	var _ref2 = _slicedToArray(_ref, 2),
+	    x = _ref2[0],
+	    y = _ref2[1];
 
 	var world = state.world,
 	    floor = state.floor;
@@ -4950,10 +4945,10 @@ var isStaircase = function isStaircase(_ref3, state) {
 	return world._regions[floor][x][y] == 5;
 };
 
-var isWall = function isWall(_ref5, state) {
-	var _ref6 = _slicedToArray(_ref5, 2),
-	    x = _ref6[0],
-	    y = _ref6[1];
+var isWall = function isWall(_ref3, state) {
+	var _ref4 = _slicedToArray(_ref3, 2),
+	    x = _ref4[0],
+	    y = _ref4[1];
 
 	var world = state.world,
 	    floor = state.floor;
@@ -4961,18 +4956,18 @@ var isWall = function isWall(_ref5, state) {
 	return world._regions[floor][x][y] == 0;
 };
 
-var isEmptySquare = function isEmptySquare(_ref7, state) {
-	var _ref8 = _slicedToArray(_ref7, 2),
-	    x = _ref8[0],
-	    y = _ref8[1];
+var isEmptySquare = function isEmptySquare(_ref5, state) {
+	var _ref6 = _slicedToArray(_ref5, 2),
+	    x = _ref6[0],
+	    y = _ref6[1];
 
 	return inBounds([x, y], state) && !isWall([x, y], state) && !isStaircase([x, y], state) && !entityAt([x, y], state);
 };
 
-var inBounds = function inBounds(_ref9, state) {
-	var _ref10 = _slicedToArray(_ref9, 2),
-	    x = _ref10[0],
-	    y = _ref10[1];
+var inBounds = function inBounds(_ref7, state) {
+	var _ref8 = _slicedToArray(_ref7, 2),
+	    x = _ref8[0],
+	    y = _ref8[1];
 
 	var width = state.width,
 	    height = state.height;
@@ -4993,10 +4988,10 @@ var emptyCoords = function emptyCoords(entities, state) {
 	return [x, y];
 };
 
-var entityAt = function entityAt(_ref11, state) {
-	var _ref12 = _slicedToArray(_ref11, 2),
-	    x = _ref12[0],
-	    y = _ref12[1];
+var entityAt = function entityAt(_ref9, state) {
+	var _ref10 = _slicedToArray(_ref9, 2),
+	    x = _ref10[0],
+	    y = _ref10[1];
 
 	var entities = state.entities;
 
@@ -5030,9 +5025,13 @@ var checkGameStatus = function checkGameStatus(state) {
 	return player._hp <= 0 ? "You Lose!" : player._experience > 1000 ? "You Win!" : "";
 };
 
+var getDirection = function getDirection(e) {
+	return e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP ? [0, -1] : e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ? [0, 1] : e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ? [-1, 0] : e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT ? [1, 0] : e.keyCode === ROT.VK_Q ? [-1, -1] : e.keyCode === ROT.VK_E ? [1, -1] : e.keyCode === ROT.VK_Z ? [-1, 1] : e.keyCode === ROT.VK_X ? [1, 1] : [0, 0];
+};
+
 exports.createWorld = createWorld;
 exports.setupFloor = setupFloor;
-exports.scroll = scroll;
+exports.scrollScreen = scrollScreen;
 exports.switchLights = switchLights;
 exports.restart = restart;
 
@@ -17242,7 +17241,7 @@ var Board = function (_Component) {
 		key: "render",
 		value: function render() {
 			var _props = this.props,
-			    scroll = _props.scroll,
+			    scrollScreen = _props.scrollScreen,
 			    board = _props.board,
 			    children = _props.children;
 
@@ -17251,7 +17250,7 @@ var Board = function (_Component) {
 				{
 					className: "board",
 					tabIndex: "0",
-					onKeyDown: scroll },
+					onKeyDown: scrollScreen },
 				children,
 				board
 			);
@@ -17268,7 +17267,7 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {
-	scroll: _index.scroll,
+	scrollScreen: _index.scrollScreen,
 	setupFloor: _index.setupFloor
 })(Board);
 
