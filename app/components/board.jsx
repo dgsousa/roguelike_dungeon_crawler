@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import { scroll, setupFloor } from "../actions/index.jsx";
+import { scrollScreen, setupFloor } from "../actions/index.jsx";
 import { getBoard } from "../selectors/index.jsx";
 
 
@@ -11,12 +11,12 @@ class Board extends Component {
 	}
 
 	render() {
-		const { scroll, board, children } = this.props;
+		const { scrollScreen, board, children } = this.props;
 		return (
 			<div
 				className="board"
 				tabIndex={"0"}
-				onKeyDown={scroll}>
+				onKeyDown={scrollScreen}>
 				{children}
 				{board}
 			</div>
@@ -32,7 +32,7 @@ const mapStateToProps = (state) => ({
 
 export default connect(
 	mapStateToProps, {	
-		scroll: scroll,
+		scrollScreen: scrollScreen,
 		setupFloor: setupFloor
 	}
 )(Board);

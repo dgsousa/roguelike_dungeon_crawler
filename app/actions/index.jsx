@@ -81,23 +81,9 @@ const setupFloor = () => {
 	};
 };
 
-const scroll = (e) => {
+const scrollScreen = (e) => {
 	e.preventDefault();
-	const coords = 	e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP	?	[0, -1]	:
-					e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ?	[0, 1]	:
-					e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ?	[-1, 0]	:
-					e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT?	[1, 0]	:
-					e.keyCode === ROT.VK_Q ?	[-1, -1]:
-					e.keyCode === ROT.VK_E ?	[1, -1] :
-					e.keyCode === ROT.VK_Z ?	[-1, 1] :
-					e.keyCode === ROT.VK_X ?	[1, 1]	: false;
-	return function(dispatch) {
-		if(coords) dispatch(scrollScreen(coords));
-	};
-};
-
-
-const scrollScreen = ([x, y]) => {
+	const [x, y] = getDirection(e);
 	return function(dispatch, getState) {
 		const {width, height, entities: [player]} = getState();
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
@@ -287,8 +273,20 @@ const checkGameStatus = (state) => {
 };
 
 
+const getDirection = (e) => {
+	return 	e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP	?	[0, -1]	:
+			e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ?	[0, 1]	:
+			e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ?	[-1, 0]	:
+			e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT?	[1, 0]	:
+			e.keyCode === ROT.VK_Q ?	[-1, -1]:
+			e.keyCode === ROT.VK_E ?	[1, -1] :
+			e.keyCode === ROT.VK_Z ?	[-1, 1] :
+			e.keyCode === ROT.VK_X ?	[1, 1]	: [0, 0];
+};
 
-export { createWorld, setupFloor, scroll, switchLights, restart };
+
+
+export { createWorld, setupFloor, scrollScreen, switchLights, restart };
 
 
 
