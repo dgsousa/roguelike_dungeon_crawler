@@ -27,9 +27,7 @@ const getOccupiedSquares = createSelector(
 	[getEntities],
 	entities => {
 		const occupiedSquares = {};
-		entities.forEach((entity) => {
-			occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type;
-		});
+		entities.forEach((entity) => occupiedSquares[`${entity.coords[0]}x${entity.coords[1]}`] = entity._type);
 		return occupiedSquares;
 	}
 		
@@ -38,14 +36,12 @@ const getOccupiedSquares = createSelector(
 
 const getVisibleCellsFunction = createSelector(
 	[getWorld, getFloor],
-	(world, floor) => {
-		return function(playerCoords) {
-			const visibleCells = {};
-			world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y) => {
-				visibleCells[`${x},${y},${floor}`] = true;
-			});
-			return visibleCells;
-		};
+	(world, floor) => (playerCoords) => {
+		const visibleCells = {};
+		world.fov[floor].compute(playerCoords[0], playerCoords[1], 4, (x, y) => {
+			visibleCells[`${x},${y},${floor}`] = true;
+		});
+		return visibleCells;
 	}
 );
 

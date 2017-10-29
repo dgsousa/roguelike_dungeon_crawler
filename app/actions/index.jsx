@@ -5,196 +5,141 @@ import * as ROT from "../../bower_components/rot.js/rot.js";
 
 
 //ActionCreators
-const createWorld = (world) => ({
-	type: "CREATE_WORLD",
-	world
-});
+const createWorld = (world) => ({ type: "CREATE_WORLD", world });
 
-const switchLights = () => ({
-	type: "SWITCH_LIGHTS"
-});
+const switchLights = () => ({ type: "SWITCH_LIGHTS" });
 
-const goUpstairs = (coords) => ({
-	type: "GO_UPSTAIRS",
-	coords
-});
+const goUpstairs = (coords) => ({ type: "GO_UPSTAIRS", coords });
 
-const gameOver = (gameEnd) => ({
-	type: "GAME_OVER",
-	gameEnd
-});
+const gameOver = (gameEnd) => ({ type: "GAME_OVER", gameEnd });
 
-const createEntity = (entity) => ({
-	type: "CREATE_ENTITY",
-	entity
-});
+const createEntity = (entity) => ({ type: "CREATE_ENTITY", entity });
 
-const moveEntity = (coords, index) => ({
-	type: "MOVE_ENTITY",
-	coords,
-	index
-});
+const moveEntity = (coords, index) => ({ type: "MOVE_ENTITY", coords, index });
 
-const updateMessage = (message) => ({
-	type: "UPDATE_MESSAGE",
-	message
-});
+const updateMessage = (message) => ({ type: "UPDATE_MESSAGE", message });
 
-const damageEntity = (index, damage) => ({
-	type: "DAMAGE_ENTITY",
-	index,
-	damage
-});
+const damageEntity = (index, damage) => ({ type: "DAMAGE_ENTITY", index, damage });
 
-const removeEntity = (index) => ({
-	type: "REMOVE_ENTITY",
-	index
-});
+const removeEntity = (index) => ({ type: "REMOVE_ENTITY", index });
 
-const increaseExperience = (experience) => ({
-	type: "INCREASE_EXPERIENCE",
-	experience
-});
+const increaseExperience = (experience) => ({ type: "INCREASE_EXPERIENCE", experience });
 
-const increaseLevel = () => ({
-	type: "INCREASE_LEVEL"
-});
+const increaseLevel = () => ({ type: "INCREASE_LEVEL"});
 
-const updateWeaponOrHealth = (index) => ({
-	type: "UPDATE_WEAPON_OR_HEALTH",
-	index
-});
+const updateWeaponOrHealth = (index) => ({ type: "UPDATE_WEAPON_OR_HEALTH", index });
 
-const restart = () => {
-	return function(dispatch, getState) {
-		const { width, height, depth } = getState();
-		const world = new World(width, height, depth);
-		dispatch(createWorld(world));
-		dispatch(setupFloor());
-	};
+const restart = () => (dispatch, getState) => {
+	const { width, height, depth } = getState();
+	const world = new World(width, height, depth);
+	dispatch(createWorld(world));
+	dispatch(setupFloor());
 };
 
-const setupFloor = () => {
-	return function(dispatch) {
-		dispatch(generateEntities());
-		dispatch(updateMessage(["Welcome to the Dungeon!"]));
-	};
+const setupFloor = () => (dispatch) => {
+	dispatch(generateEntities());
+	dispatch(updateMessage(["Welcome to the Dungeon!"]));
 };
 
 const scrollScreen = (e) => {
 	e.preventDefault();
 	const [x, y] = getDirection(e);
+
 	return function(dispatch, getState) {
-		const {width, height, entities: [player]} = getState();
+		const {width, height, entities, floor} = getState();
+		const player = entities[0];
 		const playerX = Math.max(0, Math.min(width - 1, player.coords[0] + x));
 		const playerY = Math.max(0, Math.min(height - 1, player.coords[1] + y));
 		const playerCoords = [playerX, playerY];
+		const entityIndex = entityAt(playerCoords, getState());
 		
-		dispatch(move(playerCoords)) 				||
-		dispatch(nextFloor(playerCoords))			||
-		dispatch(encounterEnemy(playerCoords))		||
-		dispatch(encounterItem(playerCoords));
-		dispatch(gameOver(checkGameStatus(getState())));
+		if(entityIndex && isEnemy(entities, entityIndex)) {
+			console.log("isEnemy")
+			dispatch(encounterEnemy(playerCoords));
+		
+		} else if(entityIndex && isItem(entities, entityIndex, floor)) {
+			console.log("isItem")
+			dispatch(encounterItem(playerCoords));
+		
+		} else if(isStaircase(playerCoords, getState())) {
+			console.log("isStaircase")
+			dispatch(nextFloor(playerCoords));
+		
+		} else if(isEmptySquare(playerCoords, getState()) && !entityIndex) {
+			console.log("isEmpty")
+			dispatch(move(playerCoords));
+		
+		} else { dispatch(gameOver(checkGameStatus(getState()))); }
 	};
 };
 
 
 
-const move = (playerCoords) => {
-	return function(dispatch, getState) {
-		if(isEmptySquare(playerCoords, getState())) {
-			const { entities } = getState();
-			entities.forEach((entity, index) => {
-				if(entity._type === playerTemplate._type) {
-					dispatch(moveEntity(playerCoords, index));
-				} else if(entity._type === enemyTemplate()._type) {
-					const newCoords = getNewCoords(entity.coords, getState());
-					dispatch(moveEntity(newCoords, index));
-				}
-			});
-			dispatch(updateMessage([""]));
-			return true;
+const move = (playerCoords) => (dispatch, getState) => {
+	const { entities } = getState();
+	entities.forEach((entity, index) => {
+		if(entity._type === playerTemplate._type) {
+			dispatch(moveEntity(playerCoords, index));
+		} else if(entity._type === enemyTemplate()._type) {
+			const newCoords = getNewCoords(entity.coords, getState());
+			dispatch(moveEntity(newCoords, index));
 		}
-		return false;
-	};
+	});
+	dispatch(updateMessage([""]));
+};
+		
+
+const nextFloor = (playerCoords) => (dispatch, getState) => {
+	const { floor } = getState();
+	dispatch(goUpstairs(playerCoords));
+	dispatch(generateEntities());
+	dispatch(updateMessage([`You have entered floor ${floor + 1}`]));
 };
 
-const nextFloor = (playerCoords) => {
-	return function(dispatch, getState) {
-		if(isStaircase(playerCoords, getState())) {
-			const { floor } = getState();
-			dispatch(goUpstairs(playerCoords));
-			dispatch(generateEntities());
-			dispatch(updateMessage([`You have entered floor ${floor + 1}`]));
-			return true;
+
+
+const encounterEnemy = (entityIndex) => (dispatch, getState) => {
+	const { entities } = getState();
+	const player = entities[0];
+	const damageToEntity = getDamage(player, entities[entityIndex]);
+	const damageToPlayer = getDamage(entities[entityIndex], player);
+	const experience = entities[entityIndex]._experience;
+	
+	if(damageToEntity < entities[entityIndex]._hp) {
+		dispatch(damageEntity(entityIndex, damageToEntity));
+		dispatch(damageEntity(0, damageToPlayer));
+		dispatch(updateMessage([`You attacked the ${entities[entityIndex]._type} for ${damageToEntity} damage`,`You were attacked by the ${entities[entityIndex]._type} for ${damageToPlayer} damage`]));
+	} else if(damageToEntity >= entities[entityIndex]._hp) {
+		dispatch(removeEntity(entityIndex));
+		dispatch(increaseExperience(experience));
+		dispatch(levelUp());
+		dispatch(updateMessage([`You defeated the ${entities[entityIndex]._type}`]));
+	}	
+	
+};
+
+const encounterItem = (entityIndex) => (dispatch, getState) => {
+	const { entities } = getState();
+	dispatch(updateWeaponOrHealth(entityIndex));
+	dispatch(removeEntity(entityIndex));
+	dispatch(updateMessage([`You picked up a ${entities[entityIndex]._type}!`]));
+};
+
+const levelUp = () => (dispatch, getState) => {
+	const {entities: [player]} = getState();
+	const sumRange = (min, max) => min !== max ? sumRange(min, max - 1) + max : 0;
+	if(player._experience >= (sumRange(0, player._level)) * 100) dispatch(increaseLevel());
+};
+
+const generateEntities = () => (dispatch, getState) => {
+	const {floor, entities} = getState();
+	if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
+	if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
+	templateMenu.forEach((template) => {
+		for(let i = 0; i < template[1]; i++) {
+			dispatch(createEntity({...template[0](floor), coords: emptyCoords(entities, getState())}));
 		}
-		return false;
-	};	
-};
-
-const encounterEnemy = (playerCoords) => {
-	return function(dispatch, getState) {
-		const entityIndex = entityAt(playerCoords, getState());
-		const { floor, entities } = getState();
-		if(typeof entityIndex == "number") {
-			if(entities[entityIndex]._type == enemyTemplate(floor)._type || entities[entityIndex]._type == bossTemplate._type) {
-				const player = entities[0];
-				const damageToEntity = getDamage(player, entities[entityIndex]);
-				const damageToPlayer = getDamage(entities[entityIndex], player);
-				const experience = entities[entityIndex]._experience;
-				if(damageToEntity < entities[entityIndex]._hp) {
-					dispatch(damageEntity(entityIndex, damageToEntity));
-					dispatch(damageEntity(0, damageToPlayer));
-					dispatch(updateMessage([`You attacked the ${entities[entityIndex]._type} for ${damageToEntity} damage`,`You were attacked by the ${entities[entityIndex]._type} for ${damageToPlayer} damage`]));
-				} else if(damageToEntity >= entities[entityIndex]._hp) {
-					dispatch(removeEntity(entityIndex));
-					dispatch(increaseExperience(experience));
-					dispatch(levelUp());
-					dispatch(updateMessage([`You defeated the ${entities[entityIndex]._type}`]));
-				}
-				return true;
-			}
-			return false;
-		}
-	};
-};
-
-
-const encounterItem = (playerCoords) => {
-	return function(dispatch, getState) {
-		const entityIndex = entityAt(playerCoords, getState());
-		const { floor, entities } = getState();
-		if(typeof entityIndex == "number") {
-			if(entities[entityIndex]._type == weaponTemplate(floor)._type || entities[entityIndex]._type == foodTemplate(floor)._type) {
-				dispatch(updateWeaponOrHealth(entityIndex));
-				dispatch(removeEntity(entityIndex));
-				dispatch(updateMessage([`You picked up a ${entities[entityIndex]._type}!`]));
-				return true;
-			}
-			return false; 
-		}
-	};
-};
-
-const levelUp = () => {
-	return function(dispatch, getState) {
-		const {entities: [player]} = getState();
-		const sumRange = (min, max) => min !== max ? sumRange(min, max - 1) + max : 0;
-		if(player._experience >= (sumRange(0, player._level)) * 100) dispatch(increaseLevel());
-	};
-};
-
-const generateEntities = () => {
-	return function(dispatch, getState) {
-		const {floor, entities} = getState();
-		if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
-		templateMenu.forEach((template) => {
-			for(let i = 0; i < template[1]; i++) {
-				dispatch(createEntity({...template[0](floor), coords: emptyCoords(entities, getState())}));
-			}
-		});
-		if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
-	};
+	});
 };
 
 
@@ -211,10 +156,7 @@ const isWall = ([x, y], state) => {
 };
 
 const isEmptySquare = ([x, y], state) => {
-	return 	inBounds([x, y], state) && 
-			!isWall([x, y], state) && 
-			!isStaircase([x, y], state) &&
-			!entityAt([x, y], state);
+	return 	inBounds([x, y], state) && !isWall([x, y], state) && !isStaircase([x, y], state);
 };
 
 const inBounds = ([x, y], state) => {
@@ -228,7 +170,7 @@ const emptyCoords = (entities, state) => {
 	do {
 		x = Math.floor(Math.random() * width);
 		y = Math.floor(Math.random() * height);
-	} while (!isEmptySquare([x, y], state));
+	} while (!isEmptySquare([x, y], state) && entityAt([x, y], state) === null);
 	return [x, y];
 };
 
@@ -237,14 +179,17 @@ const entityAt = ([x, y], state) => {
 	const { entities } = state;
 	if(entities) {
 		for(let i = 0; i < entities.length; i++) {
-			if(entities[i].coords[0] === x && entities[i].coords[1] === y) {
-				return i || true;
-			}
+			if(entities[i].coords[0] === x && entities[i].coords[1] === y) return i;
 		}
 	}
-	return false;
+	return null;
 };
 
+const isEnemy = (entities, index) => entities[index]._type === "alien" || entities[index]._type === "clown";
+
+const isItem = (entities, index, floor) => 
+	entities[index]._type == weaponTemplate(floor)._type || 
+		entities[index]._type == foodTemplate(floor)._type;
 
 const templateMenu = [
 	[enemyTemplate, 10],
@@ -261,8 +206,7 @@ const getNewCoords = (coords, state) => {
 	const xOffset = Math.floor(Math.random() * 3) - 1;
 	const yOffset = Math.floor(Math.random() * 3) - 1;
 	const newCoords = [coords[0] + xOffset, coords[1] + yOffset];
-	return 	isEmptySquare(newCoords, state) && !(newCoords[0] == coords[0] && newCoords[1] == coords[1]) ?
-				newCoords : coords;
+	return 	isEmptySquare(newCoords, state) && entityAt(newCoords, state) === null ? newCoords : coords;		
 };
 
 
@@ -274,14 +218,22 @@ const checkGameStatus = (state) => {
 
 
 const getDirection = (e) => {
-	return 	e.keyCode === ROT.VK_W || e.keyCode === ROT.VK_UP	?	[0, -1]	:
-			e.keyCode === ROT.VK_S || e.keyCode === ROT.VK_DOWN ?	[0, 1]	:
-			e.keyCode === ROT.VK_A || e.keyCode === ROT.VK_LEFT ?	[-1, 0]	:
-			e.keyCode === ROT.VK_D || e.keyCode === ROT.VK_RIGHT?	[1, 0]	:
-			e.keyCode === ROT.VK_Q ?	[-1, -1]:
-			e.keyCode === ROT.VK_E ?	[1, -1] :
-			e.keyCode === ROT.VK_Z ?	[-1, 1] :
-			e.keyCode === ROT.VK_X ?	[1, 1]	: [0, 0];
+	console.log(e.target.keyCode);
+	const keyMap = {
+		[ROT.VK_W]: [0, -1],
+		[ROT.VK_UP]: [0, -1],
+		[ROT.VK_S]: [0, 1],
+		[ROT.VK_DOWN]: [0, 1],
+		[ROT.VK_A]: [-1, 0],
+		[ROT.VK_LEFT]: [-1, 0],
+		[ROT.VK_D]: [1, 0],
+		[ROT.VK_RIGHT]: [1, 0],
+		[ROT.VK_Q]: [-1, -1],
+		[ROT.VK_E]: [1, -1],
+		[ROT.VK_Z]: [-1, 1],
+		[ROT.VK_X]: [1, 1]
+	};
+	return 	keyMap[e.target.keyCode] || [0, 0];
 };
 
 
