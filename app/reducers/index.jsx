@@ -97,6 +97,9 @@ const entities = (state = [], action) => {
 			...state.slice(1)
 		];
 
+	case "CREATE_WORLD":
+		return [];
+
 	default:
 		return state;
 	}

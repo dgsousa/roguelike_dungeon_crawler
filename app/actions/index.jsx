@@ -1,7 +1,6 @@
 import { playerTemplate, enemyTemplate, bossTemplate } from "../scripts/entities.js";
 import { foodTemplate, weaponTemplate } from "../scripts/items.js";
 import World from "../scripts/world.js";
-import * as ROT from "../../bower_components/rot.js/rot.js";
 
 
 //ActionCreators
@@ -54,22 +53,18 @@ const scrollScreen = (e) => {
 		const entityIndex = entityAt(playerCoords, getState());
 		
 		if(entityIndex && isEnemy(entities, entityIndex)) {
-			console.log("isEnemy")
-			dispatch(encounterEnemy(playerCoords));
+			dispatch(encounterEnemy(entityIndex));
 		
 		} else if(entityIndex && isItem(entities, entityIndex, floor)) {
-			console.log("isItem")
-			dispatch(encounterItem(playerCoords));
+			dispatch(encounterItem(entityIndex));
 		
 		} else if(isStaircase(playerCoords, getState())) {
-			console.log("isStaircase")
 			dispatch(nextFloor(playerCoords));
 		
 		} else if(isEmptySquare(playerCoords, getState()) && !entityIndex) {
-			console.log("isEmpty")
 			dispatch(move(playerCoords));
-		
-		} else { dispatch(gameOver(checkGameStatus(getState()))); }
+		} 
+		dispatch(gameOver(checkGameStatus(getState())));
 	};
 };
 
@@ -133,6 +128,7 @@ const levelUp = () => (dispatch, getState) => {
 
 const generateEntities = () => (dispatch, getState) => {
 	const {floor, entities} = getState();
+	const templateMenu = [[enemyTemplate, 10], [foodTemplate, 5], [weaponTemplate, 1]];
 	if(floor === 0) dispatch(createEntity({...playerTemplate, coords: emptyCoords(entities, getState())}));
 	if(floor === 3) dispatch(createEntity({...bossTemplate, coords: emptyCoords(entities, getState())}));
 	templateMenu.forEach((template) => {
@@ -141,7 +137,6 @@ const generateEntities = () => (dispatch, getState) => {
 		}
 	});
 };
-
 
 
 //Helper Functions
@@ -177,10 +172,8 @@ const emptyCoords = (entities, state) => {
 
 const entityAt = ([x, y], state) => {
 	const { entities } = state;
-	if(entities) {
-		for(let i = 0; i < entities.length; i++) {
-			if(entities[i].coords[0] === x && entities[i].coords[1] === y) return i;
-		}
+	for(let i = 0; i < entities.length; i++) {
+		if(entities[i].coords[0] === x && entities[i].coords[1] === y) return i;
 	}
 	return null;
 };
@@ -190,12 +183,6 @@ const isEnemy = (entities, index) => entities[index]._type === "alien" || entiti
 const isItem = (entities, index, floor) => 
 	entities[index]._type == weaponTemplate(floor)._type || 
 		entities[index]._type == foodTemplate(floor)._type;
-
-const templateMenu = [
-	[enemyTemplate, 10],
-	[foodTemplate, 5],
-	[weaponTemplate, 1]
-];
 
 
 const getDamage = (entity1, entity2) => {
@@ -218,22 +205,21 @@ const checkGameStatus = (state) => {
 
 
 const getDirection = (e) => {
-	console.log(e.target.keyCode);
 	const keyMap = {
-		[ROT.VK_W]: [0, -1],
-		[ROT.VK_UP]: [0, -1],
-		[ROT.VK_S]: [0, 1],
-		[ROT.VK_DOWN]: [0, 1],
-		[ROT.VK_A]: [-1, 0],
-		[ROT.VK_LEFT]: [-1, 0],
-		[ROT.VK_D]: [1, 0],
-		[ROT.VK_RIGHT]: [1, 0],
-		[ROT.VK_Q]: [-1, -1],
-		[ROT.VK_E]: [1, -1],
-		[ROT.VK_Z]: [-1, 1],
-		[ROT.VK_X]: [1, 1]
+		[73]: [0, -1],
+		[87]: [0, -1],
+		[77]: [0, 1],
+		[88]: [0, 1],
+		[65]: [-1, 0],
+		[74]: [-1, 0],
+		[75]: [1, 0],
+		[68]: [1, 0],
+		[81]: [-1, -1],
+		[69]: [1, -1],
+		[90]: [-1, 1],
+		[67]: [1, 1]
 	};
-	return 	keyMap[e.target.keyCode] || [0, 0];
+	return 	keyMap[e.keyCode] || [0, 0];
 };
 
 
