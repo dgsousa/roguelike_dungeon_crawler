@@ -4921,6 +4921,7 @@ var generateEntities = function generateEntities() {
 		    floor = _getState8.floor,
 		    entities = _getState8.entities;
 
+		var templateMenu = [[_entities.enemyTemplate, 10], [_items.foodTemplate, 5], [_items.weaponTemplate, 1]];
 		if (floor === 0) dispatch(createEntity(_extends({}, _entities.playerTemplate, { coords: emptyCoords(entities, getState()) })));
 		if (floor === 3) dispatch(createEntity(_extends({}, _entities.bossTemplate, { coords: emptyCoords(entities, getState()) })));
 		templateMenu.forEach(function (template) {
@@ -5007,8 +5008,6 @@ var isItem = function isItem(entities, index, floor) {
 	return entities[index]._type == (0, _items.weaponTemplate)(floor)._type || entities[index]._type == (0, _items.foodTemplate)(floor)._type;
 };
 
-var templateMenu = [[_entities.enemyTemplate, 10], [_items.foodTemplate, 5], [_items.weaponTemplate, 1]];
-
 var getDamage = function getDamage(entity1, entity2) {
 	return 1 + Math.floor(Math.random() * Math.max(0, entity1._attackValue - entity2._defenseValue));
 };
@@ -5030,7 +5029,7 @@ var checkGameStatus = function checkGameStatus(state) {
 var getDirection = function getDirection(e) {
 	var _keyMap;
 
-	var keyMap = (_keyMap = {}, _defineProperty(_keyMap, 73, [0, -1]), _defineProperty(_keyMap, 87, [0, -1]), _defineProperty(_keyMap, 77, [0, 1]), _defineProperty(_keyMap, 88, [0, 1]), _defineProperty(_keyMap, 65, [-1, 0]), _defineProperty(_keyMap, 74, [-1, 0]), _defineProperty(_keyMap, 75, [1, 0]), _defineProperty(_keyMap, 68, [1, 0]), _defineProperty(_keyMap, 81, [-1, -1]), _defineProperty(_keyMap, 69, [1, -1]), _defineProperty(_keyMap, 90, [-1, 1]), _defineProperty(_keyMap, 67, [1, 1]), _keyMap);
+	var keyMap = (_keyMap = {}, _defineProperty(_keyMap, 73, [0, -1]), _defineProperty(_keyMap, 77, [0, 1]), _defineProperty(_keyMap, 74, [-1, 0]), _defineProperty(_keyMap, 75, [1, 0]), _defineProperty(_keyMap, 78, [-1, 1]), _defineProperty(_keyMap, 188, [1, 1]), _defineProperty(_keyMap, 79, [1, -1]), _defineProperty(_keyMap, 85, [-1, -1]), _defineProperty(_keyMap, 38, [0, -1]), _defineProperty(_keyMap, 40, [0, 1]), _defineProperty(_keyMap, 37, [-1, 0]), _defineProperty(_keyMap, 39, [1, 0]), _keyMap);
 	return keyMap[e.keyCode] || [0, 0];
 };
 
