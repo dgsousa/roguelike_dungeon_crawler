@@ -206,18 +206,18 @@ const checkGameStatus = (state) => {
 
 const getDirection = (e) => {
 	const keyMap = {
-		[73]: [0, -1],
-		[87]: [0, -1],
-		[77]: [0, 1],
-		[88]: [0, 1],
-		[65]: [-1, 0],
-		[74]: [-1, 0],
-		[75]: [1, 0],
-		[68]: [1, 0],
-		[81]: [-1, -1],
-		[69]: [1, -1],
-		[90]: [-1, 1],
-		[67]: [1, 1]
+		[73]: [0, -1], 	//UP
+		[77]: [0, 1], 	//DOWN
+		[74]: [-1, 0], 	//LEFT
+		[75]: [1, 0],	//RIGHT
+		[78]: [-1, 1],	//DIAGONAL DOWN LEFT
+		[188]: [1, 1],	//DIAGONAL DOWN RIGHT
+		[79]: [1, -1],	//DIAGONAL UP RIGHT
+		[85]: [-1, -1],	//DIAGONAL UP LEFT
+		[38]: [0, -1], 	//UP
+		[40]: [0, 1], 	//DOWN
+		[37]: [-1, 0], 	//LEFT
+		[39]: [1, 0]	//RIGHT
 	};
 	return 	keyMap[e.keyCode] || [0, 0];
 };
